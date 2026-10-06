@@ -11,6 +11,9 @@ import kr.voicemate.malitda.data.repo.CorrectionRepository
 import kr.voicemate.malitda.data.repo.CounterRepository
 import kr.voicemate.malitda.data.repo.ExpressionRepository
 import kr.voicemate.malitda.data.repo.ProfileRepository
+import kr.voicemate.malitda.data.repo.MeaningRepository
+import kr.voicemate.malitda.domain.MeaningCandidateRanker
+import kr.voicemate.malitda.domain.RuleMeaningCandidateRanker
 import kr.voicemate.malitda.data.settings.SettingsStore
 import kr.voicemate.malitda.metrics.Metrics
 import kr.voicemate.malitda.stt.ModelInstaller
@@ -30,6 +33,9 @@ class AppContainer(private val app: Application) {
     val expressions: ExpressionRepository by lazy { ExpressionRepository(db.expressionDao()) }
     val corrections: CorrectionRepository by lazy { CorrectionRepository(db.correctionDao()) }
     val counters: CounterRepository by lazy { CounterRepository(db.counterDao()) }
+    val meanings: MeaningRepository by lazy { MeaningRepository(db) }
+    /** AI 담당자는 이 어댑터만 교체한다. 기본은 오프라인 규칙 순서. */
+    val meaningRanker: MeaningCandidateRanker by lazy { RuleMeaningCandidateRanker() }
 
     val vosk: SttEngine by lazy { VoskSttEngine(app, ModelInstaller.vosk(app)) }
     val whisper: SttEngine by lazy { WhisperSttEngine(app, ModelInstaller.whisper(app)) }
