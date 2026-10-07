@@ -1,5 +1,7 @@
 # 말잇다 모바일 디자이너 인계
 
+10월 7일 사용자 요청으로 범위를 확장한 [최신 전체 설계 인계](complete-mobile-design-handoff-20261007.md)가 있다. 아래 42+6개 기준은 이전 인계 기록이며, 현재 작업은 목업/와이어78쌍·시스템16종 정본에서 이어간다.
+
 2026년 10월 7일. 이 문서는 모바일 목표 시안과 현재 앱의 차이를 정리한 인계 기준이다. 새 시안이 APK에 모두 적용됐다는 뜻은 아니다.
 
 **작업할 피그마:** [06 · 모바일 디자이너 인계](https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2839). 첫 화면은 [학생 홈](https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-905), 좁은 화면은 [360폭 홈](https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2853)이다.

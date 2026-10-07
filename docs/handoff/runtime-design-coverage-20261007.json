@@ -1,0 +1,338 @@
+{
+  "date": "2026-10-07",
+  "runtime_commit": "f00b7221b6ccc43a6ae64c9d409b0987309fee1c",
+  "verification": "source_inventory_and_figma_correspondence_not_new_apk_execution",
+  "counts": {
+    "runtime_view_branches": 36,
+    "global_modals": 10,
+    "detail_modals": 3,
+    "wire_mock_pairs": 78,
+    "systems": 16
+  },
+  "routes": [
+    {
+      "route": "S01",
+      "frame_id": "U00-S",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-2828",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "S02",
+      "frame_id": "U00-G",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-2853",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "S03",
+      "frame_id": "U00-C",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-2884",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "S04",
+      "frame_id": "U12-A",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-3159",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "S05",
+      "frame_id": "S05",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-159",
+      "status": "legacy-reference-reachable"
+    },
+    {
+      "route": "S06",
+      "frame_id": "S06",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-165",
+      "status": "legacy-reference-reachable"
+    },
+    {
+      "route": "S07",
+      "frame_id": "S07",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-171",
+      "status": "legacy-reference-reachable"
+    },
+    {
+      "route": "S08",
+      "frame_id": "U01",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-1071",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "S09",
+      "frame_id": "U02",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-1135",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "S10",
+      "frame_id": "S10",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-189",
+      "status": "legacy-reference-reachable"
+    },
+    {
+      "route": "S11",
+      "frame_id": "S11",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-195",
+      "status": "legacy-reference-reachable"
+    },
+    {
+      "route": "S12",
+      "frame_id": "S12",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-201",
+      "status": "legacy-reference-reachable"
+    },
+    {
+      "route": "S13",
+      "frame_id": "S13",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-207",
+      "status": "legacy-reference-reachable"
+    },
+    {
+      "route": "S14",
+      "frame_id": "S14",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-213",
+      "status": "legacy-reference-reachable"
+    },
+    {
+      "route": "S15",
+      "frame_id": "S15",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-219",
+      "status": "legacy-reference-reachable"
+    },
+    {
+      "route": "S16",
+      "frame_id": "U02-D",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-1554",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "S17",
+      "frame_id": "S17",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-231",
+      "status": "legacy-reference-reachable"
+    },
+    {
+      "route": "S18",
+      "frame_id": "U12",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-2163",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "S19",
+      "frame_id": "S19",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-243",
+      "status": "legacy-reference-reachable"
+    },
+    {
+      "route": "S20",
+      "frame_id": "S20",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-249",
+      "status": "conditional-legacy-reward-view"
+    },
+    {
+      "route": "S22",
+      "frame_id": "S22",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-261",
+      "status": "legacy-reference-reachable"
+    },
+    {
+      "route": "S23",
+      "frame_id": "S23",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-267",
+      "status": "legacy-reference-reachable"
+    },
+    {
+      "route": "S24",
+      "frame_id": "S24",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-273",
+      "status": "legacy-reference-reachable"
+    },
+    {
+      "route": "S25",
+      "frame_id": "S25",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-279",
+      "status": "view-branch-without-host-entry"
+    },
+    {
+      "route": "S26",
+      "frame_id": "S26",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-285",
+      "status": "view-branch-without-host-entry"
+    },
+    {
+      "route": "S27",
+      "frame_id": "S27",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-291",
+      "status": "legacy-reference-reachable"
+    },
+    {
+      "route": "M_RESOLVING",
+      "frame_id": "U02-M",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-3216",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "M_CANDIDATES",
+      "frame_id": "U06",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-1267",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "M_CONFIRM",
+      "frame_id": "U03",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-1198",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "M_PRESENT",
+      "frame_id": "U04",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-1233",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "M_LIBRARY",
+      "frame_id": "U08",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-1930",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "M_EDIT",
+      "frame_id": "U05",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-1739",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "M_REVIEW",
+      "frame_id": "U10",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-1858",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "M_DETAIL",
+      "frame_id": "U09",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-1987",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "M_STALE",
+      "frame_id": "U03-V",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-1681",
+      "status": "target-design-current-route"
+    },
+    {
+      "route": "LEGACY_HOME",
+      "frame_id": "S08 original home",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-177",
+      "status": "legacy-reference-reachable"
+    }
+  ],
+  "global_modals": [
+    {
+      "modal": "O_PROFILE",
+      "frame_id": "U15",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-2979",
+      "status": "current-target-or-legacy-reference",
+      "note": ""
+    },
+    {
+      "modal": "O_ENGINE",
+      "frame_id": "U16",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-3099",
+      "status": "current-target-or-legacy-reference",
+      "note": ""
+    },
+    {
+      "modal": "O_MENU",
+      "frame_id": "U14",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-2944",
+      "status": "current-target-or-legacy-reference",
+      "note": ""
+    },
+    {
+      "modal": "O_CATEGORY",
+      "frame_id": "O_CATEGORY",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-9",
+      "status": "current-target-or-legacy-reference",
+      "note": ""
+    },
+    {
+      "modal": "O_INPUT_ERROR",
+      "frame_id": "O_INPUT_ERROR",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-69",
+      "status": "current-target-or-legacy-reference",
+      "note": ""
+    },
+    {
+      "modal": "O_COPIED",
+      "frame_id": "O_COPIED",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-27",
+      "status": "current-target-or-legacy-reference",
+      "note": ""
+    },
+    {
+      "modal": "O_SHARE",
+      "frame_id": "O_SHARE",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-117",
+      "status": "current-target-or-legacy-reference",
+      "note": ""
+    },
+    {
+      "modal": "O_CONTACT",
+      "frame_id": "U12-C",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-3193",
+      "status": "current-target-or-legacy-reference",
+      "note": "현재 문의 발송은 준비 중"
+    },
+    {
+      "modal": "O_PRIVACY",
+      "frame_id": "U17",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-3128",
+      "status": "current-target-or-legacy-reference",
+      "note": ""
+    },
+    {
+      "modal": "O_SEARCH_EXPRESSION",
+      "frame_id": "O_SEARCH_EXPRESSION",
+      "figma_url": "https://www.figma.com/design/rRl8r1ktRCzPcKl5jyu7uR?node-id=86-105",
+      "status": "current-target-or-legacy-reference",
+      "note": ""
+    }
+  ],
+  "detail_modals": [
+    {
+      "modal": "delete",
+      "frame_id": "U09-D",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-2102"
+    },
+    {
+      "modal": "deactivate",
+      "frame_id": "U09-P",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-3472"
+    },
+    {
+      "modal": "reactivate",
+      "frame_id": "U09-R",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=69-3497"
+    }
+  ],
+  "not_implemented_as_complete": [
+    "whole-data-deletion",
+    "contact-message-send",
+    "photo-file-garbage-collection",
+    "new-meaning-LLM",
+    "all-target-design-applied-to-APK"
+  ],
+  "no_independent_route": [
+    "S21",
+    "U13 preview states"
+  ],
+  "critical_contracts": [
+    "confirmationMethod nonempty and student checkbox required",
+    "confirmedBy optional",
+    "card direct meaningId lookup bypasses alias ranking",
+    "voice input may include old M1 candidates",
+    "approval snapshot nonpersistent",
+    "OS sharing completion not inferred"
+  ]
+}
