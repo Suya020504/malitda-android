@@ -9,7 +9,10 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.sync.Mutex
@@ -19,7 +22,9 @@ import kr.voicemate.malitda.domain.SentenceCleanup
 import java.io.DataInputStream
 import java.io.EOFException
 import java.io.InputStream
+import java.util.concurrent.atomic.AtomicLong
 import kotlin.concurrent.thread
+import kotlin.concurrent.withLock as withInferLock
 import kotlin.math.sqrt
 
 /**
@@ -38,27 +43,51 @@ class WhisperSttEngine(
     override val prepareState: StateFlow<PrepareState> = _prepareState
     private val prepareMutex = Mutex()
     private val inferLock = java.util.concurrent.locks.ReentrantLock()
+    private val lifecycleEpoch = AtomicLong()
     @Volatile private var handle: Long = 0L
     private val main = Handler(Looper.getMainLooper())
 
-    override suspend fun prepare() = prepareMutex.withLock {
-        if (handle != 0L) return
-        try {
-            if (!WhisperNative.load()) throw IllegalStateException("whisper 네이티브 라이브러리를 불러오지 못했어요")
-            if (!installer.isInstalled()) {
-                _prepareState.value = PrepareState.Installing(0, 0)
-                installer.install { d, t -> _prepareState.value = PrepareState.Installing(d, t) }
+    override suspend fun prepare() = withContext(Dispatchers.IO) {
+        prepareMutex.withLock {
+            if (handle != 0L) return@withLock
+            val epoch = lifecycleEpoch.get()
+            try {
+                if (!WhisperNative.load()) throw IllegalStateException("whisper 네이티브 라이브러리를 불러오지 못했어요")
+                if (!installer.isInstalled()) {
+                    publishPrepareState(epoch, PrepareState.Installing(0, 0))
+                    installer.install { d, t -> publishPrepareState(epoch, PrepareState.Installing(d, t)) }
+                }
+                publishPrepareState(epoch, PrepareState.Loading)
+                val t0 = SystemClock.elapsedRealtime()
+                val coroutineContext = currentCoroutineContext()
+                // 초기화·추론·해제 모두 같은 잠금으로 native 핸들의 수명을 보호한다.
+                inferLock.withInferLock {
+                    coroutineContext.ensureActive()
+                    if (epoch != lifecycleEpoch.get()) return@withInferLock
+                    var pendingHandle = WhisperNative.init(java.io.File(installer.targetDir, ModelInstaller.WHISPER_MODEL_FILE).absolutePath)
+                    if (pendingHandle == 0L) throw IllegalStateException("whisper 모델을 열지 못했어요")
+                    try {
+                        coroutineContext.ensureActive()
+                        val ready = PrepareState.Ready(installer.installedBytes(), SystemClock.elapsedRealtime() - t0)
+                        handle = pendingHandle
+                        pendingHandle = 0L // 이후부터 release가 소유한다.
+                        _prepareState.value = ready
+                    } finally {
+                        // 초기화 중 취소되면 아직 공개하지 않은 핸들도 해제한다.
+                        if (pendingHandle != 0L) WhisperNative.release(pendingHandle)
+                    }
+                }
+            } catch (t: CancellationException) {
+                throw t
+            } catch (t: Throwable) {
+                Log.e(TAG, "whisper 준비 실패", t)
+                publishPrepareState(epoch, PrepareState.Failed(t.message ?: t.javaClass.simpleName, t))
             }
-            _prepareState.value = PrepareState.Loading
-            val t0 = SystemClock.elapsedRealtime()
-            val h = withContext(Dispatchers.IO) { WhisperNative.init(java.io.File(installer.targetDir, ModelInstaller.WHISPER_MODEL_FILE).absolutePath) }
-            if (h == 0L) throw IllegalStateException("whisper 모델을 열지 못했어요")
-            handle = h
-            _prepareState.value = PrepareState.Ready(installer.installedBytes(), SystemClock.elapsedRealtime() - t0)
-        } catch (t: Throwable) {
-            Log.e(TAG, "whisper 준비 실패", t)
-            _prepareState.value = PrepareState.Failed(t.message ?: t.javaClass.simpleName, t)
         }
+    }
+
+    private fun publishPrepareState(epoch: Long, state: PrepareState) = inferLock.withInferLock {
+        if (epoch == lifecycleEpoch.get()) _prepareState.value = state
     }
 
     // ---------------- 마이크 ----------------
@@ -67,7 +96,7 @@ class WhisperSttEngine(
     @Volatile private var recording = false
     private val samples = ArrayList<ShortArray>()
     private var startedAt = 0L
-    private var callback: SttCallback? = null
+    @Volatile private var callback: SttCallback? = null
 
     @SuppressLint("MissingPermission")
     override fun startListening(callback: SttCallback): Boolean {
@@ -139,19 +168,25 @@ class WhisperSttEngine(
     }
 
     private fun transcribeBlocking(pcm: FloatArray): String {
-        val h = handle; if (h == 0L) return ""
         val threads = Runtime.getRuntime().availableProcessors().coerceIn(2, 4)
         // 동시 추론 금지(메모리·스레드 경합)
-        inferLock.lock()
-        val raw = try { WhisperNative.transcribe(h, pcm, "ko", threads, NO_SPEECH_THOLD) } finally { inferLock.unlock() }
+        val raw = inferLock.withInferLock {
+            val h = handle
+            if (h == 0L) return@withInferLock ""
+            WhisperNative.transcribe(h, pcm, "ko", threads, NO_SPEECH_THOLD)
+        }
         return SentenceCleanup.clean(raw)
     }
 
     override fun release() {
         cancel()
-        val h = handle; handle = 0L
-        if (h != 0L) WhisperNative.release(h)
-        _prepareState.value = PrepareState.NotStarted
+        inferLock.withInferLock {
+            lifecycleEpoch.incrementAndGet()
+            val h = handle
+            handle = 0L
+            if (h != 0L) WhisperNative.release(h)
+            _prepareState.value = PrepareState.NotStarted
+        }
     }
 
     // ---------------- 유틸 ----------------

@@ -51,21 +51,21 @@ fun S02Guide(onNext: () -> Unit, onSkip: () -> Unit) {
 
         // 브랜드 로고 + 워드마크 + 헤더
         art(R.drawable.brand_logo, 126f, 24f, 152f, 43f)
-        T("내 말을 더\n정확하게 전달해요", 24f, 86f, 342f, 30f, FontWeight.Black, brush = brandBrush(), align = TextAlign.Center)
-        T("듣고, 고르고, 전달하는 쉬운 말 도우미", 28f, 175f, 334f, 13f, FontWeight.Normal, color = MalMuted, align = TextAlign.Center)
+        T("내 표현의 뜻을\n함께 전해요", 24f, 86f, 342f, 30f, FontWeight.Black, brush = brandBrush(), align = TextAlign.Center)
+        T("함께 등록하고, 뜻을 고르고, 확인해요", 28f, 175f, 334f, 13f, FontWeight.Normal, color = MalMuted, align = TextAlign.Center)
 
         // 단계 번호
         T("1", 36f, 271f, 32f, 19.2f, FontWeight.Bold, color = Color.White, align = TextAlign.Center)
         T("2", 36f, 422f, 32f, 19.2f, FontWeight.Bold, color = Color.White, align = TextAlign.Center)
         T("3", 36f, 573f, 32f, 19.2f, FontWeight.Bold, color = Color.White, align = TextAlign.Center)
         // 단계 제목
-        T("말해요", 81f, 263f, 160f, 22f, FontWeight.Bold, color = PURPLE)
+        T("함께 등록해요", 81f, 263f, 160f, 22f, FontWeight.Bold, color = PURPLE)
         T("고를게요", 81f, 414f, 160f, 22f, FontWeight.Bold, color = PURPLE)
         T("전달해요", 81f, 565f, 160f, 22f, FontWeight.Bold, color = PURPLE)
         // 단계 설명
-        T("마이크를 누르고\n하고 싶은 말을 들려주세요.", 80f, 304f, 180f, 13f, FontWeight.Normal, color = MalInk)
-        T("인식된 원문과 후보를 보고\n직접 골라 주세요.", 80f, 455f, 180f, 13f, FontWeight.Normal, color = MalInk)
-        T("내가 확인하고 승인한 말을\n다른 앱에 전달해요.", 80f, 606f, 180f, 13f, FontWeight.Normal, color = MalInk)
+        T("평소 쓰는 표현과 뜻을\n지원자와 등록하고 확인해요.", 80f, 304f, 180f, 13f, FontWeight.Normal, color = MalInk)
+        T("말하거나 카드로 골라요.\n지금 전하려는 뜻을 확인해요.", 80f, 455f, 180f, 13f, FontWeight.Normal, color = MalInk)
+        T("확인한 뜻을 보여주거나\n소리로 들려주고 공유해요.", 80f, 606f, 180f, 13f, FontWeight.Normal, color = MalInk)
 
         // 버튼 캡션
         T("다음", 33.4f, 722.32f, 324.05f, 18f, FontWeight.Bold, color = Color.White, align = TextAlign.Center)

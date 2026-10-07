@@ -26,6 +26,8 @@ import kr.voicemate.malitda.stt.PrepareState
 import kr.voicemate.malitda.stt.SttCallback
 import kr.voicemate.malitda.stt.SttResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -37,9 +39,24 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
+import java.util.concurrent.atomic.AtomicLong
 
 enum class SentenceSource { STT, EXPRESSION, DIRECT }
 enum class ShareKind { SYSTEM, COPY, SMS }
+
+/** 늦은 STT 콜백은 시작 당시 요청과 프로필이 함께 일치할 때만 사용할 수 있다. */
+internal class RecognitionSessionGuard {
+    data class Token(val epoch: Long, val profileId: Long)
+    private val epoch = AtomicLong()
+
+    fun begin(profileId: Long): Token = Token(epoch.incrementAndGet(), profileId)
+    fun invalidate() { epoch.incrementAndGet() }
+    fun accepts(token: Token, currentProfileId: Long): Boolean =
+        token.epoch == epoch.get() && token.profileId == currentProfileId
+}
 
 sealed interface ListenState {
     data object Idle : ListenState
@@ -105,29 +122,44 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
     val ui: StateFlow<SessionUiState> = _ui.asStateFlow()
     private val _events = MutableSharedFlow<SessionEvent>(extraBufferCapacity = 16)
     val events = _events.asSharedFlow()
+    private val recognitionGuard = RecognitionSessionGuard()
+    private val engineSwitchMutex = Mutex()
 
     init {
         viewModelScope.launch {
-            _profileId.value = c.profiles.ensureCurrent()
-            c.settings.settings.collect { s -> if (s.currentProfileId != 0L && s.currentProfileId != _profileId.value) _profileId.value = s.currentProfileId }
+            updateProfileId(c.profiles.ensureCurrent())
+            c.settings.settings.collect { s -> if (s.currentProfileId != 0L) updateProfileId(s.currentProfileId) }
         }
-        viewModelScope.launch { c.stt.prepare(); syncModelMetrics() }
+        viewModelScope.launch { engineSwitchMutex.withLock { c.stt.prepare(); syncModelMetrics() } }
     }
+
+    private fun updateProfileId(id: Long) {
+        if (_profileId.value == id) return
+        resetSession()
+        _profileId.value = id
+    }
+
+    private fun isCurrent(token: RecognitionSessionGuard.Token): Boolean =
+        recognitionGuard.accepts(token, _profileId.value)
 
     private fun syncModelMetrics() {
         (prepareState.value as? PrepareState.Ready)?.let { c.metrics.modelLoadMs = it.loadMs; c.metrics.modelBytes = it.modelBytes; c.metrics.refresh() }
     }
 
-    fun retryPrepare() { viewModelScope.launch { c.stt.prepare(); syncModelMetrics() } }
+    fun retryPrepare() { viewModelScope.launch { engineSwitchMutex.withLock { c.stt.prepare(); syncModelMetrics() } } }
 
     /** 음성인식 엔진 전환(사전 비교용). 진행 중인 세션은 정리한다. */
     val selectedEngine: StateFlow<String> get() = c.sttRouter.selected
     fun switchEngine(id: String) {
+        resetSession()
         viewModelScope.launch {
-            resetSession()
-            c.settings.setSttEngine(id)
-            c.sttRouter.switchTo(id)
-            syncModelMetrics()
+            engineSwitchMutex.withLock {
+                resetSession()
+                c.settings.setSttEngine(id)
+                // release는 진행 중인 native 추론을 기다릴 수 있으므로 UI 스레드에서 호출하지 않는다.
+                withContext(Dispatchers.IO) { c.sttRouter.switchTo(id) }
+                syncModelMetrics()
+            }
         }
     }
 
@@ -176,6 +208,8 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
                 val summary = kr.voicemate.malitda.domain.EvalSummary(rows, c.stt.name, out.absolutePath)
                 out.writeText(summary.toCsv())
                 _eval.value = EvalState.Done(summary)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Throwable) {
                 _eval.value = EvalState.Failed(e.message ?: e.javaClass.simpleName)
             }
@@ -184,12 +218,16 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
 
     fun recognizeTestFile(name: String) {
         if (_ui.value.listen !is ListenState.Idle) return
+        val token = recognitionGuard.begin(_profileId.value)
         _ui.update { it.copy(listen = ListenState.Processing) }
         viewModelScope.launch {
-            val r = runCatching { java.io.File(c.filesDir, "testaudio/$name").inputStream().use { c.stt.recognizeWav(it) } }
-            r.onSuccess { onSttFinal(it) }.onFailure { e ->
-                _ui.update { it.copy(listen = ListenState.Idle) }
-                _events.tryEmit(SessionEvent.GoSttError(e.message ?: "파일 인식 실패"))
+            try {
+                val result = java.io.File(c.filesDir, "testaudio/$name").inputStream().use { c.stt.recognizeWav(it) }
+                if (isCurrent(token)) onSttFinal(result, token)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                onSttError(e, token)
             }
         }
     }
@@ -197,19 +235,28 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
     // ---------- 말하기(S09) ----------
     fun startListening() {
         if (_ui.value.listen !is ListenState.Idle) return
+        val token = recognitionGuard.begin(_profileId.value)
         _ui.update { it.copy(listen = ListenState.Listening()) }
         val ok = c.stt.startListening(object : SttCallback {
-            override fun onPartial(text: String) { _ui.update { s -> (s.listen as? ListenState.Listening)?.let { l -> s.copy(listen = l.copy(partial = text)) } ?: s } }
-            override fun onSegment(text: String) { _ui.update { s -> (s.listen as? ListenState.Listening)?.let { l -> s.copy(listen = l.copy(segments = text, partial = "")) } ?: s } }
-            override fun onFinal(result: SttResult) { viewModelScope.launch { onSttFinal(result) } }
+            override fun onPartial(text: String) {
+                viewModelScope.launch {
+                    if (!isCurrent(token)) return@launch
+                    _ui.update { s -> (s.listen as? ListenState.Listening)?.let { l -> s.copy(listen = l.copy(partial = text)) } ?: s }
+                }
+            }
+            override fun onSegment(text: String) {
+                viewModelScope.launch {
+                    if (!isCurrent(token)) return@launch
+                    _ui.update { s -> (s.listen as? ListenState.Listening)?.let { l -> s.copy(listen = l.copy(segments = text, partial = "")) } ?: s }
+                }
+            }
+            override fun onFinal(result: SttResult) { viewModelScope.launch { onSttFinal(result, token) } }
             override fun onError(error: Throwable) {
-                _ui.update { it.copy(listen = ListenState.Idle) }
-                _events.tryEmit(SessionEvent.GoSttError(error.message ?: "음성인식 오류"))
+                viewModelScope.launch { onSttError(error, token) }
             }
         })
         if (!ok) {
-            _ui.update { it.copy(listen = ListenState.Idle) }
-            _events.tryEmit(SessionEvent.GoSttError("음성인식 엔진이 준비되지 않았어요"))
+            onSttError(IllegalStateException("음성인식 엔진이 준비되지 않았어요"), token)
         }
     }
 
@@ -220,29 +267,48 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
     }
 
     fun cancelListening() {
+        recognitionGuard.invalidate()
         c.stt.cancel()
         _ui.update { it.copy(listen = ListenState.Idle) }
     }
 
-    private suspend fun onSttFinal(result: SttResult) {
-        c.metrics.onRecognition(result.processingMs, result.audioMs)
-        if (result.raw.isBlank()) {
-            _ui.update { it.copy(listen = ListenState.Idle, lastProcessingMs = result.processingMs, lastAudioMs = result.audioMs) }
-            _events.tryEmit(SessionEvent.GoNoResult)
-            return
+    private fun onSttError(error: Throwable, token: RecognitionSessionGuard.Token) {
+        if (error is CancellationException || !isCurrent(token)) return
+        recognitionGuard.invalidate()
+        _ui.update { it.copy(listen = ListenState.Idle) }
+        _events.tryEmit(SessionEvent.GoSttError(error.message ?: "음성인식 오류"))
+    }
+
+    private suspend fun onSttFinal(result: SttResult, token: RecognitionSessionGuard.Token) {
+        if (!isCurrent(token)) return
+        try {
+            if (result.raw.isBlank()) {
+                c.metrics.onRecognition(result.processingMs, result.audioMs)
+                _ui.update { it.copy(listen = ListenState.Idle, lastProcessingMs = result.processingMs, lastAudioMs = result.audioMs) }
+                recognitionGuard.invalidate()
+                _events.tryEmit(SessionEvent.GoNoResult)
+                return
+            }
+            val exact = c.corrections.exactFor(token.profileId, result.raw)?.approvedText
+            if (!isCurrent(token)) return
+            val approved = c.corrections.approvedTextsNormalized(token.profileId)
+            if (!isCurrent(token)) return
+            val candidates = CandidateBuilder.build(result.raw, result.alternatives, exact, approved)
+            c.metrics.onRecognition(result.processingMs, result.audioMs)
+            _ui.update {
+                it.copy(
+                    listen = ListenState.Idle, source = SentenceSource.STT, raw = result.raw, alternatives = result.alternatives,
+                    candidates = candidates, selectedIndex = null, draft = "", approvalToken = null,
+                    lastProcessingMs = result.processingMs, lastAudioMs = result.audioMs, m1Applied = candidates.any { c -> c.isM1 },
+                )
+            }
+            recognitionGuard.invalidate()
+            _events.tryEmit(SessionEvent.GoResult)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Throwable) {
+            onSttError(e, token)
         }
-        val pid = _profileId.value
-        val exact = c.corrections.exactFor(pid, result.raw)?.approvedText
-        val approved = c.corrections.approvedTextsNormalized(pid)
-        val candidates = CandidateBuilder.build(result.raw, result.alternatives, exact, approved)
-        _ui.update {
-            it.copy(
-                listen = ListenState.Idle, source = SentenceSource.STT, raw = result.raw, alternatives = result.alternatives,
-                candidates = candidates, selectedIndex = null, draft = "", approvalToken = null,
-                lastProcessingMs = result.processingMs, lastAudioMs = result.audioMs, m1Applied = candidates.any { c -> c.isM1 },
-            )
-        }
-        _events.tryEmit(SessionEvent.GoResult)
     }
 
     // ---------- 후보 선택(S10) ----------
@@ -366,14 +432,19 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
 
     // ---------- 세션 정리 ----------
     fun resetSession() {
+        recognitionGuard.invalidate()
         c.stt.cancel(); c.tts.stop()
         _ui.value = SessionUiState()
     }
 
     /** 문장은 남기되 인식 결과만 정리(다시 말하기 진입 시). */
-    fun prepareRespeak() { c.tts.stop(); _ui.update { it.copy(listen = ListenState.Idle, approvalToken = null) } }
+    fun prepareRespeak() {
+        recognitionGuard.invalidate()
+        c.stt.cancel(); c.tts.stop()
+        _ui.update { it.copy(listen = ListenState.Idle, approvalToken = null) }
+    }
 
-    override fun onCleared() { c.stt.cancel(); c.tts.stop() }
+    override fun onCleared() { recognitionGuard.invalidate(); c.stt.cancel(); c.tts.stop(); super.onCleared() }
 
     companion object {
         fun factory(c: AppContainer) = object : ViewModelProvider.Factory {

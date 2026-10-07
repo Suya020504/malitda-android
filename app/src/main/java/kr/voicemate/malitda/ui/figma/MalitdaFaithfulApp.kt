@@ -18,6 +18,24 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.remember
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.CancellationException
+import kr.voicemate.malitda.ui.meaning.*
+import kr.voicemate.malitda.ui.vm.MeaningViewModel
+import kr.voicemate.malitda.ui.vm.MeaningEvent
+import kr.voicemate.malitda.data.db.MeaningWithAliases
+import kr.voicemate.malitda.data.repo.MeaningRepository
+import kr.voicemate.malitda.data.repo.MeaningImageStore
 import kr.voicemate.malitda.data.repo.ExpressionRepository
 import kr.voicemate.malitda.domain.Category
 import kr.voicemate.malitda.ui.vm.ListenState
@@ -43,6 +61,32 @@ private val BACK_MAP = mapOf(
 @Composable
 fun MalitdaFaithfulApp(vm: SessionViewModel, start: String = "S01") {
     val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val meaningVm: MeaningViewModel = viewModel(factory = MeaningViewModel.factory(vm.c, vm.profileId))
+    val meaningState by meaningVm.state.collectAsStateWithLifecycle()
+    val meaningItems by meaningVm.items.collectAsStateWithLifecycle()
+    val profileId by vm.profileId.collectAsStateWithLifecycle()
+    val profiles by vm.c.profiles.all.collectAsStateWithLifecycle(initialValue = emptyList())
+    var meaningMode by rememberSaveable { mutableStateOf(true) }
+    var meaningId by rememberSaveable { mutableStateOf(-1L) }
+    var meaningVersion by rememberSaveable { mutableStateOf<Long?>(null) }
+    var aliases by rememberSaveable { mutableStateOf("") }
+    var meaningText by rememberSaveable { mutableStateOf("") }
+    var meaningContext by rememberSaveable { mutableStateOf("") }
+    var meaningImage by rememberSaveable { mutableStateOf<String?>(null) }
+    var checkedMeaning by rememberSaveable { mutableStateOf(false) }
+    var confirmMethod by rememberSaveable { mutableStateOf("") }
+    var confirmedBy by rememberSaveable { mutableStateOf("") }
+    var meaningBusy by remember { mutableStateOf(false) }
+    var meaningError by rememberSaveable { mutableStateOf<String?>(null) }
+    var savedMeaning by remember { mutableStateOf<MeaningWithAliases?>(null) }
+    var managedLoading by remember { mutableStateOf(false) }
+    var formProfileId by rememberSaveable { mutableStateOf(0L) }
+    var editSerial by rememberSaveable { mutableStateOf(0L) }
+    var photoProfile by rememberSaveable { mutableStateOf(0L) }
+    var photoSerial by rememberSaveable { mutableStateOf(0L) }
+    var newProfileName by rememberSaveable { mutableStateOf("") }
+    var profileBusy by remember { mutableStateOf(false) }
     var route by rememberSaveable { mutableStateOf(start) }
     var notice by rememberSaveable { mutableStateOf(false) }
     var privacy by rememberSaveable { mutableStateOf(false) }
@@ -70,6 +114,99 @@ fun MalitdaFaithfulApp(vm: SessionViewModel, start: String = "S01") {
     val counters by vm.counters.collectAsStateWithLifecycle()
 
     fun toast(m: String) = Toast.makeText(ctx, m, Toast.LENGTH_SHORT).show()
+    fun goHome() { vm.resetSession(); meaningVm.reset(); meaningMode = true; route = "S08" }
+    fun editMeaning(item: MeaningWithAliases?) {
+        vm.resetSession(); meaningVm.reset(); editSerial++
+        formProfileId = profileId
+        meaningId = item?.meaning?.id ?: -1L; meaningVersion = item?.meaning?.version
+        aliases = item?.aliases?.joinToString("\n") { it.rawAlias }.orEmpty()
+        meaningText = item?.meaning?.displayText.orEmpty(); meaningContext = item?.meaning?.contextLabel.orEmpty()
+        meaningImage = item?.meaning?.imageRef; confirmedBy = item?.meaning?.confirmedBy.orEmpty()
+        checkedMeaning = false; confirmMethod = ""; meaningError = null; savedMeaning = item
+        route = "M_EDIT"
+    }
+    fun saveMeaning(review: Boolean) {
+        if (meaningBusy || profileId <= 0L) return
+        val pid = profileId; val generation = editSerial
+        val inputAliases = aliases.lines(); val text = meaningText; val image = meaningImage; val context = meaningContext
+        val id = meaningId.takeIf { it > 0 }; val version = meaningVersion
+        meaningBusy = true; meaningError = null
+        scope.launch {
+            try {
+                val result = vm.c.meanings.save(pid, id, version, inputAliases, text, image, context, null)
+                if (pid != vm.profileId.value || generation != editSerial) return@launch
+                when (result) {
+                    is MeaningRepository.SaveResult.Ok -> {
+                        if (pid != vm.profileId.value || generation != editSerial) return@launch
+                        meaningId = result.id; meaningVersion = result.version
+                        val fresh = vm.c.meanings.get(pid, result.id)
+                        if (pid != vm.profileId.value || generation != editSerial) return@launch
+                        savedMeaning = fresh
+                        checkedMeaning = false; confirmMethod = ""
+                        route = if (review) "M_REVIEW" else "M_LIBRARY"
+                        if (!review) toast("미확인으로 저장했어요. 함께 확인한 뒤 사용할 수 있어요.")
+                    }
+                    is MeaningRepository.SaveResult.Invalid -> meaningError = result.message
+                    MeaningRepository.SaveResult.Conflict -> meaningError = "등록 내용이 바뀌었어요. 내 표현에서 다시 열어 주세요."
+                    MeaningRepository.SaveResult.LimitReached -> meaningError = "한 학생의 뜻은 50개까지 보관할 수 있어요."
+                }
+            } catch (cancelled: CancellationException) { throw cancelled }
+            catch (_: Exception) { if (pid == vm.profileId.value && generation == editSerial) meaningError = "저장하지 못했어요. 입력한 내용은 그대로입니다. 다시 시도해 주세요." }
+            finally { if (generation == editSerial) meaningBusy = false }
+        }
+    }
+    val photoLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            val pid = photoProfile; val generation = photoSerial
+            meaningBusy = true
+            scope.launch {
+                try {
+                    val ref = MeaningImageStore.import(ctx, uri)
+                    if (pid == vm.profileId.value && generation == editSerial && route == "M_EDIT") meaningImage = ref
+                } catch (cancelled: CancellationException) { throw cancelled }
+                catch (_: Exception) { if (pid == vm.profileId.value && generation == editSerial) meaningError = "사진을 가져오지 못했어요. 다른 사진을 고르거나 그림 없이 사용해 주세요." }
+                finally { if (generation == editSerial) meaningBusy = false }
+            }
+        }
+    }
+    LaunchedEffect(profileId) {
+        if (profileId > 0L) {
+            if (formProfileId > 0L && formProfileId != profileId) {
+                savedMeaning = null; meaningId = -1; meaningVersion = null; editSerial++
+                aliases = ""; meaningText = ""; meaningContext = ""; meaningImage = null; checkedMeaning = false
+                confirmMethod = ""; confirmedBy = ""; meaningBusy = false; meaningError = null
+                meaningVm.reset(); route = "S08"
+            }
+            formProfileId = profileId
+        }
+    }
+    LaunchedEffect(meaningVm) {
+        meaningVm.events.collect { e -> when (e) {
+            MeaningEvent.Candidates -> route = "M_CANDIDATES"
+            MeaningEvent.Confirm -> route = "M_CONFIRM"
+            MeaningEvent.Present -> route = "M_PRESENT"
+            MeaningEvent.Stale -> route = "M_STALE"
+            MeaningEvent.Home -> if (route !in listOf("S01", "S02", "S03")) route = "S08"
+            is MeaningEvent.Notice -> toast(e.text)
+        } }
+    }
+    val currentMeaningItems = meaningItems.filter { it.meaning.profileId == profileId }
+    val managed = currentMeaningItems.firstOrNull { it.meaning.id == meaningId } ?: savedMeaning?.takeIf { it.meaning.profileId == profileId && it.meaning.id == meaningId }
+    LaunchedEffect(route, profileId, meaningId) {
+        if (route in listOf("M_REVIEW", "M_DETAIL") && profileId > 0L && meaningId > 0L) {
+            managedLoading = true
+            try {
+                savedMeaning = vm.c.meanings.get(profileId, meaningId)
+                if (route == "M_REVIEW" && savedMeaning?.meaning?.version != meaningVersion) {
+                    checkedMeaning = false; confirmMethod = ""
+                    meaningError = "등록 내용이 바뀌었어요. 입력으로 돌아가 다시 확인해 주세요."
+                }
+            } catch (cancelled: CancellationException) { throw cancelled }
+            catch (_: Exception) { meaningError = "뜻을 불러오지 못했어요. 내 표현에서 다시 열어 주세요." }
+            finally { managedLoading = false }
+        }
+    }
+
     val regCat = Category.fromKey(regCatKey)
     val s13Filter = if (s13FilterKey.isBlank()) null else Category.fromKey(s13FilterKey)
 
@@ -92,9 +229,11 @@ fun MalitdaFaithfulApp(vm: SessionViewModel, start: String = "S01") {
     LaunchedEffect(Unit) {
         vm.events.collect { e ->
             when (e) {
-                SessionEvent.GoResult -> { if (ui.selectedIndex == null) vm.selectCandidate(0); route = "S10" }
-                SessionEvent.GoNoResult -> route = "S17"
-                is SessionEvent.GoSttError -> route = "S23"
+                SessionEvent.GoResult -> if (meaningMode) {
+                    route = "M_RESOLVING"; meaningVm.resolveRecognition(ui.raw.orEmpty(), ui.candidates)
+                } else { if (ui.selectedIndex == null) vm.selectCandidate(0); route = "S10" }
+                SessionEvent.GoNoResult -> if (meaningMode) { meaningVm.reset(); route = "M_CANDIDATES" } else route = "S17"
+                is SessionEvent.GoSttError -> if (meaningMode) { meaningVm.reset(); route = "M_CANDIDATES"; toast("음성인식이 준비되지 않았어요. 카드로 고를 수 있어요.") } else route = "S23"
                 SessionEvent.GoConfirm -> route = "S11"
                 SessionEvent.GoApprove -> route = "S12"
                 SessionEvent.GoAfterShare -> { vm.resetSession(); route = "S08" }
@@ -109,6 +248,12 @@ fun MalitdaFaithfulApp(vm: SessionViewModel, start: String = "S01") {
     BackHandler(enabled = dialog != null || (route != "S01" && route != "S08")) {
         when {
             dialog != null -> dialog = null
+            meaningBusy -> toast("저장 중이에요. 잠시 기다려 주세요.")
+            route.startsWith("M_") -> when (route) {
+                "M_REVIEW" -> { checkedMeaning = false; route = "M_EDIT" }
+                "M_EDIT", "M_DETAIL" -> route = "M_LIBRARY"
+                else -> goHome()
+            }
             route == "S07" -> route = if (regEditId >= 0) "S14" else "S06"
             route == "S09" -> { vm.cancelListening(); route = "S08" }
             else -> route = BACK_MAP[route] ?: "S08"
@@ -126,7 +271,61 @@ fun MalitdaFaithfulApp(vm: SessionViewModel, start: String = "S01") {
             onLater = { route = "S08" },
             onViewPolicy = { dialog = "O_PRIVACY" },
         )
-        "S08" -> S08Home(
+        "S08" -> MeaningHomeScreen(name, currentMeaningItems,
+            onMic = { meaningMode = true; meaningVm.reset(); vm.resetSession(); startMic() },
+            onChoose = { meaningMode = true; meaningVm.useCard(it) },
+            onLibrary = { meaningVm.reset(); route = "M_LIBRARY" }, onAdd = { editMeaning(null) },
+            onLegacy = { meaningMode = false; vm.resetSession(); meaningVm.reset(); route = "LEGACY_HOME" },
+            onSettings = { dialog = "O_MENU" },
+        )
+        "M_RESOLVING" -> MeaningInfoScreen("등록한 뜻을 찾고 있어요", "잠시 기다려 주세요. 취소하고 카드로 고를 수 있어요.",
+            primaryLabel = "카드로 고르기", onPrimary = { goHome() })
+        "M_CANDIDATES" -> MeaningCandidatesScreen(meaningState.rawText, meaningState.candidates,
+            onSelect = { meaningVm.select(it) }, onRerecord = { meaningMode = true; meaningVm.reset(); vm.resetSession(); startMic() },
+            onCards = { goHome() }, onRegister = { val raw = meaningState.rawText; editMeaning(null); aliases = raw }, onCancel = { goHome() })
+        "M_CONFIRM" -> meaningState.selected?.let { item -> MeaningConfirmScreen(item, meaningState.inputSource,
+            onYes = { meaningVm.approve() }, onOther = { meaningVm.chooseAgain() },
+            onListen = { meaningVm.speakPreview(item.meaning.displayText) }, onBack = { goHome() }) }
+            ?: MeaningInfoScreen("뜻을 다시 골라 주세요", "이전 선택은 저장하지 않아요. 지금 전하려는 뜻을 다시 확인해 주세요.", "카드로 고르기", { goHome() })
+        "M_PRESENT" -> meaningState.selected?.let { item -> MeaningPresentScreen(item, meaningState.approved, meaningState.ttsError,
+            onSpeak = { meaningVm.speakApproved() }, onShare = { meaningVm.shareApproved(ctx) },
+            onChoose = { meaningVm.chooseAgain() }, onHome = { goHome() }) }
+            ?: MeaningInfoScreen("뜻을 다시 골라 주세요", "이전 승인은 복원하지 않아요. 지금 전하려는 뜻을 다시 확인해 주세요.", "카드로 고르기", { goHome() })
+        "M_LIBRARY" -> MeaningLibraryScreen(currentMeaningItems, onDetail = { id -> meaningId = id; savedMeaning = null; route = "M_DETAIL" },
+            onAdd = { editMeaning(null) }, onHome = { goHome() })
+        "M_EDIT" -> MeaningEditScreen(aliases, meaningText, meaningContext, meaningImage, meaningError, meaningBusy,
+            onAliasesChange = { aliases = it }, onTextChange = { meaningText = it }, onContextChange = { meaningContext = it },
+            onPickBuiltin = { meaningImage = it.ifBlank { null } }, onPickPhoto = { photoProfile = profileId; photoSerial = editSerial; photoLauncher.launch("image/*") },
+            onReview = { saveMeaning(true) }, onDraft = { saveMeaning(false) }, onCancel = { meaningVm.reset(); editSerial++; route = "M_LIBRARY" })
+        "M_REVIEW" -> managed?.let { item -> MeaningReviewScreen(item, checkedMeaning, confirmMethod, confirmedBy,
+            onCheckedChange = { checkedMeaning = it }, onMethodChange = { confirmMethod = it }, onSupporterChange = { confirmedBy = it },
+            busy = meaningBusy, error = meaningError,
+            onConfirm = {
+                if (checkedMeaning && confirmMethod.isNotBlank() && !meaningBusy) {
+                    val pid = profileId; val method = confirmMethod; val supporter = confirmedBy; val generation = editSerial
+                    meaningBusy = true
+                    scope.launch {
+                        try {
+                            if (vm.c.meanings.confirm(pid, item.meaning.id, item.meaning.version, method, supporter)) {
+                                if (pid == vm.profileId.value && generation == editSerial) { savedMeaning = null; meaningVm.reset(); route = "M_LIBRARY"; toast("함께 확인한 뜻을 사용할 수 있어요.") }
+                            } else if (pid == vm.profileId.value && generation == editSerial) meaningError = "뜻이 바뀌었어요. 다시 열어 학생과 확인해 주세요."
+                        } catch (cancelled: CancellationException) { throw cancelled }
+                        catch (_: Exception) { if (pid == vm.profileId.value && generation == editSerial) meaningError = "등록을 완료하지 못했어요. 미확인 상태로 보관됩니다." }
+                        finally { if (generation == editSerial) meaningBusy = false }
+                    }
+                }
+            }, onDraft = { meaningVm.reset(); route = "M_LIBRARY" }, onListen = { meaningVm.speakPreview(item.meaning.displayText) },
+            onBack = { meaningVm.reset(); editMeaning(item) }) }
+            ?: MeaningInfoScreen(if (managedLoading || profileId == 0L) "뜻을 불러오고 있어요" else "이 뜻을 볼 수 없어요", "내 표현에서 다시 열어 확인할 수 있어요.", "내 표현으로", { route = "M_LIBRARY" })
+        "M_DETAIL" -> managed?.let { item -> MeaningDetailScreen(item,
+            onEdit = { editMeaning(item) },
+            onDeactivate = { val pid = profileId; scope.launch { try { if (!vm.c.meanings.deactivate(pid, item.meaning.id, item.meaning.version)) toast("뜻이 바뀌었어요. 다시 확인해 주세요."); if (pid == vm.profileId.value) route = "M_LIBRARY" } catch (cancelled: CancellationException) { throw cancelled } catch (_: Exception) { toast("사용 상태를 바꾸지 못했어요. 다시 시도해 주세요.") } } },
+            onReactivate = { editMeaning(item); saveMeaning(true) },
+            onDelete = { val pid = profileId; scope.launch { try { vm.c.meanings.delete(pid, item.meaning.id); if (pid == vm.profileId.value) { savedMeaning = null; route = "M_LIBRARY" } } catch (cancelled: CancellationException) { throw cancelled } catch (_: Exception) { toast("삭제하지 못했어요. 다시 시도해 주세요.") } } },
+            onBack = { route = "M_LIBRARY" }) } ?: MeaningInfoScreen(if (managedLoading || profileId == 0L) "뜻을 불러오고 있어요" else "이 뜻을 볼 수 없어요", "삭제되었거나 다른 학생의 표현이에요.", primaryLabel = "내 표현으로", onPrimary = { route = "M_LIBRARY" })
+        "M_STALE" -> MeaningInfoScreen("뜻을 다시 확인해 주세요", "등록한 뜻·그림·학생이 바뀌었거나 사용할 수 없는 뜻이에요. 지금 전하려는 뜻을 다시 골라 주세요.",
+            primaryLabel = "카드로 다시 고르기", onPrimary = { goHome() }, secondaryLabel = "내 표현 보기", onSecondary = { meaningVm.reset(); route = "M_LIBRARY" })
+        "LEGACY_HOME" -> S08Home(
             name = name,
             recent = recentExpressions,
             approvals = counters?.approvals ?: 0,
@@ -173,7 +372,7 @@ fun MalitdaFaithfulApp(vm: SessionViewModel, start: String = "S01") {
         "S17" -> S17NoResult(
             onAgain = { startMic() },
             onEdit = { vm.startDirectInput() },
-            onRegistered = { route = "S13" },
+            onRegistered = { route = if (meaningMode) "M_LIBRARY" else "S13" },
             onBack = { vm.resetSession(); route = "S08" },
         )
         // ── 핵심표현 등록·목록 ──
@@ -260,7 +459,14 @@ fun MalitdaFaithfulApp(vm: SessionViewModel, start: String = "S01") {
             onSave = { route = "S18"; toast("설정을 저장했어요") },
             onDefault = { vm.resetAccessibility(); quick = false; toast("기본값으로 되돌렸어요") },
         )
-        "S16" -> S16Permission(
+        "S16" -> if (meaningMode) MeaningInfoScreen(
+            "마이크를 사용할 수 없어요", "말하기에는 마이크 권한이 필요해요. 지금은 카드로 고를 수 있어요.",
+            primaryLabel = "카드로 고르기", onPrimary = { goHome() },
+            secondaryLabel = "마이크 설정 열기", onSecondary = {
+                ctx.startActivity(android.content.Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    android.net.Uri.fromParts("package", ctx.packageName, null)))
+            },
+        ) else S16Permission(
             onSettings = {
                 ctx.startActivity(
                     android.content.Intent(
@@ -270,7 +476,7 @@ fun MalitdaFaithfulApp(vm: SessionViewModel, start: String = "S01") {
                 )
             },
             onRegistered = { route = "S13" },
-            onType = { vm.startDirectInput() },
+            onType = { meaningMode = false; vm.startDirectInput() },
         )
         "S15" -> S15History(
             corrections = corrections,
@@ -340,11 +546,28 @@ fun MalitdaFaithfulApp(vm: SessionViewModel, start: String = "S01") {
 
     // ── 모달 대화상자(현재 화면 위 오버레이) ──
     when (dialog) {
-        "O_MENU" -> OptionListModal(
-            title = "어디로 갈까요?", subtitle = "말잇다 앱 메뉴",
+        "O_PROFILE" -> MeaningProfileDialog(profiles, newProfileName, profileBusy, { newProfileName = it.take(80) },
+            onSelect = { id -> if (!profileBusy) { profileBusy = true; scope.launch {
+                try { vm.resetSession(); meaningVm.reset(); vm.c.profiles.switchTo(id); dialog = null; route = "S08" }
+                catch (cancelled: CancellationException) { throw cancelled }
+                catch (_: Exception) { toast("학생을 바꾸지 못했어요. 다시 시도해 주세요.") }
+                finally { profileBusy = false }
+            } } }, onAdd = { if (newProfileName.isNotBlank() && !profileBusy) { val studentName = newProfileName; profileBusy = true; scope.launch {
+                try { val id = vm.c.profiles.add(studentName); vm.resetSession(); meaningVm.reset(); vm.c.profiles.switchTo(id); newProfileName = ""; dialog = null; route = "S08" }
+                catch (cancelled: CancellationException) { throw cancelled }
+                catch (_: Exception) { toast("학생을 추가하지 못했어요. 다시 시도해 주세요.") }
+                finally { profileBusy = false }
+            } } }, onDismiss = { dialog = null })
+        "O_ENGINE" -> MeaningOptionsDialog(title = "음성인식 엔진",
+            options = listOf("Whisper" to { meaningVm.reset(); vm.switchEngine("whisper"); dialog = null; route = "S08" }, "Vosk" to { meaningVm.reset(); vm.switchEngine("vosk"); dialog = null; route = "S08" }), onDismiss = { dialog = null })
+        "O_MENU" -> MeaningOptionsDialog(
+            title = "어디로 갈까요?",
             options = listOf(
                 "홈" to { dialog = null; route = "S08" },
-                "내 핵심표현" to { dialog = null; route = "S13" },
+                "개인 표현과 뜻" to { dialog = null; meaningVm.reset(); route = "M_LIBRARY" },
+                "학생 선택·추가" to { dialog = "O_PROFILE" },
+                "음성인식 엔진" to { dialog = "O_ENGINE" },
+                "기존 핵심표현" to { dialog = null; meaningMode = false; route = "S13" },
                 "교정 이력" to { dialog = null; route = "S15" },
                 "설정·도움말" to { dialog = null; route = "S18" },
                 "말친구" to { dialog = null; route = "S19" },
@@ -378,10 +601,10 @@ fun MalitdaFaithfulApp(vm: SessionViewModel, start: String = "S01") {
             primaryLabel = "사용법 보기", onPrimary = { dialog = null; route = "S02" },
             secondaryLabel = "닫기", onSecondary = { dialog = null }, onDismiss = { dialog = null },
         )
-        "O_PRIVACY" -> InfoModal(
-            surfTop = 279.55f, surfH = 284f, title = "개인정보 안내",
-            body = "표현과 교정 이력은 기기에 저장해요.\n녹음 파일과 공유 상대방 정보는 보관하지 않아요.\n확인한 문장만 선택한 앱으로 공유해요.",
-            primaryLabel = "닫기", onPrimary = { dialog = null }, onDismiss = { dialog = null },
+        "O_PRIVACY" -> MeaningInfoDialog(
+            title = "개인정보 안내",
+            message = "표현·뜻·확인 기록과 선택한 그림은 기기에 저장해요.\n마이크 원음성과 공유 상대방은 보관하지 않아요.\n지금 확인한 뜻만 선택한 앱으로 공유해요.",
+            onDismiss = { dialog = null },
         )
         "O_SEARCH_EXPRESSION" -> InputModal(
             surfTop = 228.55f, surfH = 386f, title = "표현 검색", subtitle = "저장한 표현을 찾아보세요.",

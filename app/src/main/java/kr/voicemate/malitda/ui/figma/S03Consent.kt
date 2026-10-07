@@ -153,8 +153,8 @@ fun S03Consent(
         T("원음성은 저장하지 않아요", 135f, 232f, 214f, 16f, FontWeight.Bold, color = C_PURPLE)
         T("인식을 위한 음성은 기기 안에서 처리하며\n원음성 파일은 별도 보관하지 않아요.", 135f, 284f, 215f, 11f, FontWeight.Normal, color = MUTED)
 
-        T("표현·교정 이력은\n기기 안에 저장돼요", 135f, 361f, 214f, 16f, FontWeight.Bold, color = C_TEAL)
-        T("내가 등록한 표현과 승인 교정은\n기기 안에서 관리할 수 있어요.", 135f, 413f, 215f, 11f, FontWeight.Normal, color = MUTED)
+        T("표현·뜻·확인 기록은\n기기 안에 저장돼요", 135f, 361f, 214f, 16f, FontWeight.Bold, color = C_TEAL)
+        T("등록한 뜻과 선택한 그림은\n기기 안에서 관리할 수 있어요.", 135f, 413f, 215f, 11f, FontWeight.Normal, color = MUTED)
 
         T("음성은 이 기기에서\n인식해요", 135f, 490f, 214f, 16f, FontWeight.Bold, color = C_BLUE)
         T("외부 음성인식으로 자동 전환하지 않아요.\n직접 입력도 할 수 있어요.", 135f, 542f, 215f, 11f, FontWeight.Normal, color = MUTED)
