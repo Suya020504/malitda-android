@@ -1,0 +1,1023 @@
+{
+  "dataset_type": "fictional_contract_vectors",
+  "execution_status": "not_executed_new_model_not_connected",
+  "created": "2026-10-07",
+  "base_runtime_commit": "f00b7221b6ccc43a6ae64c9d409b0987309fee1c",
+  "counts": {
+    "pure_validator": 10,
+    "integration_scenarios": 20
+  },
+  "vectors": [
+    {
+      "id": "valid-original",
+      "kind": "pure-validator",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": {
+        "orderedMeaningIds": [
+          11,
+          12
+        ],
+        "abstain": false,
+        "provider": "rules"
+      },
+      "expected": {
+        "orderedMeaningIds": [
+          11,
+          12
+        ],
+        "abstain": false
+      }
+    },
+    {
+      "id": "valid-reordered",
+      "kind": "pure-validator",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": {
+        "orderedMeaningIds": [
+          12,
+          11
+        ],
+        "abstain": false,
+        "provider": "local-experiment"
+      },
+      "expected": {
+        "orderedMeaningIds": [
+          12,
+          11
+        ],
+        "abstain": false
+      }
+    },
+    {
+      "id": "null-result",
+      "kind": "pure-validator",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "orderedMeaningIds": [
+          11,
+          12
+        ],
+        "abstain": false
+      }
+    },
+    {
+      "id": "empty-result",
+      "kind": "pure-validator",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": {
+        "orderedMeaningIds": [],
+        "abstain": false
+      },
+      "expected": {
+        "orderedMeaningIds": [
+          11,
+          12
+        ],
+        "abstain": false
+      }
+    },
+    {
+      "id": "missing-id",
+      "kind": "pure-validator",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": {
+        "orderedMeaningIds": [
+          11
+        ],
+        "abstain": false
+      },
+      "expected": {
+        "orderedMeaningIds": [
+          11,
+          12
+        ],
+        "abstain": false
+      }
+    },
+    {
+      "id": "duplicate-id",
+      "kind": "pure-validator",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": {
+        "orderedMeaningIds": [
+          11,
+          11
+        ],
+        "abstain": false
+      },
+      "expected": {
+        "orderedMeaningIds": [
+          11,
+          12
+        ],
+        "abstain": false
+      }
+    },
+    {
+      "id": "unknown-id",
+      "kind": "pure-validator",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": {
+        "orderedMeaningIds": [
+          99,
+          11
+        ],
+        "abstain": false
+      },
+      "expected": {
+        "orderedMeaningIds": [
+          11,
+          12
+        ],
+        "abstain": false
+      }
+    },
+    {
+      "id": "extra-id",
+      "kind": "pure-validator",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": {
+        "orderedMeaningIds": [
+          11,
+          12,
+          99
+        ],
+        "abstain": false
+      },
+      "expected": {
+        "orderedMeaningIds": [
+          11,
+          12
+        ],
+        "abstain": false
+      }
+    },
+    {
+      "id": "abstain-empty",
+      "kind": "pure-validator",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": {
+        "orderedMeaningIds": [],
+        "abstain": true,
+        "provider": "local-experiment"
+      },
+      "expected": {
+        "orderedMeaningIds": [
+          11,
+          12
+        ],
+        "abstain": true
+      }
+    },
+    {
+      "id": "abstain-invalid-order",
+      "kind": "pure-validator",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": {
+        "orderedMeaningIds": [
+          99
+        ],
+        "abstain": true,
+        "provider": "local-experiment"
+      },
+      "expected": {
+        "orderedMeaningIds": [
+          11,
+          12
+        ],
+        "abstain": true
+      }
+    },
+    {
+      "id": "timeout",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "original-order"
+      },
+      "event": "ranker delayed more than1500ms"
+    },
+    {
+      "id": "exception",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "original-order"
+      },
+      "event": "ranker throws"
+    },
+    {
+      "id": "switch-student",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "discard-old-session"
+      },
+      "event": "profileId becomes2 while pending"
+    },
+    {
+      "id": "switch-away-back",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "discard-old-session"
+      },
+      "event": "profile1→2→1 while pending"
+    },
+    {
+      "id": "choose-again",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "approval-remains-empty"
+      },
+      "event": "student rejects while approve/get pending"
+    },
+    {
+      "id": "cancel",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "no-route-to-old-result"
+      },
+      "event": "user cancels during rank"
+    },
+    {
+      "id": "edit-version",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "stale-reconfirm"
+      },
+      "event": "meaning11 version2→3 while pending"
+    },
+    {
+      "id": "delete-meaning",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "stale-reselect"
+      },
+      "event": "meaning11 deleted while pending"
+    },
+    {
+      "id": "inactive-meaning",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "stale-reselect"
+      },
+      "event": "meaning11 becomesINACTIVE"
+    },
+    {
+      "id": "picture-changed",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "invalidate-approval"
+      },
+      "event": "approved meaning picture changes"
+    },
+    {
+      "id": "text-changed",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "invalidate-approval"
+      },
+      "event": "approved meaning text changes"
+    },
+    {
+      "id": "recreation",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "form-retained"
+      },
+      "event": "activity recreated duringregistration"
+    },
+    {
+      "id": "process-death",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "approval-not-restored"
+      },
+      "event": "process killed afterapproval"
+    },
+    {
+      "id": "share-cancel",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "approved-session-retained-not-counted-as-sent"
+      },
+      "event": "sharesheet dismissed"
+    },
+    {
+      "id": "tts-async-error",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "planned-failed-ui-keep-text-picture"
+      },
+      "event": "onError arrives afterqueue accepted"
+    },
+    {
+      "id": "tts-late-event",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "planned-ignore-old-utterance"
+      },
+      "event": "oldutterance callback afterchooseAgain"
+    },
+    {
+      "id": "tts-online-only",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "planned-offline-policy-or-explicit-choice"
+      },
+      "event": "Ready offline=false"
+    },
+    {
+      "id": "raw-vs-meaning",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "rawText-remains바람"
+      },
+      "event": "rawText바람 mapsregisteredmeaning11"
+    },
+    {
+      "id": "zero-candidates",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "no-ranker-call-card-register"
+      },
+      "event": "no confirmedaliasesmatch"
+    },
+    {
+      "id": "single-candidate",
+      "kind": "integration-scenario",
+      "request": {
+        "profileId": 1,
+        "sessionId": 42,
+        "rawText": "바람",
+        "candidates": [
+          {
+            "id": 11,
+            "version": 2,
+            "displayText": "산책하고 싶어요",
+            "contextLabel": "밖에 나가기",
+            "matchedAlias": "바람"
+          },
+          {
+            "id": 12,
+            "version": 4,
+            "displayText": "바람이 차가워요",
+            "contextLabel": "날씨",
+            "matchedAlias": "바람"
+          }
+        ],
+        "context": null
+      },
+      "response": null,
+      "expected": {
+        "outcome": "student-confirm-required"
+      },
+      "event": "oneconfirmedmeaning"
+    }
+  ]
+}

@@ -1,0 +1,634 @@
+{
+  "version": "2026-10-07",
+  "file_key": "RFGqsEDVAjLYPTwWhqOtN0",
+  "page_id": "42:897",
+  "runtime_commit": "f00b7221b6ccc43a6ae64c9d409b0987309fee1c",
+  "prototype_reactions": 208,
+  "screen_count": 48,
+  "screens": [
+    {
+      "screen_id": "U01",
+      "name": "U01 · 학생 홈",
+      "figma_node_id": "42:905",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-905",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "S08",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "19:6"
+    },
+    {
+      "screen_id": "U02",
+      "name": "U02 · 말하기 · 녹음 중",
+      "figma_node_id": "42:973",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-973",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "S09",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "19:81"
+    },
+    {
+      "screen_id": "U02-P",
+      "name": "U02-P · 말하기 · 처리 중",
+      "figma_node_id": "42:1014",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1014",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "S09",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "19:118"
+    },
+    {
+      "screen_id": "U03",
+      "name": "U03 · 뜻 확인 · 산책하고 싶어요",
+      "figma_node_id": "42:1048",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1048",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_CONFIRM",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "19:148"
+    },
+    {
+      "screen_id": "U04",
+      "name": "U04 · 전달 · 산책하고 싶어요",
+      "figma_node_id": "42:1089",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1089",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_PRESENT",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "19:185"
+    },
+    {
+      "screen_id": "U06",
+      "name": "U06 · 다른 뜻 선택",
+      "figma_node_id": "42:1129",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1129",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_CANDIDATES",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "19:221"
+    },
+    {
+      "screen_id": "U03-W",
+      "name": "U03-W · 뜻 확인 · 물이 필요해요",
+      "figma_node_id": "42:1173",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1173",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_CONFIRM",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:154"
+    },
+    {
+      "screen_id": "U04-W",
+      "name": "U04-W · 전달 · 물이 필요해요",
+      "figma_node_id": "42:1214",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1214",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_PRESENT",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:191"
+    },
+    {
+      "screen_id": "U03-R",
+      "name": "U03-R · 뜻 확인 · 쉬고 싶어요",
+      "figma_node_id": "42:1254",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1254",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_CONFIRM",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:227"
+    },
+    {
+      "screen_id": "U04-R",
+      "name": "U04-R · 전달 · 쉬고 싶어요",
+      "figma_node_id": "42:1295",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1295",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_PRESENT",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:264"
+    },
+    {
+      "screen_id": "U03-C",
+      "name": "U03-C · 뜻 확인 · 바람이 차가워요",
+      "figma_node_id": "42:1335",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1335",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_CONFIRM",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:300"
+    },
+    {
+      "screen_id": "U04-C",
+      "name": "U04-C · 전달 · 바람이 차가워요",
+      "figma_node_id": "42:1376",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1376",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_PRESENT",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:337"
+    },
+    {
+      "screen_id": "U01-E",
+      "name": "U01-E · 학생 홈 · 등록 없음",
+      "figma_node_id": "42:1416",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1416",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "S08",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:376"
+    },
+    {
+      "screen_id": "U02-D",
+      "name": "U02-D · 말하기 · 마이크 권한 없음",
+      "figma_node_id": "42:1462",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1462",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "S09",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:422"
+    },
+    {
+      "screen_id": "U03-E",
+      "name": "U03-E · 말하기 · 인식 결과 없음",
+      "figma_node_id": "42:1500",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1500",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_CONFIRM",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:456"
+    },
+    {
+      "screen_id": "U03-M",
+      "name": "U03-M · 뜻 확인 · 등록된 뜻 없음",
+      "figma_node_id": "42:1538",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1538",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_CONFIRM",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:490"
+    },
+    {
+      "screen_id": "U03-I",
+      "name": "U03-I · 뜻 확인 · 그림 없음",
+      "figma_node_id": "42:1574",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1574",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_CONFIRM",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:522"
+    },
+    {
+      "screen_id": "U03-V",
+      "name": "U03-V · 뜻 확인 · 등록 내용 변경",
+      "figma_node_id": "42:1613",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1613",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_CONFIRM",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:557"
+    },
+    {
+      "screen_id": "U07",
+      "name": "U07 · 함께 등록 · 학생 확인",
+      "figma_node_id": "42:1647",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1647",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_REVIEW",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:590"
+    },
+    {
+      "screen_id": "U05",
+      "name": "U05 · 함께 등록 · 표현 입력",
+      "figma_node_id": "42:1683",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1683",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_EDIT",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:622"
+    },
+    {
+      "screen_id": "U05-E",
+      "name": "U05-E · 함께 등록 · 입력 오류",
+      "figma_node_id": "42:1732",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1732",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_EDIT",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:667"
+    },
+    {
+      "screen_id": "U05-M",
+      "name": "U05-M · 함께 등록 · 의미 그림 선택",
+      "figma_node_id": "42:1781",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1781",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_EDIT",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:712"
+    },
+    {
+      "screen_id": "U10",
+      "name": "U10 · 함께 등록 · 의미 확인 전",
+      "figma_node_id": "42:1820",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1820",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_REVIEW",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:747"
+    },
+    {
+      "screen_id": "U10-C",
+      "name": "U10-C · 함께 등록 · 확인 후 활성화",
+      "figma_node_id": "42:1862",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1862",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_REVIEW",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:785"
+    },
+    {
+      "screen_id": "U08",
+      "name": "U08 · 내 표현 · 확인한 뜻",
+      "figma_node_id": "42:1904",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1904",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_LIBRARY",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:826"
+    },
+    {
+      "screen_id": "U09",
+      "name": "U09 · 내 표현 · 상세",
+      "figma_node_id": "42:1965",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-1965",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_DETAIL",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:893"
+    },
+    {
+      "screen_id": "U09-E",
+      "name": "U09-E · 함께 등록 · 수정 후 재확인",
+      "figma_node_id": "42:2008",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2008",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_DETAIL",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:932"
+    },
+    {
+      "screen_id": "U11",
+      "name": "U11 · 미확인 보관함",
+      "figma_node_id": "42:2057",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2057",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_LIBRARY",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:977"
+    },
+    {
+      "screen_id": "U09-D",
+      "name": "U09-D · 내 표현 · 삭제 확인",
+      "figma_node_id": "42:2098",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2098",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_DETAIL",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:1014"
+    },
+    {
+      "screen_id": "U09-I",
+      "name": "U09-I · 내 표현 · 비활성",
+      "figma_node_id": "42:2132",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2132",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_DETAIL",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:1044"
+    },
+    {
+      "screen_id": "U12",
+      "name": "U12 · 설정",
+      "figma_node_id": "42:2171",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2171",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "S18/S04",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:1082"
+    },
+    {
+      "screen_id": "U12-P",
+      "name": "U12-P · 설정 · 마이크 안내",
+      "figma_node_id": "42:2219",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2219",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "S18/S04",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:1136"
+    },
+    {
+      "screen_id": "U12-T",
+      "name": "U12-T · 설정 · 소리 안내",
+      "figma_node_id": "42:2254",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2254",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "S18/S04",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:1167"
+    },
+    {
+      "screen_id": "U04-F",
+      "name": "U04-F · 전달 · 소리 사용 불가",
+      "figma_node_id": "42:2289",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2289",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_PRESENT",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:1198"
+    },
+    {
+      "screen_id": "U04-S",
+      "name": "U04-S · 전달 · 공유 선택",
+      "figma_node_id": "42:2327",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2327",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_PRESENT",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:1232"
+    },
+    {
+      "screen_id": "U07-S",
+      "name": "U07-S · 학생 확인 · 세션 새로 시작",
+      "figma_node_id": "42:2361",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2361",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_REVIEW",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:1262"
+    },
+    {
+      "screen_id": "U00",
+      "name": "U00 · 처음 화면 안내",
+      "figma_node_id": "42:2396",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2396",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "S01/S02/S03",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:1296"
+    },
+    {
+      "screen_id": "U13-walk",
+      "name": "U13-walk · 소리 확인 · 산책하고 싶어요",
+      "figma_node_id": "42:2434",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2434",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "TTS preview",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:1330"
+    },
+    {
+      "screen_id": "U13-water",
+      "name": "U13-water · 소리 확인 · 물이 필요해요",
+      "figma_node_id": "42:2469",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2469",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "TTS preview",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:1361"
+    },
+    {
+      "screen_id": "U13-rest",
+      "name": "U13-rest · 소리 확인 · 쉬고 싶어요",
+      "figma_node_id": "42:2504",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2504",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "TTS preview",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:1392"
+    },
+    {
+      "screen_id": "U13-cold",
+      "name": "U13-cold · 소리 확인 · 바람이 차가워요",
+      "figma_node_id": "42:2539",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2539",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "TTS preview",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:1423"
+    },
+    {
+      "screen_id": "U08-D",
+      "name": "U08-D · 내 표현 · 삭제·비활성 후 목록",
+      "figma_node_id": "42:2574",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2574",
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "current_code_route": "M_LIBRARY",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": "20:1454"
+    },
+    {
+      "screen_id": "U01",
+      "name": "U01 · 학생 홈 · 360폭",
+      "figma_node_id": "42:2853",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2853",
+      "size": {
+        "width": 360,
+        "height": 800
+      },
+      "current_code_route": "S08",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": null
+    },
+    {
+      "screen_id": "U03",
+      "name": "U03 · 뜻 확인 · 산책하고 싶어요 · 360폭",
+      "figma_node_id": "42:2917",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2917",
+      "size": {
+        "width": 360,
+        "height": 800
+      },
+      "current_code_route": "M_CONFIRM",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": null
+    },
+    {
+      "screen_id": "U04",
+      "name": "U04 · 전달 · 산책하고 싶어요 · 360폭",
+      "figma_node_id": "42:2952",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2952",
+      "size": {
+        "width": 360,
+        "height": 800
+      },
+      "current_code_route": "M_PRESENT",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": null
+    },
+    {
+      "screen_id": "U05",
+      "name": "U05 · 함께 등록 · 표현 입력 · 360폭",
+      "figma_node_id": "42:2986",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-2986",
+      "size": {
+        "width": 360,
+        "height": 800
+      },
+      "current_code_route": "M_EDIT",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": null
+    },
+    {
+      "screen_id": "U10",
+      "name": "U10 · 함께 등록 · 의미 확인 전 · 360폭",
+      "figma_node_id": "42:3029",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-3029",
+      "size": {
+        "width": 360,
+        "height": 800
+      },
+      "current_code_route": "M_REVIEW",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": null
+    },
+    {
+      "screen_id": "U08",
+      "name": "U08 · 내 표현 · 확인한 뜻 · 360폭",
+      "figma_node_id": "42:3065",
+      "figma_url": "https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=42-3065",
+      "size": {
+        "width": 360,
+        "height": 800
+      },
+      "current_code_route": "M_LIBRARY",
+      "status": "design_target_not_all_applied_to_apk",
+      "source_node_id": null
+    }
+  ]
+}
