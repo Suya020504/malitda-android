@@ -377,6 +377,8 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         val snapshotUpdatedAt: Long? = null,
         /** 음성 인식에서 나온 의미 후보 id 순위(상위가 먼저). */
         val matchIds: List<Long> = emptyList(),
+        /** 이번 시도에서 앱이 들은 말. 학생이 카드로 뜻을 고치면 오인식 학습 제안에 쓴다. */
+        val heard: String? = null,
     )
 
     /** 전달 흐름에 쓰는 뜻(확인 완료·활성). 홈 카드와 U06 목록의 원천. */
@@ -410,7 +412,11 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         val matches = MeaningResolver.resolve(raw, s.alternatives, registered)
         // 말로 시작한 시도다 — 맞는 뜻이 없어도 출처는 '말', 이전에 고른 뜻은 지운다.
         _v2.update {
-            it.copy(origin = V2Origin.VOICE, meaningId = null, snapshotUpdatedAt = null, matchIds = matches.map { m -> m.meaning.id })
+            it.copy(
+                origin = V2Origin.VOICE, meaningId = null, snapshotUpdatedAt = null,
+                matchIds = matches.map { m -> m.meaning.id },
+                heard = raw.trim().trimEnd('.', '!', '?', '…', ' ').ifBlank { null },
+            )
         }
         matches.firstOrNull()?.let { top -> v2SelectMeaning(top.meaning, V2Origin.VOICE) }
         return matches
@@ -484,6 +490,19 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         kr.voicemate.malitda.data.repo.MeaningImageStore.removeUnreferenced(c.filesDir, c.meanings.allImageKeys())
 
     fun v2Reset() { _v2.value = V2State() }
+
+    /** 새 말하기 시도를 시작할 때 이전에 들은 말을 지운다. */
+    fun v2ClearHeard() { _v2.update { it.copy(heard = null) } }
+
+    /** 오인식 학습: 방금 들은 말을 지금 뜻의 표현으로 붙인다. 성공하면 들은 말을 지워 제안을 닫는다. */
+    suspend fun v2LearnHeard(): kr.voicemate.malitda.data.repo.MeaningRepository.AddExpressionResult? {
+        val s = _v2.value
+        val heard = s.heard ?: return null
+        val id = s.meaningId ?: return null
+        val r = c.meanings.addExpression(_profileId.value, id, heard)
+        _v2.update { it.copy(heard = null) }
+        return r
+    }
 
     // ---------- 세션 정리 ----------
     fun resetSession() {

@@ -57,6 +57,26 @@ class MeaningRepository(private val dao: MeaningDao) {
 
     suspend fun allImageKeys(): Set<String> = dao.allImageKeys().toSet()
 
+    sealed interface AddExpressionResult {
+        data object Added : AddExpressionResult
+        data object AlreadyThere : AddExpressionResult
+        data class TakenBy(val meaningText: String) : AddExpressionResult
+    }
+
+    /**
+     * 오인식 학습: 기존 뜻에 표현 하나를 덧붙인다. 뜻 자체(updatedAt)는 바꾸지 않는다 —
+     * 뜻이 바뀐 것이 아니므로 진행 중인 선택을 U03-V로 무효화하지 않는다.
+     */
+    suspend fun addExpression(profileId: Long, meaningId: Long, expression: String): AddExpressionResult {
+        val key = TextNormalizer.normalize(expression)
+        require(key.isNotBlank())
+        if (dao.expressionsFor(meaningId).any { it.key == key }) return AddExpressionResult.AlreadyThere
+        dao.findExpressionConflicts(profileId, listOf(key), meaningId).firstOrNull()
+            ?.let { return AddExpressionResult.TakenBy(it.meaningText) }
+        dao.insertExpression(MeaningExpressionEntity(profileId = profileId, meaningId = meaningId, text = expression.trim(), key = key))
+        return AddExpressionResult.Added
+    }
+
     suspend fun save(
         profileId: Long,
         text: String,

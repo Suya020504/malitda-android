@@ -45,6 +45,9 @@ fun U04Deliver(
     onShare: () -> Unit,
     onBack: () -> Unit,
     onHelp: () -> Unit,
+    // 오인식 학습 제안: 말로 시도했는데 카드로 고친 경우에만 들어온다.
+    learnHeard: String? = null,
+    onLearn: () -> Unit = {},
 ) {
     V2Screen {
         V2Header(onBack = onBack, onHelp = onHelp)
@@ -54,6 +57,33 @@ fun U04Deliver(
             MeaningBigCard(meaning)
             Spacer(Modifier.height(14.dp))
             V2Banner("내가 확인한 뜻이에요.", green = true, icon = Icons.Rounded.Check)
+            if (learnHeard != null) {
+                Spacer(Modifier.height(14.dp))
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .background(V2C.BannerBg, RoundedCornerShape(22.dp))
+                        .padding(horizontal = 20.dp, vertical = 16.dp),
+                ) {
+                    Text("지원자 확인", style = jua(14, V2C.Muted))
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        "방금 “$learnHeard”(이)라고 들렸어요.\n다음부터 이 말도 이 뜻으로 알아들을까요?",
+                        style = jua(17, V2C.Ink, 1.5f),
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                            .background(V2C.Surface, RoundedCornerShape(26.dp))
+                            .clip(RoundedCornerShape(26.dp))
+                            .clickable { onLearn() },
+                        contentAlignment = Alignment.Center,
+                    ) { Text("이 뜻에 “$learnHeard” 추가", style = jua(17, V2C.Title)) }
+                }
+            }
             Spacer(Modifier.height(16.dp))
         }
         if (!soundless) {

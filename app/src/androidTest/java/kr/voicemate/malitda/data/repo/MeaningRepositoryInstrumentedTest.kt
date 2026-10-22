@@ -65,6 +65,24 @@ class MeaningRepositoryInstrumentedTest {
     }
 
     @Test
+    fun addExpressionLearnsMisrecognitionWithoutChangingMeaning() = runBlocking {
+        val coldId = repo.save(1, "바람이 차가워요", "cold", null, listOf("바람"), confirmed = true)
+        val walkId = repo.save(1, "산책하고 싶어요", "walk", null, listOf("산책"), confirmed = true)
+        val before = repo.byId(coldId)!!
+
+        // 음성 시험에서 "바람"이 "아람"으로 들렸다 — 학생이 카드로 고친 뒤 지원자가 연결.
+        assertEquals(MeaningRepository.AddExpressionResult.Added, repo.addExpression(1, coldId, "아람"))
+        assertEquals(listOf("바람", "아람"), repo.expressionsFor(coldId).map { it.text }.sorted())
+        // 뜻은 바뀌지 않았으므로 확인 상태·updatedAt이 그대로다.
+        assertEquals(before.updatedAt, repo.byId(coldId)!!.updatedAt)
+        assertTrue(repo.byId(coldId)!!.confirmed)
+
+        assertEquals(MeaningRepository.AddExpressionResult.AlreadyThere, repo.addExpression(1, coldId, "아람"))
+        val taken = repo.addExpression(1, walkId, "아람")
+        assertEquals(MeaningRepository.AddExpressionResult.TakenBy("바람이 차가워요"), taken)
+    }
+
+    @Test
     fun deleteRemovesMeaningAndItsExpressions() = runBlocking {
         val id = repo.save(1, "산책하고 싶어요", null, null, listOf("바람"), confirmed = true)
         repo.delete(id)

@@ -150,6 +150,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
     fun hasMic() = ContextCompat.checkSelfPermission(ctx, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
     fun startMic() {
         vm.prepareRespeak()
+        vm.v2ClearHeard()
         val files = vm.testAudioFiles()
         // 에뮬레이터 등 평가음원이 있으면 마이크 없이 같은 인식 흐름을 탄다.
         if (files.isNotEmpty()) { route = "U02"; vm.recognizeTestFile(files.first()); return }
@@ -322,6 +323,22 @@ fun MalitdaV2App(vm: SessionViewModel) {
                 onShare = { shareMeaning(m); route = "U04S" },
                 onBack = { route = "U03" },
                 onHelp = ::help,
+                // 말로 시도했는데 학생이 카드로 뜻을 고쳐 확정한 경우에만 제안한다.
+                learnHeard = if (v2.origin == V2Origin.CARD) v2.heard else null,
+                onLearn = {
+                    scope.launch {
+                        val heard = v2.heard
+                        when (val r = vm.v2LearnHeard()) {
+                            is kr.voicemate.malitda.data.repo.MeaningRepository.AddExpressionResult.Added ->
+                                toast("다음부터 “$heard”도 '${m.text}'(으)로 알아들어요")
+                            is kr.voicemate.malitda.data.repo.MeaningRepository.AddExpressionResult.AlreadyThere ->
+                                toast("이미 이 뜻에 등록된 표현이에요")
+                            is kr.voicemate.malitda.data.repo.MeaningRepository.AddExpressionResult.TakenBy ->
+                                toast("“$heard”은(는) 이미 '${r.meaningText}'에 등록돼 있어요")
+                            null -> Unit
+                        }
+                    }
+                },
             )
         }
 
