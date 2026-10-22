@@ -75,19 +75,7 @@ fun LibraryRow(m: MeaningEntity, chip: String? = null, onClick: () -> Unit) {
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        val painter = meaningPainter(m.imageKey)
-        if (painter != null) {
-            Image(
-                painter, contentDescription = null,
-                modifier = Modifier.size(width = 112.dp, height = 78.dp).clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.Crop,
-            )
-        } else {
-            Box(
-                Modifier.size(width = 112.dp, height = 78.dp).background(V2C.CardInner, RoundedCornerShape(16.dp)),
-                contentAlignment = Alignment.Center,
-            ) { CardGlyph(size = 28) }
-        }
+        MeaningPicture(m.imageKey, Modifier.size(width = 112.dp, height = 78.dp).clip(RoundedCornerShape(16.dp)), glyphSize = 28)
         Spacer(Modifier.width(16.dp))
         Column(Modifier.weight(1f)) {
             Text(m.text, style = jua(19, V2C.Ink))

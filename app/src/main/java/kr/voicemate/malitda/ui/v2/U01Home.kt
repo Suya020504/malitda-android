@@ -145,19 +145,7 @@ private fun MeaningCard(m: MeaningEntity, modifier: Modifier = Modifier, onClick
             .semantics { contentDescription = m.text },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val painter = meaningPainter(m.imageKey)
-        if (painter != null) {
-            Image(
-                painter, contentDescription = null,
-                modifier = Modifier.fillMaxWidth().aspectRatio(1.22f).clip(RoundedCornerShape(18.dp)),
-                contentScale = ContentScale.Crop,
-            )
-        } else {
-            Box(
-                Modifier.fillMaxWidth().aspectRatio(1.22f).background(V2C.CardInner, RoundedCornerShape(18.dp)),
-                contentAlignment = Alignment.Center,
-            ) { CardGlyph(size = 34) }
-        }
+        MeaningPicture(m.imageKey, Modifier.fillMaxWidth().aspectRatio(1.22f).clip(RoundedCornerShape(18.dp)))
         Spacer(Modifier.height(12.dp))
         Text(
             m.text, style = jua(18, V2C.Ink), textAlign = TextAlign.Center, maxLines = 2,

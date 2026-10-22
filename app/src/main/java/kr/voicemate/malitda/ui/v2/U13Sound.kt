@@ -54,19 +54,7 @@ fun U13Sound(
             Spacer(Modifier.height(10.dp))
             V2Card {
                 Column(Modifier.fillMaxWidth().padding(14.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    val painter = meaningPainter(imageKey)
-                    if (painter != null) {
-                        Image(
-                            painter, contentDescription = null,
-                            modifier = Modifier.fillMaxWidth().aspectRatio(1.42f).clip(RoundedCornerShape(24.dp)),
-                            contentScale = ContentScale.Crop,
-                        )
-                    } else {
-                        Box(
-                            Modifier.fillMaxWidth().aspectRatio(1.42f).background(V2C.CardInner, RoundedCornerShape(24.dp)),
-                            contentAlignment = Alignment.Center,
-                        ) { CardGlyph(size = 44) }
-                    }
+                    MeaningPicture(imageKey, Modifier.fillMaxWidth().aspectRatio(1.42f).clip(RoundedCornerShape(24.dp)), glyphSize = 44)
                     Spacer(Modifier.height(22.dp))
                     Text(meaningText, style = jua(30, V2C.Ink), textAlign = TextAlign.Center)
                     Spacer(Modifier.height(22.dp))

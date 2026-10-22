@@ -29,7 +29,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -255,6 +258,38 @@ fun meaningImageRes(imageKey: String?): Int? = when (imageKey) {
 
 @Composable
 fun meaningPainter(imageKey: String?): Painter? = meaningImageRes(imageKey)?.let { painterResource(it) }
+
+/** 사진 키("file:…")면 저장된 비트맵을 불러온다. */
+@Composable
+fun meaningFileBitmap(imageKey: String?): ImageBitmap? {
+    val ctx = LocalContext.current
+    return androidx.compose.runtime.remember(imageKey) {
+        kr.voicemate.malitda.data.repo.MeaningImageStore.fileFor(ctx.filesDir, imageKey)
+            ?.let { runCatching { android.graphics.BitmapFactory.decodeFile(it.path) }.getOrNull() }
+            ?.asImageBitmap()
+    }
+}
+
+/** 보여줄 수 있는 그림(내장·사진)이 있는가 — 없으면 U03-I 모습을 쓴다. */
+@Composable
+fun meaningImageAvailable(imageKey: String?): Boolean =
+    meaningImageRes(imageKey) != null || meaningFileBitmap(imageKey) != null
+
+/** 의미 그림 하나를 그린다: 내장 리소스 → 저장 사진 → 자리표시(카드 글리프) 순. */
+@Composable
+fun MeaningPicture(imageKey: String?, modifier: Modifier, contentScale: ContentScale = ContentScale.Crop, glyphSize: Int = 34) {
+    val res = meaningImageRes(imageKey)
+    if (res != null) {
+        Image(painterResource(res), null, modifier, contentScale = contentScale)
+        return
+    }
+    val bmp = meaningFileBitmap(imageKey)
+    if (bmp != null) {
+        Image(bmp, null, modifier, contentScale = contentScale)
+        return
+    }
+    Box(modifier.background(V2C.CardInner), contentAlignment = Alignment.Center) { CardGlyph(size = glyphSize) }
+}
 
 /** 이름 호격: 받침 있으면 '아', 없으면 '야'. */
 fun vocative(name: String): String {

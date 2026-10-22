@@ -97,19 +97,7 @@ fun U05Register(
                             .padding(14.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        val painter = meaningPainter(imageKey)
-                        if (painter != null) {
-                            Image(
-                                painter, contentDescription = null,
-                                modifier = Modifier.size(width = 104.dp, height = 70.dp).clip(RoundedCornerShape(14.dp)),
-                                contentScale = ContentScale.Crop,
-                            )
-                        } else {
-                            Box(
-                                Modifier.size(width = 104.dp, height = 70.dp).background(V2C.Surface, RoundedCornerShape(14.dp)),
-                                contentAlignment = Alignment.Center,
-                            ) { CardGlyph(size = 26) }
-                        }
+                        MeaningPicture(imageKey, Modifier.size(width = 104.dp, height = 70.dp).clip(RoundedCornerShape(14.dp)), glyphSize = 26)
                         Spacer(Modifier.width(16.dp))
                         Column {
                             Text("의미 그림", style = jua(14, V2C.Muted))
@@ -152,6 +140,7 @@ fun U05PickImage(
     meaningText: String,
     selectedKey: String?,
     onSelect: (String?) -> Unit,
+    onPickPhoto: () -> Unit,
     onUse: () -> Unit,
     onCancel: () -> Unit,
     onHelp: () -> Unit,
@@ -165,13 +154,8 @@ fun U05PickImage(
             // 큰 미리보기 카드
             V2Card {
                 Column(Modifier.fillMaxWidth().padding(14.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    val painter = meaningPainter(selectedKey)
-                    if (painter != null) {
-                        Image(
-                            painter, contentDescription = null,
-                            modifier = Modifier.fillMaxWidth().aspectRatio(1.5f).clip(RoundedCornerShape(22.dp)),
-                            contentScale = ContentScale.Crop,
-                        )
+                    if (meaningImageAvailable(selectedKey)) {
+                        MeaningPicture(selectedKey, Modifier.fillMaxWidth().aspectRatio(1.5f).clip(RoundedCornerShape(22.dp)))
                     } else {
                         Box(
                             Modifier.fillMaxWidth().aspectRatio(1.5f).background(V2C.CardInner, RoundedCornerShape(22.dp)),
@@ -219,6 +203,9 @@ fun U05PickImage(
                     }
                 }
             }
+            Spacer(Modifier.height(12.dp))
+            // 학생에게 익숙한 실제 사진을 그림으로 쓸 수 있다(예: 산책 장소 사진).
+            V2SecondaryButton("📷  사진 가져오기") { onPickPhoto() }
             Spacer(Modifier.height(14.dp))
             V2Banner("이 그림으로 함께 확인해요.", green = true, icon = Icons.Rounded.Check)
             Spacer(Modifier.height(16.dp))

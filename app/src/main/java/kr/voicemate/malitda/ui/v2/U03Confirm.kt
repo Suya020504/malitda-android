@@ -59,13 +59,8 @@ fun OriginBadge(origin: V2Origin) {
 fun MeaningBigCard(m: MeaningEntity, noImageCaption: String? = null) {
     V2Card {
         Column(Modifier.fillMaxWidth().padding(14.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            val painter = meaningPainter(m.imageKey)
-            if (painter != null) {
-                Image(
-                    painter, contentDescription = null,
-                    modifier = Modifier.fillMaxWidth().aspectRatio(1.42f).clip(RoundedCornerShape(24.dp)),
-                    contentScale = ContentScale.Crop,
-                )
+            if (meaningImageAvailable(m.imageKey)) {
+                MeaningPicture(m.imageKey, Modifier.fillMaxWidth().aspectRatio(1.42f).clip(RoundedCornerShape(24.dp)))
                 Spacer(Modifier.height(22.dp))
                 Text(m.text, style = jua(30, V2C.Ink), textAlign = TextAlign.Center)
                 Spacer(Modifier.height(26.dp))

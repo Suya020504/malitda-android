@@ -99,6 +99,9 @@ interface MeaningDao {
     )
     suspend fun findExpressionConflicts(profileId: Long, keys: List<String>, excludeMeaningId: Long): List<ExpressionConflict>
     @Query("DELETE FROM meaning_expressions WHERE meaningId = :meaningId") suspend fun deleteExpressionsFor(meaningId: Long)
+    /** 모든 프로필이 참조 중인 그림 키(사진 정리용). */
+    @Query("SELECT imageKey FROM meanings WHERE imageKey IS NOT NULL")
+    suspend fun allImageKeys(): List<String>
 }
 
 @Dao

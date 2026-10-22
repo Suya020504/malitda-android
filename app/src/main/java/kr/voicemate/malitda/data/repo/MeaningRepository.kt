@@ -54,6 +54,8 @@ class MeaningRepository(private val dao: MeaningDao) {
         dao.delete(id)
     }
 
+    suspend fun allImageKeys(): Set<String> = dao.allImageKeys().toSet()
+
     suspend fun save(
         profileId: Long,
         text: String,

@@ -131,6 +131,14 @@ fun MalitdaV2App(vm: SessionViewModel) {
     val micPermLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) { route = "U02"; vm.startListening() } else route = "U02D"
     }
+    // 의미 그림으로 쓸 사진 선택(앱 전용 저장소로 복사해 참조만 보관).
+    val photoLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) scope.launch {
+            runCatching { kr.voicemate.malitda.data.repo.MeaningImageStore.import(ctx, uri) }
+                .onSuccess { key -> regImageKey = key }
+                .onFailure { e -> toast(e.message ?: "사진을 불러오지 못했어요") }
+        }
+    }
     fun hasMic() = ContextCompat.checkSelfPermission(ctx, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
     fun startMic() {
         vm.prepareRespeak()
@@ -401,6 +409,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
             meaningText = regMeaning,
             selectedKey = regImageKey,
             onSelect = { regImageKey = it },
+            onPickPhoto = { photoLauncher.launch("image/*") },
             onUse = { route = "U05" },
             onCancel = { route = "U05" },
             onHelp = ::help,

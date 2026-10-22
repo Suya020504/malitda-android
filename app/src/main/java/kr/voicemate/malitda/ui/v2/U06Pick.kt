@@ -67,19 +67,7 @@ private fun PickRow(m: MeaningEntity, onClick: () -> Unit) {
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        val painter = meaningPainter(m.imageKey)
-        if (painter != null) {
-            Image(
-                painter, contentDescription = null,
-                modifier = Modifier.size(width = 120.dp, height = 84.dp).clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.Crop,
-            )
-        } else {
-            Box(
-                Modifier.size(width = 120.dp, height = 84.dp).background(V2C.CardInner, RoundedCornerShape(16.dp)),
-                contentAlignment = Alignment.Center,
-            ) { CardGlyph(size = 30) }
-        }
+        MeaningPicture(m.imageKey, Modifier.size(width = 120.dp, height = 84.dp).clip(RoundedCornerShape(16.dp)), glyphSize = 30)
         Spacer(Modifier.width(16.dp))
         Column(Modifier.weight(1f)) {
             Text(m.text, style = jua(19, V2C.Ink))

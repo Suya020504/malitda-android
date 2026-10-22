@@ -20,6 +20,7 @@ android {
         applicationId = "kr.voicemate.malitda"
         minSdk = 26
         targetSdk = 36
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 4
         versionName = "0.2.1"
         vectorDrawables { useSupportLibrary = true }
@@ -67,6 +68,9 @@ android {
         }
     }
 
+    // 마이그레이션 테스트가 내보낸 스키마(1.json·2.json)를 읽는다.
+    sourceSets { getByName("androidTest").assets.srcDir("$projectDir/schemas") }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -98,6 +102,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
+    // room-testing의 스키마 읽기가 kotlinx-serialization 버전 불일치로 깨지지 않도록 맞춘다(PR #1).
+    implementation(platform("org.jetbrains.kotlinx:kotlinx-serialization-bom:1.8.1"))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
@@ -117,4 +123,9 @@ dependencies {
     implementation(libs.sqlcipher.android)
     debugImplementation(libs.androidx.compose.ui.tooling)
     testImplementation(libs.junit)
+    // 계측 테스트(PR #1에서 이식): 마이그레이션·저장소 검증
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test:runner:1.7.0")
+    androidTestImplementation("androidx.test:core:1.7.0")
+    androidTestImplementation("androidx.room:room-testing:2.8.2")
 }

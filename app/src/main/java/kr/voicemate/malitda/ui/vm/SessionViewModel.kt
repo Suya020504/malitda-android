@@ -451,8 +451,10 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         c.meanings.expressionsFor(id).joinToString(", ") { it.text }
 
     /** 수정(U09-E): 표현 전체를 받은 목록으로 교체하고 미확인으로 되돌린다 — U10 재확인 필요. */
-    suspend fun v2UpdateMeaning(id: Long, expressions: List<String>, meaning: String, imageKey: String?, situation: String?) =
+    suspend fun v2UpdateMeaning(id: Long, expressions: List<String>, meaning: String, imageKey: String?, situation: String?) {
         c.meanings.update(id, meaning, imageKey, situation, expressions)
+        v2CleanupImages()
+    }
 
     // ---------- v2 학생(프로필) 전환 ----------
     val profiles: StateFlow<List<kr.voicemate.malitda.data.db.ProfileEntity>> =
@@ -469,7 +471,14 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
     }
 
     fun v2SetActive(id: Long, active: Boolean) { viewModelScope.launch { c.meanings.setActive(id, active) } }
-    suspend fun v2DeleteMeaning(id: Long) = c.meanings.delete(id)
+    suspend fun v2DeleteMeaning(id: Long) {
+        c.meanings.delete(id)
+        v2CleanupImages()
+    }
+
+    /** 어떤 뜻도 참조하지 않는 사진 파일을 지운다(삭제·수정 뒤). */
+    suspend fun v2CleanupImages() =
+        kr.voicemate.malitda.data.repo.MeaningImageStore.removeUnreferenced(c.filesDir, c.meanings.allImageKeys())
 
     fun v2Reset() { _v2.value = V2State() }
 
