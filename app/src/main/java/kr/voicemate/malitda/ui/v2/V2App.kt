@@ -295,7 +295,12 @@ fun MalitdaV2App(vm: SessionViewModel) {
             origin = v2.origin,
             heard = if (v2.origin == V2Origin.VOICE) ui.raw else null,
             onPickCards = { route = "U06" },
-            onRegister = { route = "U07" },
+            onRegister = {
+                // 앱이 들은 말을 표현 칸에 미리 채운다 — 이 학생 목소리에서 나온 그대로(오인식 포함) 등록할 수 있게.
+                val heard = if (v2.origin == V2Origin.VOICE) ui.raw?.trim()?.trimEnd('.', '!', '?') else null
+                resetRegForm()
+                if (!heard.isNullOrBlank()) { regExpression = heard; route = "U05" } else route = "U07"
+            },
             onRespeak = { startMic() },
             onBack = { goHome() },
             onHelp = ::help,

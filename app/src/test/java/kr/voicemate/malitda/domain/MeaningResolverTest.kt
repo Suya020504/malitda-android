@@ -91,6 +91,15 @@ class MeaningResolverTest {
     }
 
     @Test
+    fun matchesWhenRecognizerDropsSpaces() {
+        val rest = meaning("쉬고 싶어요")
+        val reg = listOf(entry(rest, "쉬고 싶어"))
+        // 실제 TTS 음성 시험에서 Whisper가 "쉬고싶어."로 받아썼다.
+        assertEquals(rest.id, MeaningResolver.resolve("쉬고싶어.", emptyList(), reg).single().meaning.id)
+        assertEquals(rest.id, MeaningResolver.resolve("나 쉬고싶어 지금", emptyList(), reg).single().meaning.id)
+    }
+
+    @Test
     fun emptyWhenNothingRegisteredOrNoMatch() {
         assertTrue(MeaningResolver.resolve("바람", emptyList(), emptyList()).isEmpty())
         val walk = meaning("산책하고 싶어요")

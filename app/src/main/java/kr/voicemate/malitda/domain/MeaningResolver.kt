@@ -27,10 +27,14 @@ object MeaningResolver {
             entry.expressions.forEach { expr ->
                 val key = expr.key
                 if (key.isBlank()) return@forEach
+                // 음성 인식기는 띄어쓰기를 자주 빼먹는다("쉬고 싶어" → "쉬고싶어"). 공백을 뺀 형태로도 비교한다.
+                val compactKey = key.filterNot { it.isWhitespace() }
                 inputs.forEachIndexed { rank, input ->
+                    val compactInput = input.filterNot { it.isWhitespace() }
                     val score = when {
-                        input == key -> 100
+                        input == key || compactInput == compactKey -> 100
                         key.length >= 2 && input.contains(key) -> 60 + key.length
+                        compactKey.length >= 2 && compactInput.contains(compactKey) -> 60 + compactKey.length
                         // 한 글자 표현("물")은 띄어 쓴 한 단어일 때만 맞춘다 — "물론" 같은 오탐 방지.
                         key.length == 1 && key in input.split(WORD_SEP) -> 60 + key.length
                         input.length >= 2 && key.contains(input) -> 40 + input.length
