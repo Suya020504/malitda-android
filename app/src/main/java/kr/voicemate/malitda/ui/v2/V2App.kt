@@ -49,9 +49,18 @@ fun MalitdaV2App(vm: SessionViewModel) {
     var regChecked by rememberSaveable { mutableStateOf(false) }
     // 수정 모드(U09-E)면 원본 id, 아니면 -1
     var editId by rememberSaveable { mutableStateOf(-1L) }
-    // U10·U07-S를 어디서 열었는지(돌아갈 곳)
+    // U10·U07-S·U13을 어디서 열었는지(돌아갈 곳)
     var u10Return by rememberSaveable { mutableStateOf("U07") }
     var u07sReturn by rememberSaveable { mutableStateOf("U07") }
+    var u13Return by rememberSaveable { mutableStateOf("U04") }
+    var u13Text by rememberSaveable { mutableStateOf("") }
+    var u13ImageKey by rememberSaveable { mutableStateOf<String?>(null) }
+
+    /** 소리 확인(U13) 열기: 화면 진입 후 재생한다. */
+    fun openSound(text: String, imageKey: String?, from: String) {
+        u13Text = text; u13ImageKey = imageKey; u13Return = from
+        route = "U13"
+    }
     // 내 표현(U08)에서 열어 본 뜻
     var libId by rememberSaveable { mutableStateOf(-1L) }
     var libExpression by rememberSaveable { mutableStateOf("") }
@@ -153,7 +162,9 @@ fun MalitdaV2App(vm: SessionViewModel) {
                 }
                 SessionEvent.GoNoResult -> route = "U03E"
                 is SessionEvent.GoSttError -> { toast(e.message); route = "U03E" }
-                SessionEvent.GoTtsError -> if (route == "U04") route = "U04F" else toast("소리를 사용할 수 없어요")
+                SessionEvent.GoTtsError ->
+                    if (route == "U04" || (route == "U13" && u13Return == "U04")) route = "U04F"
+                    else toast("소리를 사용할 수 없어요")
                 is SessionEvent.Toast -> toast(e.message)
                 else -> Unit // v1 전용 이벤트(GoConfirm 등)는 v2 흐름에서 쓰지 않는다.
             }
@@ -178,6 +189,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
             "U11" -> route = "U08"
             "U12" -> route = "U01"
             "U12P", "U12T" -> route = "U12"
+            "U13" -> route = u13Return
             else -> goHome()
         }
     }
@@ -239,7 +251,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
                 meaning = m,
                 origin = v2.origin,
                 studentName = name,
-                onListen = { vm.speak(m.text) },
+                onListen = { openSound(m.text, m.imageKey, from = "U03") },
                 onYes = { vm.v2ConfirmUse(); soundless = false; route = "U04" },
                 onOther = { route = "U06" },
                 onBack = { goHome() },
@@ -274,7 +286,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
                 meaning = m,
                 speaking = speaking,
                 soundless = soundless || ttsState is TtsState.Unavailable,
-                onSound = { if (ttsState is TtsState.Unavailable) route = "U04F" else vm.speak(m.text) },
+                onSound = { if (ttsState is TtsState.Unavailable) route = "U04F" else openSound(m.text, m.imageKey, from = "U04") },
                 onRepick = { route = "U06" },
                 onShare = { shareMeaning(m); route = "U04S" },
                 onBack = { route = "U03" },
@@ -378,7 +390,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
             imageKey = regImageKey,
             checked = regChecked,
             onCheckedChange = { regChecked = it },
-            onListen = { vm.speak(regMeaning) },
+            onListen = { openSound(regMeaning, regImageKey, from = "U10") },
             onUse = {
                 scope.launch {
                     val id = regSavedId
@@ -478,6 +490,19 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onBack = { route = "U12" },
             onHelp = ::help,
         )
+
+        "U13" -> {
+            // 화면에 들어오면 바로 들려준다(화면 전환이 소리를 멈춘 뒤 재생되도록 route 효과 이후 실행).
+            LaunchedEffect("U13") { vm.speak(u13Text) }
+            U13Sound(
+                meaningText = u13Text,
+                imageKey = u13ImageKey,
+                speaking = speaking,
+                onReplay = { vm.speak(u13Text) },
+                onClose = { route = u13Return },
+                onHelp = ::help,
+            )
+        }
 
         "U06" -> {
             // 음성 인식 후보 순위를 앞세우고, 지금 보던 뜻은 뺀다.
