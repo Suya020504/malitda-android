@@ -99,8 +99,11 @@ fun MalitdaV2App(vm: SessionViewModel) {
     LaunchedEffect(libId) {
         libMeaning = null; libExpression = ""
         if (libId > 0) {
-            libExpression = vm.v2ExpressionsText(libId)
-            vm.v2ObserveMeaning(libId).collect { libMeaning = it }
+            // 뜻이 바뀔 때마다 표현 목록도 다시 읽는다(수정 뒤 옛 표현이 남지 않게).
+            vm.v2ObserveMeaning(libId).collect {
+                libExpression = vm.v2ExpressionsText(libId)
+                libMeaning = it
+            }
         }
     }
     val archived by vm.meaningsArchived.collectAsStateWithLifecycle()
@@ -168,16 +171,17 @@ fun MalitdaV2App(vm: SessionViewModel) {
             .onFailure { toast("공유할 수 있는 앱이 없어요") }
     }
 
-    // 인식 이벤트 → v2 라우팅
+    // 인식 이벤트 → v2 라우팅. 인식 결과는 말하기 화면(U02)에 있을 때만 받는다 —
+    // 학생이 그사이 카드로 고른 뜻을 늦게 도착한 결과가 덮어쓰면 안 된다.
     LaunchedEffect(Unit) {
         vm.events.collect { e ->
             when (e) {
-                SessionEvent.GoResult -> {
+                SessionEvent.GoResult -> if (route == "U02") {
                     val matches = vm.v2ResolveFromStt()
-                    route = if (matches.isNotEmpty()) "U03" else "U03M"
+                    if (route == "U02") route = if (matches.isNotEmpty()) "U03" else "U03M"
                 }
-                SessionEvent.GoNoResult -> route = "U03E"
-                is SessionEvent.GoSttError -> { toast(e.message); route = "U03E" }
+                SessionEvent.GoNoResult -> if (route == "U02") route = "U03E"
+                is SessionEvent.GoSttError -> if (route == "U02") { toast(e.message); route = "U03E" }
                 SessionEvent.GoTtsError ->
                     if (route == "U04" || (route == "U13" && u13Return == "U04")) route = "U04F"
                     else toast("소리를 사용할 수 없어요")
@@ -284,6 +288,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
 
         "U03M" -> U03NoMeaning(
             origin = v2.origin,
+            heard = if (v2.origin == V2Origin.VOICE) ui.raw else null,
             onPickCards = { route = "U06" },
             onRegister = { route = "U07" },
             onRespeak = { startMic() },

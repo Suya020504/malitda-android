@@ -33,6 +33,13 @@ class MeaningRepository(private val dao: MeaningDao) {
     /** 수정(U09-E): 내용을 바꾸면 updatedAt을 올리고 미확인으로 되돌린다 — 학생과 다시 확인해야 쓸 수 있다. */
     suspend fun update(id: Long, text: String, imageKey: String?, situation: String?, expressions: List<String>) {
         val cur = dao.byId(id) ?: return
+        // 표현을 먼저 바꾸고 뜻을 마지막에 갱신한다 — 뜻 변경을 관찰하는 화면이 새 표현 목록을 읽도록.
+        dao.deleteExpressionsFor(id)
+        expressions.map { it.trim() }.filter { it.isNotBlank() }.forEach { expr ->
+            dao.insertExpression(
+                MeaningExpressionEntity(profileId = cur.profileId, meaningId = id, text = expr, key = TextNormalizer.normalize(expr))
+            )
+        }
         dao.update(
             cur.copy(
                 text = text.trim(), imageKey = imageKey,
@@ -40,12 +47,6 @@ class MeaningRepository(private val dao: MeaningDao) {
                 confirmed = false, updatedAt = System.currentTimeMillis(),
             )
         )
-        dao.deleteExpressionsFor(id)
-        expressions.map { it.trim() }.filter { it.isNotBlank() }.forEach { expr ->
-            dao.insertExpression(
-                MeaningExpressionEntity(profileId = cur.profileId, meaningId = id, text = expr, key = TextNormalizer.normalize(expr))
-            )
-        }
     }
 
     /** 삭제(U09-D): 연결한 표현도 함께 지운다. 되돌릴 수 없다. */

@@ -45,11 +45,16 @@ class MeaningResolverTest {
     }
 
     @Test
-    fun singleCharacterExpressionRequiresExactMatch() {
+    fun singleCharacterExpressionMatchesOnlyAsSeparateWord() {
         val water = meaning("물이 필요해요")
-        // 한 글자 키는 오탐을 막기 위해 포함 매칭을 하지 않는다 — 완전 일치만.
-        assertTrue(MeaningResolver.resolve("물 주세요 빨리", emptyList(), listOf(entry(water, "물"))).isEmpty())
-        assertEquals(water.id, MeaningResolver.resolve("물", emptyList(), listOf(entry(water, "물"))).single().meaning.id)
+        val reg = listOf(entry(water, "물"))
+        assertEquals(water.id, MeaningResolver.resolve("물", emptyList(), reg).single().meaning.id)
+        // 실제 에뮬레이터 재현: "물 마시고 싶어요"에서 '물'을 찾아야 한다.
+        assertEquals(water.id, MeaningResolver.resolve("물 마시고 싶어요", emptyList(), reg).single().meaning.id)
+        assertEquals(water.id, MeaningResolver.resolve("물, 주세요", emptyList(), reg).single().meaning.id)
+        // 다른 단어 안에 든 한 글자는 맞추지 않는다.
+        assertTrue(MeaningResolver.resolve("물론 좋아요", emptyList(), reg).isEmpty())
+        assertTrue(MeaningResolver.resolve("선물 받았어", emptyList(), reg).isEmpty())
     }
 
     @Test

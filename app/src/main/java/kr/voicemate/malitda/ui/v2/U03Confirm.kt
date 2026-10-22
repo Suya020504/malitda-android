@@ -157,6 +157,7 @@ fun U03NoHear(
 @Composable
 fun U03NoMeaning(
     origin: V2Origin,
+    heard: String?,
     onPickCards: () -> Unit,
     onRegister: () -> Unit,
     onRespeak: () -> Unit,
@@ -169,6 +170,21 @@ fun U03NoMeaning(
             V2Title("이 말의 뜻을\n아직 모르겠어요")
             Spacer(Modifier.height(6.dp))
             OriginBadge(origin)
+            if (!heard.isNullOrBlank()) {
+                // 앱이 알아들은 말을 보여 준다 — 지원자가 어떤 표현을 등록할지 판단할 수 있게.
+                Spacer(Modifier.height(10.dp))
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .background(V2C.Surface, RoundedCornerShape(20.dp))
+                        .padding(horizontal = 20.dp, vertical = 14.dp),
+                ) {
+                    Text("들은 말", style = jua(14, V2C.Muted))
+                    Spacer(Modifier.height(4.dp))
+                    Text("“$heard”", style = jua(22, V2C.Ink))
+                }
+            }
             Spacer(Modifier.height(14.dp))
             V2Card {
                 Column(Modifier.fillMaxWidth().padding(vertical = 24.dp), horizontalAlignment = Alignment.CenterHorizontally) {

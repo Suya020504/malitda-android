@@ -408,7 +408,10 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         val raw = s.raw ?: return emptyList()
         val registered = c.meanings.usableWithExpressions(_profileId.value)
         val matches = MeaningResolver.resolve(raw, s.alternatives, registered)
-        _v2.update { it.copy(matchIds = matches.map { m -> m.meaning.id }) }
+        // 말로 시작한 시도다 — 맞는 뜻이 없어도 출처는 '말', 이전에 고른 뜻은 지운다.
+        _v2.update {
+            it.copy(origin = V2Origin.VOICE, meaningId = null, snapshotUpdatedAt = null, matchIds = matches.map { m -> m.meaning.id })
+        }
         matches.firstOrNull()?.let { top -> v2SelectMeaning(top.meaning, V2Origin.VOICE) }
         return matches
     }
