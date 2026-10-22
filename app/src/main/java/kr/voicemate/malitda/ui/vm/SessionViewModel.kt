@@ -419,6 +419,18 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         viewModelScope.launch { c.meanings.recordUse(id) }
     }
 
+    /** 지원자 등록(U05): 미확인 상태로 저장하고 id를 돌려준다. 학생 확인(U10-C) 전에는 전달 흐름에 나오지 않는다. */
+    suspend fun v2RegisterMeaning(expression: String, meaning: String, imageKey: String?, situation: String?): Long =
+        c.meanings.save(
+            profileId = _profileId.value, text = meaning, imageKey = imageKey,
+            situation = situation, expressions = listOf(expression), confirmed = false,
+        )
+
+    /** 학생 확인 완료(U10-C) → 활성화. */
+    suspend fun v2ActivateMeaning(id: Long) = c.meanings.setConfirmed(id, true)
+
+    suspend fun v2MeaningById(id: Long) = c.meanings.byId(id)
+
     fun v2Reset() { _v2.value = V2State() }
 
     // ---------- 세션 정리 ----------

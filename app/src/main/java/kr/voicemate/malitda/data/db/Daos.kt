@@ -73,6 +73,9 @@ interface MeaningDao {
     // updatedAt은 내용 변경 감지(U03-V)에 쓰므로 사용 횟수만 올린다.
     @Query("UPDATE meanings SET useCount = useCount + 1 WHERE id = :id")
     suspend fun incrementUse(id: Long)
+    // 학생 확인(U10-C) 게이트: 활성화는 내용 변경이 아니므로 updatedAt을 건드리지 않는다.
+    @Query("UPDATE meanings SET confirmed = :confirmed WHERE id = :id")
+    suspend fun setConfirmed(id: Long, confirmed: Boolean)
 
     @androidx.room.Transaction
     @Query("SELECT * FROM meanings WHERE profileId = :profileId AND confirmed = 1 AND active = 1")

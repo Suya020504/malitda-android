@@ -39,6 +39,19 @@ fun MalitdaV2App(vm: SessionViewModel) {
 
     var route by rememberSaveable { mutableStateOf("U00") }
     var soundless by rememberSaveable { mutableStateOf(false) }
+    // 지원자 등록 폼(U05) 작성 상태
+    var regExpression by rememberSaveable { mutableStateOf("") }
+    var regMeaning by rememberSaveable { mutableStateOf("") }
+    var regImageKey by rememberSaveable { mutableStateOf<String?>(null) }
+    var regSituation by rememberSaveable { mutableStateOf("") }
+    var regShowError by rememberSaveable { mutableStateOf(false) }
+    var regSavedId by rememberSaveable { mutableStateOf(-1L) }
+    var regChecked by rememberSaveable { mutableStateOf(false) }
+
+    fun resetRegForm() {
+        regExpression = ""; regMeaning = ""; regImageKey = null; regSituation = ""
+        regShowError = false; regSavedId = -1L; regChecked = false
+    }
 
     val ui by vm.ui.collectAsStateWithLifecycle()
     val settings by vm.settings.collectAsStateWithLifecycle()
@@ -127,6 +140,10 @@ fun MalitdaV2App(vm: SessionViewModel) {
             "U04" -> route = "U03"
             "U04F", "U04S" -> route = "U04"
             "U06" -> route = if (v2.meaningId != null) "U03" else "U01"
+            "U05" -> route = "U07"
+            "U05M" -> route = "U05"
+            "U07S" -> route = "U07"
+            "U10" -> { toast("미확인으로 두었어요"); resetRegForm(); route = "U07" }
             else -> goHome()
         }
     }
@@ -142,7 +159,10 @@ fun MalitdaV2App(vm: SessionViewModel) {
                 scope.launch { vm.c.settings.setOnboarded(true) }
                 route = "U01"
             },
-            onPrepare = { stub("지원자와 함께 등록") },
+            onPrepare = {
+                scope.launch { vm.c.settings.setOnboarded(true) }
+                route = "U07"
+            },
             onBack = null,
             onHelp = ::help,
         )
@@ -152,7 +172,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
             meanings = meanings,
             onSpeak = { startMic() },
             onCard = { picked -> vm.v2SelectMeaning(picked, V2Origin.CARD); route = "U03" },
-            onRegister = { stub("지원자와 함께 등록") },
+            onRegister = { route = "U07" },
             onGuide = { route = "U00" },
             onHelp = ::help,
             onLibrary = { stub("내 표현") },
@@ -203,7 +223,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
         "U03M" -> U03NoMeaning(
             origin = v2.origin,
             onPickCards = { route = "U06" },
-            onRegister = { stub("함께 뜻 등록") },
+            onRegister = { route = "U07" },
             onRespeak = { startMic() },
             onBack = { goHome() },
             onHelp = ::help,
@@ -246,6 +266,90 @@ fun MalitdaV2App(vm: SessionViewModel) {
                 onHelp = ::help,
             )
         } ?: V2Screen {}
+
+        // ---------- 지원자 등록 흐름 (U07 → U05 → U10) ----------
+        "U07" -> U07Entry(
+            studentName = name,
+            onRegister = { resetRegForm(); route = "U05" },
+            onMyExpressions = { stub("내 표현") },
+            onStudentChip = { route = "U07S" },
+            onBack = { route = "U01" },
+            onHelp = ::help,
+        )
+
+        "U07S" -> U07NewSession(
+            studentName = name,
+            onRestart = { vm.resetSession(); resetRegForm(); toast("새로 시작해요"); route = "U01" },
+            onCancel = { route = "U07" },
+            onHelp = ::help,
+        )
+
+        "U05" -> U05Register(
+            expression = regExpression,
+            meaning = regMeaning,
+            imageKey = regImageKey,
+            situation = regSituation,
+            showError = regShowError,
+            onExpression = { regExpression = it },
+            onMeaning = { regMeaning = it },
+            onSituation = { regSituation = it },
+            onPickImage = { route = "U05M" },
+            onConfirmWithStudent = {
+                if (regExpression.isBlank() || regMeaning.isBlank()) { regShowError = true; return@U05Register }
+                scope.launch {
+                    regSavedId = vm.v2RegisterMeaning(regExpression, regMeaning, regImageKey, regSituation)
+                    regChecked = false
+                    route = "U10"
+                }
+            },
+            onSaveUnconfirmed = {
+                if (regExpression.isBlank() || regMeaning.isBlank()) { regShowError = true; return@U05Register }
+                scope.launch {
+                    vm.v2RegisterMeaning(regExpression, regMeaning, regImageKey, regSituation)
+                    toast("미확인으로 저장했어요. 학생과 확인하면 카드로 나와요.")
+                    resetRegForm()
+                    route = "U07"
+                }
+            },
+            onRetry = { regShowError = false },
+            onCancel = { resetRegForm(); route = "U07" },
+            onHelp = ::help,
+        )
+
+        "U05M" -> U05PickImage(
+            meaningText = regMeaning,
+            selectedKey = regImageKey,
+            onSelect = { regImageKey = it },
+            onUse = { route = "U05" },
+            onCancel = { route = "U05" },
+            onHelp = ::help,
+        )
+
+        "U10" -> U10Activate(
+            studentName = name,
+            expression = regExpression,
+            meaningText = regMeaning,
+            imageKey = regImageKey,
+            checked = regChecked,
+            onCheckedChange = { regChecked = it },
+            onListen = { vm.speak(regMeaning) },
+            onUse = {
+                scope.launch {
+                    val id = regSavedId
+                    if (id > 0) {
+                        vm.v2ActivateMeaning(id)
+                        vm.v2MeaningById(id)?.let { vm.v2SelectMeaning(it, V2Origin.CARD) }
+                        resetRegForm()
+                        route = "U03"
+                    } else {
+                        resetRegForm(); route = "U01"
+                    }
+                }
+            },
+            onLater = { toast("미확인 보관함에 두었어요"); resetRegForm(); route = "U07" },
+            onBack = { toast("미확인으로 두었어요"); resetRegForm(); route = "U07" },
+            onHelp = ::help,
+        )
 
         "U06" -> {
             // 음성 인식 후보 순위를 앞세우고, 지금 보던 뜻은 뺀다.

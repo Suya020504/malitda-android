@@ -272,6 +272,55 @@ fun withJosa(name: String): String {
     return name + if ((last - '가') % 28 > 0) "과" else "와"
 }
 
+/** 도구 조사: 받침 없거나 ㄹ 받침이면 '로', 그 외 받침은 '으로'. */
+fun roJosa(name: String): String {
+    if (name.isBlank()) return ""
+    val last = name.last()
+    if (last !in '가'..'힣') return name + "로"
+    val jong = (last - '가') % 28
+    return name + if (jong == 0 || jong == 8) "로" else "으로"
+}
+
+/** 주격 조사: 받침 있으면 '이', 없으면 '가'. */
+fun iGa(name: String): String {
+    if (name.isBlank()) return ""
+    val last = name.last()
+    if (last !in '가'..'힣') return name + "가"
+    return name + if ((last - '가') % 28 > 0) "이" else "가"
+}
+
+/** v2 입력 칸(U05). error면 붉은 테두리·분홍 배경(U05-E). */
+@Composable
+fun V2TextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    error: Boolean = false,
+    modifier: Modifier = Modifier,
+) {
+    val shape = RoundedCornerShape(20.dp)
+    Box(
+        modifier
+            .fillMaxWidth()
+            .background(if (error) Color(0xFFFDF1F3) else V2C.Surface, shape)
+            .border(1.5.dp, if (error) Color(0xFFE2708A) else Color(0xFFE4DEF2), shape)
+            .padding(horizontal = 18.dp, vertical = 16.dp),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        if (value.isEmpty()) {
+            Text(placeholder, style = jua(18, if (error) Color(0xFFD95D7B) else Color(0xFFB4AECB)))
+        }
+        androidx.compose.foundation.text.BasicTextField(
+            value = value,
+            onValueChange = onValueChange,
+            textStyle = jua(18, V2C.Ink),
+            singleLine = true,
+            cursorBrush = androidx.compose.ui.graphics.SolidColor(V2C.Title),
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
 /** 하단 탭(홈·내 표현·설정). U01 계열에서만 쓴다. */
 @Composable
 fun V2BottomNav(onLibrary: () -> Unit, onSettings: () -> Unit) {

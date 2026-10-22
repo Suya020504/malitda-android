@@ -16,6 +16,8 @@ class MeaningRepository(private val dao: MeaningDao) {
     suspend fun byId(id: Long): MeaningEntity? = dao.byId(id)
     suspend fun usableWithExpressions(profileId: Long): List<MeaningWithExpressions> = dao.usableWithExpressions(profileId)
     suspend fun recordUse(id: Long) = dao.incrementUse(id)
+    /** 학생과 함께 확인(U10-C) 완료 → 전달 흐름에 활성화. */
+    suspend fun setConfirmed(id: Long, confirmed: Boolean) = dao.setConfirmed(id, confirmed)
 
     suspend fun save(
         profileId: Long,
