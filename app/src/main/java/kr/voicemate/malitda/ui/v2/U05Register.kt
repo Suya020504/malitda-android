@@ -39,6 +39,7 @@ fun U05Register(
     imageKey: String?,
     situation: String,
     showError: Boolean,
+    conflictMessage: String?,
     onExpression: (String) -> Unit,
     onMeaning: (String) -> Unit,
     onSituation: (String) -> Unit,
@@ -56,16 +57,28 @@ fun U05Register(
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
             V2Title("표현과 뜻을 등록해요")
             Spacer(Modifier.height(8.dp))
+            if (conflictMessage != null) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .background(Color(0xFFFDF1F3), RoundedCornerShape(20.dp))
+                        .padding(horizontal = 18.dp, vertical = 14.dp),
+                ) { Text(conflictMessage, style = jua(16, Color(0xFFD95D7B), 1.5f)) }
+                Spacer(Modifier.height(12.dp))
+            }
             V2Card(radius = 28) {
                 Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 22.dp)) {
                     Text("평소 쓰는 표현", style = jua(17, V2C.Ink))
                     Spacer(Modifier.height(8.dp))
                     V2TextField(
                         value = expression, onValueChange = onExpression,
-                        placeholder = if (expressionError) "표현을 입력해 주세요" else "예: 바람",
+                        placeholder = if (expressionError) "표현을 입력해 주세요" else "예: 바람, 산책 가자",
                         error = expressionError,
                     )
-                    Spacer(Modifier.height(18.dp))
+                    Spacer(Modifier.height(6.dp))
+                    Text("쉼표(,)로 여러 표현을 함께 등록할 수 있어요.", style = jua(13, V2C.Muted))
+                    Spacer(Modifier.height(16.dp))
                     Text("전할 뜻", style = jua(17, V2C.Ink))
                     Spacer(Modifier.height(8.dp))
                     V2TextField(

@@ -22,6 +22,14 @@ class MeaningRepository(private val dao: MeaningDao) {
     fun observeArchived(profileId: Long): Flow<List<MeaningEntity>> = dao.observeArchived(profileId)
     suspend fun expressionsFor(meaningId: Long) = dao.expressionsFor(meaningId)
 
+    /** 다른 뜻에 이미 연결된 표현이 있으면 돌려준다(등록·수정 전 중복 검사). */
+    suspend fun findConflicts(profileId: Long, expressions: List<String>, excludeMeaningId: Long = 0L) =
+        dao.findExpressionConflicts(
+            profileId,
+            expressions.map { TextNormalizer.normalize(it) }.filter { it.isNotBlank() },
+            excludeMeaningId,
+        )
+
     /** 수정(U09-E): 내용을 바꾸면 updatedAt을 올리고 미확인으로 되돌린다 — 학생과 다시 확인해야 쓸 수 있다. */
     suspend fun update(id: Long, text: String, imageKey: String?, situation: String?, expressions: List<String>) {
         val cur = dao.byId(id) ?: return

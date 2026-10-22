@@ -65,10 +65,16 @@ fun MalitdaV2App(vm: SessionViewModel) {
     var libId by rememberSaveable { mutableStateOf(-1L) }
     var libExpression by rememberSaveable { mutableStateOf("") }
 
+    var regConflict by rememberSaveable { mutableStateOf<String?>(null) }
+
     fun resetRegForm() {
         regExpression = ""; regMeaning = ""; regImageKey = null; regSituation = ""
-        regShowError = false; regSavedId = -1L; regChecked = false; editId = -1L
+        regShowError = false; regSavedId = -1L; regChecked = false; editId = -1L; regConflict = null
     }
+
+    /** 표현 칸은 쉼표·줄바꿈으로 여러 개를 받는다. */
+    fun parseExpressions(s: String): List<String> =
+        s.split(",", "\n").map { it.trim() }.filter { it.isNotBlank() }.distinct()
 
     val ui by vm.ui.collectAsStateWithLifecycle()
     val settings by vm.settings.collectAsStateWithLifecycle()
@@ -93,16 +99,18 @@ fun MalitdaV2App(vm: SessionViewModel) {
     LaunchedEffect(libId) {
         libMeaning = null; libExpression = ""
         if (libId > 0) {
-            libExpression = vm.v2FirstExpression(libId)
+            libExpression = vm.v2ExpressionsText(libId)
             vm.v2ObserveMeaning(libId).collect { libMeaning = it }
         }
     }
     val archived by vm.meaningsArchived.collectAsStateWithLifecycle()
+    val profilesList by vm.profiles.collectAsStateWithLifecycle()
+    val profileId by vm.profileId.collectAsStateWithLifecycle()
 
     /** 보관함·사용 중지 뜻을 U10 재확인으로 보낼 준비. */
     fun startReconfirm(m: MeaningEntity, from: String) {
         scope.launch {
-            regExpression = vm.v2FirstExpression(m.id)
+            regExpression = vm.v2ExpressionsText(m.id)
             regMeaning = m.text; regImageKey = m.imageKey; regSituation = m.situation.orEmpty()
             regSavedId = m.id; regChecked = false; u10Return = from
             route = "U10"
@@ -325,7 +333,10 @@ fun MalitdaV2App(vm: SessionViewModel) {
 
         "U07S" -> U07NewSession(
             studentName = name,
+            others = profilesList.filter { it.id != profileId }.map { it.id to it.name },
             onRestart = { vm.resetSession(); resetRegForm(); toast("새로 시작해요"); route = "U01" },
+            onSwitch = { id -> vm.v2SwitchStudent(id); resetRegForm(); toast("학생을 바꿨어요"); route = "U01" },
+            onAdd = { newName -> vm.v2AddStudent(newName); resetRegForm(); toast("${newName} 학생으로 시작해요"); route = "U01" },
             onCancel = { route = u07sReturn },
             onHelp = ::help,
         )
@@ -336,18 +347,25 @@ fun MalitdaV2App(vm: SessionViewModel) {
             imageKey = regImageKey,
             situation = regSituation,
             showError = regShowError,
-            onExpression = { regExpression = it },
+            conflictMessage = regConflict,
+            onExpression = { regExpression = it; regConflict = null },
             onMeaning = { regMeaning = it },
             onSituation = { regSituation = it },
             onPickImage = { route = "U05M" },
             onConfirmWithStudent = {
                 if (regExpression.isBlank() || regMeaning.isBlank()) { regShowError = true; return@U05Register }
                 scope.launch {
+                    val exprs = parseExpressions(regExpression)
+                    val conflicts = vm.v2FindConflicts(exprs, excludeMeaningId = if (editId > 0) editId else 0L)
+                    if (conflicts.isNotEmpty()) {
+                        regConflict = conflicts.joinToString("\n") { "'${it.expression}'은(는) 이미 '${it.meaningText}'에 등록돼 있어요." }
+                        return@launch
+                    }
                     if (editId > 0) {
-                        vm.v2UpdateMeaning(editId, regExpression, regMeaning, regImageKey, regSituation)
+                        vm.v2UpdateMeaning(editId, exprs, regMeaning, regImageKey, regSituation)
                         regSavedId = editId; u10Return = "U09"
                     } else {
-                        regSavedId = vm.v2RegisterMeaning(regExpression, regMeaning, regImageKey, regSituation)
+                        regSavedId = vm.v2RegisterMeaning(exprs, regMeaning, regImageKey, regSituation)
                         u10Return = "U07"
                     }
                     regChecked = false
@@ -357,13 +375,18 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onSaveUnconfirmed = {
                 if (regExpression.isBlank() || regMeaning.isBlank()) { regShowError = true; return@U05Register }
                 scope.launch {
+                    val exprs = parseExpressions(regExpression)
+                    val conflicts = vm.v2FindConflicts(exprs, excludeMeaningId = if (editId > 0) editId else 0L)
+                    if (conflicts.isNotEmpty()) {
+                        regConflict = conflicts.joinToString("\n") { "'${it.expression}'은(는) 이미 '${it.meaningText}'에 등록돼 있어요." }
+                        return@launch
+                    }
                     if (editId > 0) {
-                        vm.v2UpdateMeaning(editId, regExpression, regMeaning, regImageKey, regSituation)
+                        vm.v2UpdateMeaning(editId, exprs, regMeaning, regImageKey, regSituation)
                         toast("수정했어요. 학생과 확인하면 다시 쓸 수 있어요.")
-                        val back = "U09"
-                        resetRegForm(); route = back
+                        resetRegForm(); route = "U09"
                     } else {
-                        vm.v2RegisterMeaning(regExpression, regMeaning, regImageKey, regSituation)
+                        vm.v2RegisterMeaning(exprs, regMeaning, regImageKey, regSituation)
                         toast("미확인으로 저장했어요. 학생과 확인하면 카드로 나와요.")
                         resetRegForm(); route = "U07"
                     }
@@ -429,7 +452,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
                     // U09-E: 폼을 원본으로 채우고 수정 모드로 연다.
                     regExpression = libExpression; regMeaning = lm.text
                     regImageKey = lm.imageKey; regSituation = lm.situation.orEmpty()
-                    regShowError = false; editId = lm.id
+                    regShowError = false; regConflict = null; editId = lm.id
                     route = "U05"
                 },
                 onDeactivate = { vm.v2SetActive(lm.id, false); toast("잠깐 사용하지 않아요") },

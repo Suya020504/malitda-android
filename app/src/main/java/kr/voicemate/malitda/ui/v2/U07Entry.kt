@@ -21,6 +21,8 @@ import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -84,15 +86,20 @@ fun U07Entry(
     }
 }
 
-/** U07-S · 학생 세션 새로 시작(화면 36). */
+/** U07-S · 사용할 학생을 확인해요(화면 36) — 전환·추가 포함. */
 @Composable
 fun U07NewSession(
     studentName: String,
+    others: List<Pair<Long, String>>,
     onRestart: () -> Unit,
+    onSwitch: (Long) -> Unit,
+    onAdd: (String) -> Unit,
     onCancel: () -> Unit,
     onHelp: () -> Unit,
 ) {
     val name = studentName.ifBlank { "친구" }
+    var adding by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf(false) }
+    var newName by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf("") }
     V2Screen {
         V2Header(onBack = onCancel, onHelp = onHelp)
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
@@ -103,15 +110,15 @@ fun U07NewSession(
                     Modifier
                         .fillMaxWidth()
                         .background(Brush.linearGradient(listOf(Color(0xFFF5EFFA), Color(0xFFF0F4FB), Color(0xFFF0FAF3))))
-                        .padding(vertical = 40.dp),
+                        .padding(vertical = 32.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Image(
                         painterResource(R.drawable.v2_char_robot), contentDescription = null,
-                        modifier = Modifier.size(170.dp).background(V2C.CardInner, RoundedCornerShape(24.dp)).padding(10.dp),
+                        modifier = Modifier.size(150.dp).background(V2C.CardInner, RoundedCornerShape(24.dp)).padding(10.dp),
                         contentScale = ContentScale.Fit,
                     )
-                    Spacer(Modifier.height(26.dp))
+                    Spacer(Modifier.height(22.dp))
                     Row(
                         Modifier
                             .background(Color(0xFFE2F4E8), RoundedCornerShape(26.dp))
@@ -126,6 +133,40 @@ fun U07NewSession(
             }
             Spacer(Modifier.height(16.dp))
             V2Banner("학생을 바꾸면,\n말하던 내용과 선택한 뜻은 지워져요.", icon = Icons.Rounded.Refresh)
+            // 다른 학생 전환
+            if (others.isNotEmpty()) {
+                Spacer(Modifier.height(16.dp))
+                Text("다른 학생으로 바꾸기", style = jua(17, V2C.Ink), modifier = Modifier.padding(horizontal = 24.dp))
+                others.forEach { (id, otherName) ->
+                    Spacer(Modifier.height(10.dp))
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp)
+                            .background(V2C.Surface, RoundedCornerShape(22.dp))
+                            .clip(RoundedCornerShape(22.dp))
+                            .clickable { onSwitch(id) }
+                            .padding(horizontal = 20.dp, vertical = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(otherName, style = jua(19, V2C.Title), modifier = Modifier.weight(1f))
+                        Text("전환 →", style = jua(16, V2C.Muted))
+                    }
+                }
+            }
+            // 새 학생 추가
+            Spacer(Modifier.height(16.dp))
+            if (adding) {
+                Box(Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
+                    V2TextField(value = newName, onValueChange = { newName = it }, placeholder = "새 학생 이름")
+                }
+                Spacer(Modifier.height(10.dp))
+                V2SecondaryButton("이 이름으로 추가하고 전환") {
+                    if (newName.isNotBlank()) { onAdd(newName.trim()); adding = false; newName = "" }
+                }
+            } else {
+                V2SecondaryButton("⊕  새 학생 추가") { adding = true }
+            }
             Spacer(Modifier.height(16.dp))
         }
         V2PrimaryButton("${roJosa(name)} 새로 시작", icon = "⟳") { onRestart() }

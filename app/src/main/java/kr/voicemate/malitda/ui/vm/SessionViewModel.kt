@@ -420,11 +420,15 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
     }
 
     /** 지원자 등록(U05): 미확인 상태로 저장하고 id를 돌려준다. 학생 확인(U10-C) 전에는 전달 흐름에 나오지 않는다. */
-    suspend fun v2RegisterMeaning(expression: String, meaning: String, imageKey: String?, situation: String?): Long =
+    suspend fun v2RegisterMeaning(expressions: List<String>, meaning: String, imageKey: String?, situation: String?): Long =
         c.meanings.save(
             profileId = _profileId.value, text = meaning, imageKey = imageKey,
-            situation = situation, expressions = listOf(expression), confirmed = false,
+            situation = situation, expressions = expressions, confirmed = false,
         )
+
+    /** 등록·수정 전 중복 검사: 다른 뜻에 이미 붙은 표현 목록. */
+    suspend fun v2FindConflicts(expressions: List<String>, excludeMeaningId: Long = 0L) =
+        c.meanings.findConflicts(_profileId.value, expressions, excludeMeaningId)
 
     /** 학생 확인 완료(U10-C) → 확인·활성 모두 켠다(사용 중지 뜻의 재확인 포함). */
     suspend fun v2ActivateMeaning(id: Long) {
@@ -442,9 +446,27 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
     suspend fun v2FirstExpression(id: Long): String =
         c.meanings.expressionsFor(id).firstOrNull()?.text.orEmpty()
 
-    /** 수정(U09-E): 저장 후 미확인으로 되돌아간다 — U10 재확인 필요. */
-    suspend fun v2UpdateMeaning(id: Long, expression: String, meaning: String, imageKey: String?, situation: String?) =
-        c.meanings.update(id, meaning, imageKey, situation, listOf(expression))
+    /** 연결된 표현 전체를 ", "로 이어 돌려준다(수정 프리필·상세 표시용). */
+    suspend fun v2ExpressionsText(id: Long): String =
+        c.meanings.expressionsFor(id).joinToString(", ") { it.text }
+
+    /** 수정(U09-E): 표현 전체를 받은 목록으로 교체하고 미확인으로 되돌린다 — U10 재확인 필요. */
+    suspend fun v2UpdateMeaning(id: Long, expressions: List<String>, meaning: String, imageKey: String?, situation: String?) =
+        c.meanings.update(id, meaning, imageKey, situation, expressions)
+
+    // ---------- v2 학생(프로필) 전환 ----------
+    val profiles: StateFlow<List<kr.voicemate.malitda.data.db.ProfileEntity>> =
+        c.profiles.all.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    /** 학생 전환: 진행 중이던 말·선택은 지운다(U07-S 안내문과 동일). */
+    fun v2SwitchStudent(id: Long) {
+        viewModelScope.launch { resetSession(); c.profiles.switchTo(id) }
+    }
+
+    /** 새 학생 추가 후 바로 전환. 새 학생의 의미 사전은 비어 있다(U01-E부터 시작). */
+    fun v2AddStudent(name: String) {
+        viewModelScope.launch { val id = c.profiles.add(name); resetSession(); c.profiles.switchTo(id) }
+    }
 
     fun v2SetActive(id: Long, active: Boolean) { viewModelScope.launch { c.meanings.setActive(id, active) } }
     suspend fun v2DeleteMeaning(id: Long) = c.meanings.delete(id)

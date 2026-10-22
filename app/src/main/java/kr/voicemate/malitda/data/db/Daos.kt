@@ -50,6 +50,9 @@ interface CorrectionDao {
     @Query("DELETE FROM corrections WHERE profileId = :profileId") suspend fun deleteAll(profileId: Long)
 }
 
+/** 중복 표현 검사 결과: 이 표현이 어느 뜻에 이미 붙어 있는지. */
+data class ExpressionConflict(val expression: String, val meaningText: String)
+
 /** 뜻과 그 뜻으로 이어지는 표현 목록(함께 조회용). */
 data class MeaningWithExpressions(
     @androidx.room.Embedded val meaning: MeaningEntity,
@@ -88,6 +91,13 @@ interface MeaningDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertExpression(e: MeaningExpressionEntity): Long
     @Query("SELECT * FROM meaning_expressions WHERE meaningId = :meaningId")
     suspend fun expressionsFor(meaningId: Long): List<MeaningExpressionEntity>
+    /** 다른 뜻에 이미 연결된 표현 찾기(중복 등록 경고용). */
+    @Query(
+        "SELECT me.text AS expression, m.text AS meaningText FROM meaning_expressions me " +
+            "JOIN meanings m ON m.id = me.meaningId " +
+            "WHERE me.profileId = :profileId AND me.key IN (:keys) AND me.meaningId != :excludeMeaningId"
+    )
+    suspend fun findExpressionConflicts(profileId: Long, keys: List<String>, excludeMeaningId: Long): List<ExpressionConflict>
     @Query("DELETE FROM meaning_expressions WHERE meaningId = :meaningId") suspend fun deleteExpressionsFor(meaningId: Long)
 }
 
