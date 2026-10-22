@@ -22,6 +22,7 @@ import kr.voicemate.malitda.domain.CandidateBuilder
 import kr.voicemate.malitda.domain.Category
 import kr.voicemate.malitda.domain.Friends
 import kr.voicemate.malitda.domain.MalFriend
+import kr.voicemate.malitda.domain.MeaningResolver
 import kr.voicemate.malitda.stt.PrepareState
 import kr.voicemate.malitda.stt.SttCallback
 import kr.voicemate.malitda.stt.SttResult
@@ -109,6 +110,8 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
     init {
         viewModelScope.launch {
             _profileId.value = c.profiles.ensureCurrent()
+            // v2 기본 의미 4종(최초 1회). 이후 모두 지우면 U01-E(등록 없는 홈) 경로가 그대로 남는다.
+            if (!c.settings.current().v2Seeded) { c.meanings.seedDefaults(_profileId.value); c.settings.setV2Seeded(true) }
             c.settings.settings.collect { s -> if (s.currentProfileId != 0L && s.currentProfileId != _profileId.value) _profileId.value = s.currentProfileId }
         }
         viewModelScope.launch { c.stt.prepare(); syncModelMetrics() }
@@ -364,10 +367,65 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
     }
     fun stopSpeaking() = c.tts.stop()
 
+    // ---------- v2 의미 흐름(U01~U06) ----------
+    enum class V2Origin { VOICE, CARD }
+
+    /** 선택된 뜻과 출처. snapshotUpdatedAt은 선택 당시 updatedAt — 달라지면 U03-V(등록 내용 변경). */
+    data class V2State(
+        val origin: V2Origin = V2Origin.CARD,
+        val meaningId: Long? = null,
+        val snapshotUpdatedAt: Long? = null,
+        /** 음성 인식에서 나온 의미 후보 id 순위(상위가 먼저). */
+        val matchIds: List<Long> = emptyList(),
+    )
+
+    /** 전달 흐름에 쓰는 뜻(확인 완료·활성). 홈 카드와 U06 목록의 원천. */
+    val meanings: StateFlow<List<kr.voicemate.malitda.data.db.MeaningEntity>> =
+        _profileId.flatMapLatest { c.meanings.observeUsable(it) }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    private val _v2 = MutableStateFlow(V2State())
+    val v2: StateFlow<V2State> = _v2.asStateFlow()
+
+    fun v2ObserveMeaning(id: Long) = c.meanings.observe(id)
+
+    /** 카드·목록에서 뜻을 고르면 호출. 선택 시점 updatedAt을 기억해 둔다. */
+    fun v2SelectMeaning(m: kr.voicemate.malitda.data.db.MeaningEntity, origin: V2Origin) {
+        _v2.update { it.copy(origin = origin, meaningId = m.id, snapshotUpdatedAt = m.updatedAt) }
+    }
+
+    /** U03-V에서 '다시 뜻 확인하기': 최신 내용으로 스냅숏을 갱신한다. 뜻이 지워졌으면 false. */
+    suspend fun v2RefreshSnapshot(): Boolean {
+        val id = _v2.value.meaningId ?: return false
+        val fresh = c.meanings.byId(id) ?: return false
+        _v2.update { it.copy(snapshotUpdatedAt = fresh.updatedAt) }
+        return fresh.confirmed && fresh.active
+    }
+
+    /** 인식 결과(원문+복수 후보)를 등록된 표현과 맞춰 의미 후보를 낸다. 1위가 있으면 선택까지 한다. */
+    suspend fun v2ResolveFromStt(): List<MeaningResolver.Match> {
+        val s = _ui.value
+        val raw = s.raw ?: return emptyList()
+        val registered = c.meanings.usableWithExpressions(_profileId.value)
+        val matches = MeaningResolver.resolve(raw, s.alternatives, registered)
+        _v2.update { it.copy(matchIds = matches.map { m -> m.meaning.id }) }
+        matches.firstOrNull()?.let { top -> v2SelectMeaning(top.meaning, V2Origin.VOICE) }
+        return matches
+    }
+
+    /** '맞아요' 확정: 사용 횟수만 올린다(문장 내용은 어디에도 추가 저장하지 않음). */
+    fun v2ConfirmUse() {
+        val id = _v2.value.meaningId ?: return
+        viewModelScope.launch { c.meanings.recordUse(id) }
+    }
+
+    fun v2Reset() { _v2.value = V2State() }
+
     // ---------- 세션 정리 ----------
     fun resetSession() {
         c.stt.cancel(); c.tts.stop()
         _ui.value = SessionUiState()
+        _v2.value = V2State()
     }
 
     /** 문장은 남기되 인식 결과만 정리(다시 말하기 진입 시). */

@@ -4,11 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 
 @Database(
-    entities = [ProfileEntity::class, ExpressionEntity::class, CorrectionEntity::class, CounterEntity::class],
-    version = 1,
+    entities = [
+        ProfileEntity::class, ExpressionEntity::class, CorrectionEntity::class, CounterEntity::class,
+        MeaningEntity::class, MeaningExpressionEntity::class,
+    ],
+    version = 2,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -16,16 +21,38 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun expressionDao(): ExpressionDao
     abstract fun correctionDao(): CorrectionDao
     abstract fun counterDao(): CounterDao
+    abstract fun meaningDao(): MeaningDao
 
     companion object {
         const val NAME = "malitda.db"
+
+        /** v1 → v2: 개인 의미 사전(meanings·meaning_expressions)만 추가. 기존 데이터는 그대로 보존한다. */
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `meanings` (" +
+                        "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `profileId` INTEGER NOT NULL, " +
+                        "`text` TEXT NOT NULL, `imageKey` TEXT, `situation` TEXT, " +
+                        "`confirmed` INTEGER NOT NULL, `active` INTEGER NOT NULL, " +
+                        "`createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, `useCount` INTEGER NOT NULL)"
+                )
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_meanings_profileId` ON `meanings` (`profileId`)")
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `meaning_expressions` (" +
+                        "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `profileId` INTEGER NOT NULL, " +
+                        "`meaningId` INTEGER NOT NULL, `text` TEXT NOT NULL, `key` TEXT NOT NULL)"
+                )
+                db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_meaning_expressions_profileId_key` ON `meaning_expressions` (`profileId`, `key`)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_meaning_expressions_meaningId` ON `meaning_expressions` (`meaningId`)")
+            }
+        }
 
         /** SQLCipher로 암호화된 로컬 DB. 키는 Android Keystore가 감싼 무작위 32바이트. */
         fun build(context: Context, passphrase: ByteArray): AppDatabase {
             System.loadLibrary("sqlcipher")
             return Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, NAME)
                 .openHelperFactory(SupportOpenHelperFactory(passphrase))
-                .fallbackToDestructiveMigration(dropAllTables = true)
+                .addMigrations(MIGRATION_1_2)
                 .build()
         }
     }

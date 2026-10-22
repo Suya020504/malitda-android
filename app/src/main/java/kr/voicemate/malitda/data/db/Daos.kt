@@ -50,6 +50,39 @@ interface CorrectionDao {
     @Query("DELETE FROM corrections WHERE profileId = :profileId") suspend fun deleteAll(profileId: Long)
 }
 
+/** 뜻과 그 뜻으로 이어지는 표현 목록(함께 조회용). */
+data class MeaningWithExpressions(
+    @androidx.room.Embedded val meaning: MeaningEntity,
+    @androidx.room.Relation(parentColumn = "id", entityColumn = "meaningId")
+    val expressions: List<MeaningExpressionEntity>,
+)
+
+@Dao
+interface MeaningDao {
+    /** 전달 흐름에 쓰는 뜻: 확인 완료 + 활성. 자주 쓴 순, 같으면 등록한 순(디자인 카드 순서). */
+    @Query("SELECT * FROM meanings WHERE profileId = :profileId AND confirmed = 1 AND active = 1 ORDER BY useCount DESC, createdAt ASC")
+    fun observeUsable(profileId: Long): Flow<List<MeaningEntity>>
+    @Query("SELECT * FROM meanings WHERE profileId = :profileId ORDER BY updatedAt DESC")
+    fun observeAll(profileId: Long): Flow<List<MeaningEntity>>
+    @Query("SELECT * FROM meanings WHERE id = :id") suspend fun byId(id: Long): MeaningEntity?
+    @Query("SELECT * FROM meanings WHERE id = :id") fun observe(id: Long): Flow<MeaningEntity?>
+    @Query("SELECT COUNT(*) FROM meanings WHERE profileId = :profileId") suspend fun count(profileId: Long): Int
+    @Insert suspend fun insert(m: MeaningEntity): Long
+    @Update suspend fun update(m: MeaningEntity)
+    @Query("DELETE FROM meanings WHERE id = :id") suspend fun delete(id: Long)
+    // updatedAt은 내용 변경 감지(U03-V)에 쓰므로 사용 횟수만 올린다.
+    @Query("UPDATE meanings SET useCount = useCount + 1 WHERE id = :id")
+    suspend fun incrementUse(id: Long)
+
+    @androidx.room.Transaction
+    @Query("SELECT * FROM meanings WHERE profileId = :profileId AND confirmed = 1 AND active = 1")
+    suspend fun usableWithExpressions(profileId: Long): List<MeaningWithExpressions>
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertExpression(e: MeaningExpressionEntity): Long
+    @Query("SELECT * FROM meaning_expressions WHERE meaningId = :meaningId")
+    suspend fun expressionsFor(meaningId: Long): List<MeaningExpressionEntity>
+    @Query("DELETE FROM meaning_expressions WHERE meaningId = :meaningId") suspend fun deleteExpressionsFor(meaningId: Long)
+}
+
 @Dao
 interface CounterDao {
     @Query("SELECT * FROM counters WHERE profileId = :profileId") fun observe(profileId: Long): Flow<CounterEntity?>

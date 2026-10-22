@@ -25,6 +25,8 @@ data class Settings(
     val currentProfileId: Long = 0L,
     /** 음성인식 엔진 id(SttRouter.WHISPER / VOSK). 사전 비교 결과에 따라 기본값을 정한다. */
     val sttEngine: String = "whisper",
+    /** v2 기본 의미 4종을 넣었는지(최초 1회만). */
+    val v2Seeded: Boolean = false,
 )
 
 class SettingsStore(context: Context) {
@@ -41,6 +43,7 @@ class SettingsStore(context: Context) {
             rewardEnabled = p[K.reward] ?: false,
             currentProfileId = p[K.profile] ?: 0L,
             sttEngine = p[K.sttEngine] ?: "whisper",
+            v2Seeded = p[K.v2Seeded] ?: false,
         )
     }
 
@@ -55,6 +58,7 @@ class SettingsStore(context: Context) {
     suspend fun setRewardEnabled(v: Boolean) { ds.edit { it[K.reward] = v } }
     suspend fun setCurrentProfile(id: Long) { ds.edit { it[K.profile] = id } }
     suspend fun setSttEngine(id: String) { ds.edit { it[K.sttEngine] = id } }
+    suspend fun setV2Seeded(v: Boolean) { ds.edit { it[K.v2Seeded] = v } }
     suspend fun clearAll() { ds.edit { it.clear() } }
 
     private object K {
@@ -67,5 +71,6 @@ class SettingsStore(context: Context) {
         val reward = booleanPreferencesKey("reward_enabled")
         val profile = longPreferencesKey("current_profile")
         val sttEngine = androidx.datastore.preferences.core.stringPreferencesKey("stt_engine")
+        val v2Seeded = booleanPreferencesKey("v2_seeded")
     }
 }

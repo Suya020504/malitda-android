@@ -8,6 +8,7 @@ import kotlinx.coroutines.runBlocking
 import kr.voicemate.malitda.data.db.AppDatabase
 import kr.voicemate.malitda.data.db.DbKeyManager
 import kr.voicemate.malitda.data.repo.CorrectionRepository
+import kr.voicemate.malitda.data.repo.MeaningRepository
 import kr.voicemate.malitda.data.repo.CounterRepository
 import kr.voicemate.malitda.data.repo.ExpressionRepository
 import kr.voicemate.malitda.data.repo.ProfileRepository
@@ -30,6 +31,7 @@ class AppContainer(private val app: Application) {
     val expressions: ExpressionRepository by lazy { ExpressionRepository(db.expressionDao()) }
     val corrections: CorrectionRepository by lazy { CorrectionRepository(db.correctionDao()) }
     val counters: CounterRepository by lazy { CounterRepository(db.counterDao()) }
+    val meanings: MeaningRepository by lazy { MeaningRepository(db.meaningDao()) }
 
     val vosk: SttEngine by lazy { VoskSttEngine(app, ModelInstaller.vosk(app)) }
     val whisper: SttEngine by lazy { WhisperSttEngine(app, ModelInstaller.whisper(app)) }

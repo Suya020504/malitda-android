@@ -48,3 +48,38 @@ data class CounterEntity(
     val mainCharacter: String? = null,
     val friendsSeen: Int = 1,
 )
+
+/** v2 개인 의미 사전: 지원자와 함께 등록한 뜻(그림·문장). DB v2에서 추가. */
+@Entity(tableName = "meanings", indices = [Index("profileId")])
+data class MeaningEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val profileId: Long,
+    /** 전할 뜻 문장(예: "산책하고 싶어요"). */
+    val text: String,
+    /** 내장 의미 그림 키(walk/water/rest/cold). null이면 그림 없음(U03-I). */
+    val imageKey: String?,
+    /** 사용 상황 메모(선택). */
+    val situation: String?,
+    /** 학생과 함께 확인을 마친 뜻만 전달 흐름에 나온다(U10-C). */
+    val confirmed: Boolean,
+    /** 비활성(U09-I)이면 홈·후보에서 제외. */
+    val active: Boolean,
+    val createdAt: Long,
+    val updatedAt: Long,
+    val useCount: Int,
+)
+
+/** 표현→뜻 연결: 정규화된 표현(key) 하나가 뜻 하나를 가리킨다. */
+@Entity(
+    tableName = "meaning_expressions",
+    indices = [Index(value = ["profileId", "key"], unique = true), Index("meaningId")],
+)
+data class MeaningExpressionEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val profileId: Long,
+    val meaningId: Long,
+    /** 평소 쓰는 표현 원문(예: "바람"). */
+    val text: String,
+    /** TextNormalizer.normalize(text) 결과. 조회 키. */
+    val key: String,
+)

@@ -1,0 +1,8 @@
+﻿파일,용도,출처 PDF,페이지,가로 px,세로 px,색상모드,추출방법,SHA-256
+brand/malitda_logo.png,로고·태그라인,말잇다 디자인 최종본(2).pdf,1,3532,994,RGBA,"내장 PNG 및 알파 마스크 추출, 투명 여백만 자름",f15b1eb1e243c4d9b493e70e348522ff281af4712370aded55bd393bd8fe56ca
+characters/malitda_robot.png,청록 로봇,말잇다_와이어프레임_목업42쌍.pdf,37,180,160,RGB,"화면 내 캐릭터 영역 추출, 원래 배경 포함",527eb38099038d8dee42a227b318fc25c8157746a6f1822e4f1acede314a7d47
+characters/malitda_purple.png,보라 캐릭터,말잇다 디자인 최종본(2).pdf,14,304,248,RGBA,"내장 화면 이미지의 캐릭터 영역 추출, 원래 배경 포함",f38705ada42b99f98ee334f8108f3df927774b9f0676fcb7ce7dec5a5259d11b
+meaning_cards/walk.png,산책하고 싶어요,말잇다_와이어프레임_목업42쌍.pdf,5,318,208,RGB,화면 내 그림 영역 추출,85daf650151b90013e43134cf47758eb9762609e31965494525b9853b0b609e9
+meaning_cards/water.png,물이 필요해요,말잇다_와이어프레임_목업42쌍.pdf,8,318,208,RGB,화면 내 그림 영역 추출,b1a4e0d62388cd0a1a13a276b94578018a1bd751e416da1ee44ad0d12bd0ff9b
+meaning_cards/rest.png,쉬고 싶어요,말잇다_와이어프레임_목업42쌍.pdf,10,318,208,RGB,화면 내 그림 영역 추출,fda31cab399b22c0ed2bcd5aa5d029d261d995c32d8629dec021bdef92feaf3d
+meaning_cards/cold.png,바람이 차가워요,말잇다_와이어프레임_목업42쌍.pdf,12,318,208,RGB,화면 내 그림 영역 추출,7fc3bc8f40333841ac08f0635976caf10db0c84aad76052d3f22bc4645f152de

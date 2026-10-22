@@ -24,8 +24,8 @@ class MainActivity : ComponentActivity() {
                 fontScale = settings.fontScale,
                 a11y = A11yPrefs(visualEmphasis = settings.visualEmphasis, haptics = settings.haptics, ttsRate = settings.ttsRate),
             ) {
-                // 구현정본 네이티브 앱 — 온보딩→홈→말하기 흐름(실 STT·승인·공유 연결)
-                kr.voicemate.malitda.ui.figma.MalitdaFaithfulApp(vm)
+                // v2(42화면) 의미 카드 흐름 — U00~U04 핵심 학생 흐름(실 STT·TTS·의미 사전 연결)
+                kr.voicemate.malitda.ui.v2.MalitdaV2App(vm)
             }
         }
     }
