@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +41,7 @@ fun U05Register(
     situation: String,
     showError: Boolean,
     conflictMessage: String?,
+    imageGenerating: Boolean,
     onExpression: (String) -> Unit,
     onMeaning: (String) -> Unit,
     onSituation: (String) -> Unit,
@@ -102,7 +104,14 @@ fun U05Register(
                         Column {
                             Text("의미 그림", style = jua(14, V2C.Muted))
                             Spacer(Modifier.height(4.dp))
-                            Text(if (imageKey == null) "그림 선택하기" else "그림 바꾸기", style = jua(19, V2C.Title))
+                            Text(
+                                when {
+                                    imageGenerating -> "그림 만드는 중…"
+                                    imageKey == null -> "그림 선택하기"
+                                    else -> "그림 바꾸기"
+                                },
+                                style = jua(19, V2C.Title),
+                            )
                         }
                     }
                     Spacer(Modifier.height(18.dp))
@@ -145,6 +154,10 @@ fun U05PickImage(
     onUse: () -> Unit,
     onCancel: () -> Unit,
     onHelp: () -> Unit,
+    // null이면 '그림 만들기'를 숨긴다(키가 없는 빌드).
+    onGenerate: (() -> Unit)? = null,
+    generating: Boolean = false,
+    onCancelGenerate: (() -> Unit)? = null,
 ) {
     V2Screen {
         V2Header(onBack = onCancel, onHelp = onHelp)
@@ -211,12 +224,29 @@ fun U05PickImage(
             }
             Spacer(Modifier.height(12.dp))
             // 학생에게 익숙한 실제 사진을 그림으로 쓸 수 있다(예: 산책 장소 사진).
-            V2SecondaryButton("📷  사진 가져오기") { onPickPhoto() }
+            V2SecondaryButton("📷  사진 가져오기") { if (!generating) onPickPhoto() }
+            if (onGenerate != null) {
+                Spacer(Modifier.height(12.dp))
+                if (generating) {
+                    V2Banner("그림을 만들고 있어요. 1분 정도 걸려요.\n그동안 다른 칸을 채워도 이어서 만들어져요.", icon = Icons.Rounded.Info)
+                    Spacer(Modifier.height(10.dp))
+                    V2SecondaryButton("기다리는 동안 다른 칸 채우기") { onUse() }
+                    onCancelGenerate?.let { cancel -> V2TextButton("그림 만들기 그만두기") { cancel() } }
+                } else {
+                    V2SecondaryButton("✨  이 뜻으로 그림 만들기") { onGenerate() }
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        "그림을 만들 때 '전할 뜻' 문장이 OpenAI로 전송돼요.\n학생 이름과 학생이 쓰는 표현은 보내지 않아요.",
+                        style = jua(13, V2C.Muted, 1.5f), textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+                    )
+                }
+            }
             Spacer(Modifier.height(14.dp))
             V2Banner("이 그림으로 함께 확인해요.", green = true, icon = Icons.Rounded.Check)
             Spacer(Modifier.height(16.dp))
         }
-        V2PrimaryButton("이 그림 사용", icon = "✓") { onUse() }
+        if (!generating) V2PrimaryButton("이 그림 사용", icon = "✓") { onUse() }
         V2TextButton("취소") { onCancel() }
         Spacer(Modifier.height(8.dp))
     }

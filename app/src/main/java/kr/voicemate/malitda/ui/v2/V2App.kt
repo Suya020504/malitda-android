@@ -66,10 +66,15 @@ fun MalitdaV2App(vm: SessionViewModel) {
     var libExpression by rememberSaveable { mutableStateOf("") }
 
     var regConflict by rememberSaveable { mutableStateOf<String?>(null) }
+    // 저장 대상이 아니다: 앱이 재시작되면 진행 중이던 요청도 사라지므로 '만드는 중'에 갇히지 않게.
+    var generating by remember { mutableStateOf(false) }
+    // 그림 생성 회차. 그만두거나 등록을 끝내면 올려서, 늦게 도착한 그림이 다른 폼에 붙지 않게 한다.
+    var genRound by remember { mutableStateOf(0) }
 
     fun resetRegForm() {
         regExpression = ""; regMeaning = ""; regImageKey = null; regSituation = ""
         regShowError = false; regSavedId = -1L; regChecked = false; editId = -1L; regConflict = null
+        genRound++; generating = false
     }
 
     /** 표현 칸은 쉼표·줄바꿈으로 여러 개를 받는다. */
@@ -361,11 +366,13 @@ fun MalitdaV2App(vm: SessionViewModel) {
             situation = regSituation,
             showError = regShowError,
             conflictMessage = regConflict,
+            imageGenerating = generating,
             onExpression = { regExpression = it; regConflict = null },
             onMeaning = { regMeaning = it },
             onSituation = { regSituation = it },
             onPickImage = { route = "U05M" },
             onConfirmWithStudent = {
+                if (generating) { toast("그림이 다 만들어지면 저장할 수 있어요"); return@U05Register }
                 if (regExpression.isBlank() || regMeaning.isBlank()) { regShowError = true; return@U05Register }
                 scope.launch {
                     val exprs = parseExpressions(regExpression)
@@ -386,6 +393,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
                 }
             },
             onSaveUnconfirmed = {
+                if (generating) { toast("그림이 다 만들어지면 저장할 수 있어요"); return@U05Register }
                 if (regExpression.isBlank() || regMeaning.isBlank()) { regShowError = true; return@U05Register }
                 scope.launch {
                     val exprs = parseExpressions(regExpression)
@@ -418,6 +426,27 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onUse = { route = "U05" },
             onCancel = { route = "U05" },
             onHelp = ::help,
+            onGenerate = if (!kr.voicemate.malitda.data.ai.MeaningImageGenerator.isAvailable) null else ({
+                if (regMeaning.isBlank()) {
+                    toast("먼저 '전할 뜻'을 입력해 주세요")
+                } else if (!generating) {
+                    generating = true
+                    val round = ++genRound
+                    scope.launch {
+                        val result = runCatching {
+                            val png = kr.voicemate.malitda.data.ai.MeaningImageGenerator.generate(ctx, regMeaning)
+                            kr.voicemate.malitda.data.repo.MeaningImageStore.importBytes(ctx, png)
+                        }
+                        // 그사이 그만뒀거나 등록을 끝냈다면 결과를 버린다(파일은 다음 정리 때 지워진다).
+                        if (round != genRound) return@launch
+                        generating = false
+                        result.onSuccess { key -> regImageKey = key; toast("그림을 만들었어요. 학생과 함께 확인해 주세요.") }
+                            .onFailure { e -> toast((e.message ?: "그림을 만들지 못했어요") + " 사진이나 기본 그림을 써도 돼요.") }
+                    }
+                }
+            }),
+            generating = generating,
+            onCancelGenerate = { genRound++; generating = false; toast("그림 만들기를 그만뒀어요") },
         )
 
         "U10" -> U10Activate(

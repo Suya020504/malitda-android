@@ -12,6 +12,15 @@ val keystoreProps = Properties().apply {
     if (f.exists()) f.inputStream().use { load(it) }
 }
 
+// 그림 생성용 OpenAI 키. local.properties(깃 제외)에만 두고, 디버그 빌드에만 넣는다.
+// 릴리스 APK는 공개 배포되므로 키를 넣지 않는다 — APK에서 키를 꺼낼 수 있기 때문.
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+val openAiKey: String = localProps.getProperty("OPENAI_API_KEY", "").trim()
+val openAiImageModel: String = localProps.getProperty("OPENAI_IMAGE_MODEL", "gpt-image-1").trim()
+
 android {
     namespace = "kr.voicemate.malitda"
     compileSdk = 36
@@ -23,6 +32,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 4
         versionName = "0.2.1"
+        buildConfigField("String", "OPENAI_API_KEY", "\"\"")
+        buildConfigField("String", "OPENAI_IMAGE_MODEL", "\"$openAiImageModel\"")
         vectorDrawables { useSupportLibrary = true }
         // 제출용 빌드: -PsubmitAbis=arm 이면 x86_64(에뮬레이터용)를 뺀다
         val arm = listOf("arm64-v8a", "armeabi-v7a")
@@ -65,6 +76,7 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
+            buildConfigField("String", "OPENAI_API_KEY", "\"$openAiKey\"")
         }
     }
 

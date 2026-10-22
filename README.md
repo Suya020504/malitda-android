@@ -13,7 +13,7 @@
 | 저장 | Room + **SQLCipher**(키는 Android Keystore가 감싼 무작위 32바이트), DataStore. **DB v2**: 개인 의미 사전 `meanings`·`meaning_expressions` 추가, 기존 데이터를 보존하는 1→2 마이그레이션 |
 | STT(기기 내) | **whisper.cpp**(ggml-base-q5_1, JNI) · **Vosk**(vosk-model-small-ko-0.22) — 설정에서 전환, 한 번에 하나만 메모리에 올림 |
 | TTS | 시스템 TextToSpeech(오프라인 한국어 음성 우선) — 확인된 뜻을 소리로 들려주는 선택 기능 |
-| 네트워크 | **인터넷 권한 없음.** 외부 STT API·클라우드 전환 없음 |
+| 네트워크 | **릴리스 빌드는 인터넷 권한 없음.** 외부 STT API·클라우드 전환 없음. 디버그 빌드에만 지원자용 '그림 만들기'(OpenAI 이미지 생성) 시험 기능과 인터넷 권한이 들어간다 — 아래 '그림 만들기' 참고 |
 | 화면 | **v2 42화면 체계(U00~U13)**, 디자인 전달 자료 `design/v2/` 기준. 1단계로 학생 핵심 흐름 U00~U04·U06과 예외 변형(U02-D, U03-E/M/I/V, U04-F/S) 구현 — 홈 → 말하기/카드 선택 → 뜻 확인 → 대면 전달. 등록(U05·U07)·내 표현(U08~U11)·설정(U12)·소리 확인(U13)은 다음 단계. 기존 S01~S27 구현정본은 `ui/figma/`에 유지 |
 
 아키텍처 변경도(`design/v2` 설계도 04) 기준 유지·변경·신규:
@@ -53,6 +53,14 @@ Windows: `local.properties`에 `sdk.dir=C:/Android/Sdk` 형식(슬래시)으로 
 ```bash
 adb push x.wav /data/local/tmp/ && adb shell "cat /data/local/tmp/x.wav | run-as kr.voicemate.malitda.debug sh -c 'cat > files/testaudio/x.wav'"
 ```
+
+## 그림 만들기 (디버그 빌드 시험 기능)
+
+지원자가 '뜻을 보여줄 그림' 화면에서 **이 뜻으로 그림 만들기**를 누르면 OpenAI 이미지 모델이 기존 의미 카드 4장을 레퍼런스로 같은 화풍의 그림을 만든다. 만든 그림도 학생과 함께 확인(U10)해야 쓰인다.
+
+- 외부로 보내는 것: '전할 뜻' 문장과 레퍼런스 그림 4장. 학생 이름·학생이 쓰는 표현·음성은 보내지 않는다.
+- 켜는 법: 저장소 루트의 `local.properties`(깃 제외)에 `OPENAI_API_KEY=...`를 적고 디버그 빌드. 모델은 `OPENAI_IMAGE_MODEL`로 바꿀 수 있다(기본 `gpt-image-1`).
+- 릴리스 빌드에는 키와 인터넷 권한을 넣지 않는다. 공개 배포한 APK에서는 키를 꺼낼 수 있기 때문이다. 팀 배포본에서 쓰려면 키를 보관하는 중계 서버가 필요하다.
 
 ## 개인정보
 

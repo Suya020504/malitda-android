@@ -32,6 +32,11 @@ object MeaningImageStore {
             }
             buffer.toByteArray()
         } ?: error("사진을 열 수 없어요.")
+        importBytes(context, data)
+    }
+
+    /** 이미 받은 이미지 바이트(생성 그림 등)를 같은 규칙으로 저장한다. */
+    suspend fun importBytes(context: Context, data: ByteArray): String = withContext(Dispatchers.IO) {
         val bitmap = if (Build.VERSION.SDK_INT >= 28) {
             ImageDecoder.decodeBitmap(ImageDecoder.createSource(java.nio.ByteBuffer.wrap(data))) { decoder, info, _ ->
                 val ratio = maxOf(info.size.width, info.size.height) / 1024f
