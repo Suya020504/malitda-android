@@ -426,10 +426,28 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
             situation = situation, expressions = listOf(expression), confirmed = false,
         )
 
-    /** 학생 확인 완료(U10-C) → 활성화. */
-    suspend fun v2ActivateMeaning(id: Long) = c.meanings.setConfirmed(id, true)
+    /** 학생 확인 완료(U10-C) → 확인·활성 모두 켠다(사용 중지 뜻의 재확인 포함). */
+    suspend fun v2ActivateMeaning(id: Long) {
+        c.meanings.setConfirmed(id, true)
+        c.meanings.setActive(id, true)
+    }
 
     suspend fun v2MeaningById(id: Long) = c.meanings.byId(id)
+
+    /** 보관함(U11): 미확인·사용 중지 뜻. */
+    val meaningsArchived: StateFlow<List<kr.voicemate.malitda.data.db.MeaningEntity>> =
+        _profileId.flatMapLatest { c.meanings.observeArchived(it) }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    suspend fun v2FirstExpression(id: Long): String =
+        c.meanings.expressionsFor(id).firstOrNull()?.text.orEmpty()
+
+    /** 수정(U09-E): 저장 후 미확인으로 되돌아간다 — U10 재확인 필요. */
+    suspend fun v2UpdateMeaning(id: Long, expression: String, meaning: String, imageKey: String?, situation: String?) =
+        c.meanings.update(id, meaning, imageKey, situation, listOf(expression))
+
+    fun v2SetActive(id: Long, active: Boolean) { viewModelScope.launch { c.meanings.setActive(id, active) } }
+    suspend fun v2DeleteMeaning(id: Long) = c.meanings.delete(id)
 
     fun v2Reset() { _v2.value = V2State() }
 

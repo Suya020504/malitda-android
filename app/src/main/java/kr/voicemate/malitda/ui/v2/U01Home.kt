@@ -56,7 +56,7 @@ fun U01Home(
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
             if (meanings.isEmpty()) EmptyHome(onRegister, onGuide) else FilledHome(name, meanings, onSpeak, onCard, onRegister)
         }
-        V2BottomNav(onLibrary = onLibrary, onSettings = onSettings)
+        V2BottomNav(selected = "home", onHome = {}, onLibrary = onLibrary, onSettings = onSettings)
     }
 }
 

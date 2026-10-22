@@ -76,6 +76,11 @@ interface MeaningDao {
     // 학생 확인(U10-C) 게이트: 활성화는 내용 변경이 아니므로 updatedAt을 건드리지 않는다.
     @Query("UPDATE meanings SET confirmed = :confirmed WHERE id = :id")
     suspend fun setConfirmed(id: Long, confirmed: Boolean)
+    @Query("UPDATE meanings SET active = :active WHERE id = :id")
+    suspend fun setActive(id: Long, active: Boolean)
+    /** 보관함(U11): 미확인이거나 사용 중지된 뜻 — 학생 후보에 나오지 않는다. */
+    @Query("SELECT * FROM meanings WHERE profileId = :profileId AND (confirmed = 0 OR active = 0) ORDER BY updatedAt DESC")
+    fun observeArchived(profileId: Long): Flow<List<MeaningEntity>>
 
     @androidx.room.Transaction
     @Query("SELECT * FROM meanings WHERE profileId = :profileId AND confirmed = 1 AND active = 1")

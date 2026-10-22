@@ -47,10 +47,18 @@ fun MalitdaV2App(vm: SessionViewModel) {
     var regShowError by rememberSaveable { mutableStateOf(false) }
     var regSavedId by rememberSaveable { mutableStateOf(-1L) }
     var regChecked by rememberSaveable { mutableStateOf(false) }
+    // 수정 모드(U09-E)면 원본 id, 아니면 -1
+    var editId by rememberSaveable { mutableStateOf(-1L) }
+    // U10·U07-S를 어디서 열었는지(돌아갈 곳)
+    var u10Return by rememberSaveable { mutableStateOf("U07") }
+    var u07sReturn by rememberSaveable { mutableStateOf("U07") }
+    // 내 표현(U08)에서 열어 본 뜻
+    var libId by rememberSaveable { mutableStateOf(-1L) }
+    var libExpression by rememberSaveable { mutableStateOf("") }
 
     fun resetRegForm() {
         regExpression = ""; regMeaning = ""; regImageKey = null; regSituation = ""
-        regShowError = false; regSavedId = -1L; regChecked = false
+        regShowError = false; regSavedId = -1L; regChecked = false; editId = -1L
     }
 
     val ui by vm.ui.collectAsStateWithLifecycle()
@@ -70,6 +78,26 @@ fun MalitdaV2App(vm: SessionViewModel) {
     LaunchedEffect(v2.meaningId) {
         meaning = null
         v2.meaningId?.let { id -> vm.v2ObserveMeaning(id).collect { meaning = it } }
+    }
+    // 내 표현 상세(U09)에서 보는 뜻
+    var libMeaning by remember { mutableStateOf<MeaningEntity?>(null) }
+    LaunchedEffect(libId) {
+        libMeaning = null; libExpression = ""
+        if (libId > 0) {
+            libExpression = vm.v2FirstExpression(libId)
+            vm.v2ObserveMeaning(libId).collect { libMeaning = it }
+        }
+    }
+    val archived by vm.meaningsArchived.collectAsStateWithLifecycle()
+
+    /** 보관함·사용 중지 뜻을 U10 재확인으로 보낼 준비. */
+    fun startReconfirm(m: MeaningEntity, from: String) {
+        scope.launch {
+            regExpression = vm.v2FirstExpression(m.id)
+            regMeaning = m.text; regImageKey = m.imageKey; regSituation = m.situation.orEmpty()
+            regSavedId = m.id; regChecked = false; u10Return = from
+            route = "U10"
+        }
     }
 
     fun goHome() {
@@ -140,10 +168,16 @@ fun MalitdaV2App(vm: SessionViewModel) {
             "U04" -> route = "U03"
             "U04F", "U04S" -> route = "U04"
             "U06" -> route = if (v2.meaningId != null) "U03" else "U01"
-            "U05" -> route = "U07"
+            "U05" -> route = if (editId > 0) "U09" else "U07"
             "U05M" -> route = "U05"
-            "U07S" -> route = "U07"
-            "U10" -> { toast("미확인으로 두었어요"); resetRegForm(); route = "U07" }
+            "U07S" -> route = u07sReturn
+            "U10" -> { toast("미확인으로 두었어요"); val r = u10Return; resetRegForm(); route = r }
+            "U08" -> route = "U01"
+            "U09" -> route = "U08"
+            "U09D" -> route = "U09"
+            "U11" -> route = "U08"
+            "U12" -> route = "U01"
+            "U12P", "U12T" -> route = "U12"
             else -> goHome()
         }
     }
@@ -175,8 +209,8 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onRegister = { route = "U07" },
             onGuide = { route = "U00" },
             onHelp = ::help,
-            onLibrary = { stub("내 표현") },
-            onSettings = { stub("설정") },
+            onLibrary = { route = "U08" },
+            onSettings = { route = "U12" },
         )
 
         "U02" -> U02Listen(
@@ -189,7 +223,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
 
         "U02D" -> U02MicDenied(
             onPickCards = { route = "U06" },
-            onHowToEnable = { openAppSettings() },
+            onHowToEnable = { route = "U12P" },
             onCancel = { goHome() },
             onHelp = ::help,
         )
@@ -252,7 +286,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
             U04NoSound(
                 meaning = it,
                 onKeepVisual = { soundless = true; route = "U04" },
-                onSoundSettings = { openTtsSettings() },
+                onSoundSettings = { route = "U12T" },
                 onBack = { route = "U04" },
                 onHelp = ::help,
             )
@@ -271,8 +305,8 @@ fun MalitdaV2App(vm: SessionViewModel) {
         "U07" -> U07Entry(
             studentName = name,
             onRegister = { resetRegForm(); route = "U05" },
-            onMyExpressions = { stub("내 표현") },
-            onStudentChip = { route = "U07S" },
+            onMyExpressions = { route = "U08" },
+            onStudentChip = { u07sReturn = "U07"; route = "U07S" },
             onBack = { route = "U01" },
             onHelp = ::help,
         )
@@ -280,7 +314,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
         "U07S" -> U07NewSession(
             studentName = name,
             onRestart = { vm.resetSession(); resetRegForm(); toast("새로 시작해요"); route = "U01" },
-            onCancel = { route = "U07" },
+            onCancel = { route = u07sReturn },
             onHelp = ::help,
         )
 
@@ -297,7 +331,13 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onConfirmWithStudent = {
                 if (regExpression.isBlank() || regMeaning.isBlank()) { regShowError = true; return@U05Register }
                 scope.launch {
-                    regSavedId = vm.v2RegisterMeaning(regExpression, regMeaning, regImageKey, regSituation)
+                    if (editId > 0) {
+                        vm.v2UpdateMeaning(editId, regExpression, regMeaning, regImageKey, regSituation)
+                        regSavedId = editId; u10Return = "U09"
+                    } else {
+                        regSavedId = vm.v2RegisterMeaning(regExpression, regMeaning, regImageKey, regSituation)
+                        u10Return = "U07"
+                    }
                     regChecked = false
                     route = "U10"
                 }
@@ -305,14 +345,20 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onSaveUnconfirmed = {
                 if (regExpression.isBlank() || regMeaning.isBlank()) { regShowError = true; return@U05Register }
                 scope.launch {
-                    vm.v2RegisterMeaning(regExpression, regMeaning, regImageKey, regSituation)
-                    toast("미확인으로 저장했어요. 학생과 확인하면 카드로 나와요.")
-                    resetRegForm()
-                    route = "U07"
+                    if (editId > 0) {
+                        vm.v2UpdateMeaning(editId, regExpression, regMeaning, regImageKey, regSituation)
+                        toast("수정했어요. 학생과 확인하면 다시 쓸 수 있어요.")
+                        val back = "U09"
+                        resetRegForm(); route = back
+                    } else {
+                        vm.v2RegisterMeaning(regExpression, regMeaning, regImageKey, regSituation)
+                        toast("미확인으로 저장했어요. 학생과 확인하면 카드로 나와요.")
+                        resetRegForm(); route = "U07"
+                    }
                 }
             },
             onRetry = { regShowError = false },
-            onCancel = { resetRegForm(); route = "U07" },
+            onCancel = { val back = if (editId > 0) "U09" else "U07"; resetRegForm(); route = back },
             onHelp = ::help,
         )
 
@@ -346,8 +392,90 @@ fun MalitdaV2App(vm: SessionViewModel) {
                     }
                 }
             },
-            onLater = { toast("미확인 보관함에 두었어요"); resetRegForm(); route = "U07" },
-            onBack = { toast("미확인으로 두었어요"); resetRegForm(); route = "U07" },
+            onLater = { toast("미확인 보관함에 두었어요"); val r = u10Return; resetRegForm(); route = r },
+            onBack = { toast("미확인으로 두었어요"); val r = u10Return; resetRegForm(); route = r },
+            onHelp = ::help,
+        )
+
+        // ---------- 내 표현(U08·U09)·보관함(U11)·설정(U12) ----------
+        "U08" -> U08Library(
+            studentName = name,
+            meanings = meanings,
+            onOpen = { picked -> libId = picked.id; route = "U09" },
+            onRegister = { route = "U07" },
+            onArchive = { route = "U11" },
+            onHome = { goHome() },
+            onSettings = { route = "U12" },
+            onHelp = ::help,
+        )
+
+        "U09" -> libMeaning?.let { lm ->
+            U09Detail(
+                meaning = lm,
+                expression = libExpression,
+                onEdit = {
+                    // U09-E: 폼을 원본으로 채우고 수정 모드로 연다.
+                    regExpression = libExpression; regMeaning = lm.text
+                    regImageKey = lm.imageKey; regSituation = lm.situation.orEmpty()
+                    regShowError = false; editId = lm.id
+                    route = "U05"
+                },
+                onDeactivate = { vm.v2SetActive(lm.id, false); toast("잠깐 사용하지 않아요") },
+                onReconfirm = { startReconfirm(lm, from = "U09") },
+                onDelete = { route = "U09D" },
+                onToLibrary = { route = "U08" },
+                onBack = { route = "U08" },
+                onHelp = ::help,
+            )
+        } ?: V2Screen {}
+
+        "U09D" -> libMeaning?.let { lm ->
+            U09Delete(
+                meaning = lm,
+                onConfirmDelete = {
+                    scope.launch {
+                        vm.v2DeleteMeaning(lm.id)
+                        toast("뜻을 삭제했어요")
+                        libId = -1L
+                        route = "U08"
+                    }
+                },
+                onKeep = { route = "U09" },
+                onHelp = ::help,
+            )
+        } ?: V2Screen {}
+
+        "U11" -> U11Archive(
+            meanings = archived,
+            onConfirm = { picked -> libId = picked.id; startReconfirm(picked, from = "U11") },
+            onToLibrary = { route = "U08" },
+            onBack = { route = "U08" },
+            onHelp = ::help,
+        )
+
+        "U12" -> U12Settings(
+            studentName = name,
+            onStudent = { u07sReturn = "U12"; route = "U07S" },
+            onMicGuide = { route = "U12P" },
+            onSoundGuide = { route = "U12T" },
+            onRegister = { route = "U07" },
+            onFirstGuide = { route = "U00" },
+            onHome = { goHome() },
+            onLibrary = { route = "U08" },
+            onHelp = ::help,
+        )
+
+        "U12P" -> U12MicGuide(
+            onPickCards = { route = "U06" },
+            onOpenSettings = { openAppSettings() },
+            onBack = { route = "U12" },
+            onHelp = ::help,
+        )
+
+        "U12T" -> U12SoundGuide(
+            onPickCards = { route = "U06" },
+            onOpenSettings = { openTtsSettings() },
+            onBack = { route = "U12" },
             onHelp = ::help,
         )
 

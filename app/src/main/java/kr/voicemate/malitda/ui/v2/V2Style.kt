@@ -321,9 +321,9 @@ fun V2TextField(
     }
 }
 
-/** 하단 탭(홈·내 표현·설정). U01 계열에서만 쓴다. */
+/** 하단 탭(홈·내 표현·설정). selected: "home" | "library" | "settings". */
 @Composable
-fun V2BottomNav(onLibrary: () -> Unit, onSettings: () -> Unit) {
+fun V2BottomNav(selected: String, onHome: () -> Unit, onLibrary: () -> Unit, onSettings: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -334,10 +334,29 @@ fun V2BottomNav(onLibrary: () -> Unit, onSettings: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        NavItem("⌂", "홈", selected = true) {}
-        NavItem("♡", "내 표현", selected = false, onClick = onLibrary)
-        NavItem("⚙", "설정", selected = false, onClick = onSettings)
+        NavItem("⌂", "홈", selected = selected == "home", onClick = onHome)
+        NavItem("♡", "내 표현", selected = selected == "library", onClick = onLibrary)
+        NavItem("⚙", "설정", selected = selected == "settings", onClick = onSettings)
     }
+}
+
+/** 붉은 위험 버튼(U09-D 삭제하기). */
+@Composable
+fun V2DangerButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Box(
+        modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            .height(64.dp)
+            .shadow(6.dp, RoundedCornerShape(32.dp), clip = false, spotColor = Color(0x33E2566E))
+            .background(
+                Brush.horizontalGradient(listOf(Color(0xFFE85C7A), Color(0xFFE0485F))),
+                RoundedCornerShape(32.dp),
+            )
+            .clip(RoundedCornerShape(32.dp))
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center,
+    ) { Text(text, style = jua(22, Color.White)) }
 }
 
 @Composable

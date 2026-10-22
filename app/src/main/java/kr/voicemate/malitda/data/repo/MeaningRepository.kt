@@ -18,6 +18,33 @@ class MeaningRepository(private val dao: MeaningDao) {
     suspend fun recordUse(id: Long) = dao.incrementUse(id)
     /** 학생과 함께 확인(U10-C) 완료 → 전달 흐름에 활성화. */
     suspend fun setConfirmed(id: Long, confirmed: Boolean) = dao.setConfirmed(id, confirmed)
+    suspend fun setActive(id: Long, active: Boolean) = dao.setActive(id, active)
+    fun observeArchived(profileId: Long): Flow<List<MeaningEntity>> = dao.observeArchived(profileId)
+    suspend fun expressionsFor(meaningId: Long) = dao.expressionsFor(meaningId)
+
+    /** 수정(U09-E): 내용을 바꾸면 updatedAt을 올리고 미확인으로 되돌린다 — 학생과 다시 확인해야 쓸 수 있다. */
+    suspend fun update(id: Long, text: String, imageKey: String?, situation: String?, expressions: List<String>) {
+        val cur = dao.byId(id) ?: return
+        dao.update(
+            cur.copy(
+                text = text.trim(), imageKey = imageKey,
+                situation = situation?.trim()?.ifBlank { null },
+                confirmed = false, updatedAt = System.currentTimeMillis(),
+            )
+        )
+        dao.deleteExpressionsFor(id)
+        expressions.map { it.trim() }.filter { it.isNotBlank() }.forEach { expr ->
+            dao.insertExpression(
+                MeaningExpressionEntity(profileId = cur.profileId, meaningId = id, text = expr, key = TextNormalizer.normalize(expr))
+            )
+        }
+    }
+
+    /** 삭제(U09-D): 연결한 표현도 함께 지운다. 되돌릴 수 없다. */
+    suspend fun delete(id: Long) {
+        dao.deleteExpressionsFor(id)
+        dao.delete(id)
+    }
 
     suspend fun save(
         profileId: Long,
