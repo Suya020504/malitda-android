@@ -247,14 +247,22 @@ fun CardGlyph(size: Int = 22, tint: Color = V2C.BannerIcon) {
     }
 }
 
+/**
+ * 앱에 내장된 의미 그림 목록. 그림 선택 화면(U05-M)이 이 순서대로 보여 준다.
+ * 새 그림 추가: res/drawable-nodpi/v2_card_<키>.png를 넣고 여기에 한 줄 추가(docs/meaning-image-guide.md).
+ * 키는 DB(meanings.imageKey)에 저장되므로 한 번 쓴 키는 바꾸거나 지우지 않는다.
+ */
+val BUILTIN_MEANING_IMAGES: List<Pair<String, Int>> = listOf(
+    "walk" to R.drawable.v2_card_walk,
+    "water" to R.drawable.v2_card_water,
+    "rest" to R.drawable.v2_card_rest,
+    "cold" to R.drawable.v2_card_cold,
+)
+
+private val BUILTIN_IMAGE_MAP = BUILTIN_MEANING_IMAGES.toMap()
+
 /** 내장 의미 그림 키 → 리소스. 모르는 키·null은 그림 없음(U03-I)으로 다룬다. */
-fun meaningImageRes(imageKey: String?): Int? = when (imageKey) {
-    "walk" -> R.drawable.v2_card_walk
-    "water" -> R.drawable.v2_card_water
-    "rest" -> R.drawable.v2_card_rest
-    "cold" -> R.drawable.v2_card_cold
-    else -> null
-}
+fun meaningImageRes(imageKey: String?): Int? = imageKey?.let { BUILTIN_IMAGE_MAP[it] }
 
 @Composable
 fun meaningPainter(imageKey: String?): Painter? = meaningImageRes(imageKey)?.let { painterResource(it) }

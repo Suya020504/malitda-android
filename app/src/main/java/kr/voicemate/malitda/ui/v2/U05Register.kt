@@ -132,7 +132,8 @@ fun U05Register(
     }
 }
 
-private val PICKER_KEYS = listOf("walk", "water", "rest", "cold", null)
+/** 내장 그림 전부 + 맨 끝 '그림 없음'. 그림이 늘면 5개씩 줄을 바꿔 보여 준다. */
+private val PICKER_KEYS: List<String?> = BUILTIN_MEANING_IMAGES.map { it.first } + listOf(null)
 
 /** U05-M · 뜻을 보여줄 그림(화면 22) — 내장 그림 중 선택 후 확정. */
 @Composable
@@ -176,32 +177,37 @@ fun U05PickImage(
                 }
             }
             Spacer(Modifier.height(14.dp))
-            // 내장 그림 선택 줄
-            Row(
-                Modifier.fillMaxWidth().padding(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                PICKER_KEYS.forEach { key ->
-                    val selected = key == selectedKey
-                    Box(
-                        Modifier
-                            .weight(1f)
-                            .aspectRatio(1f)
-                            .background(V2C.Surface, RoundedCornerShape(16.dp))
-                            .border(
-                                if (selected) 3.dp else 1.5.dp,
-                                if (selected) V2C.Title else Color(0xFFE4DEF2),
-                                RoundedCornerShape(16.dp),
-                            )
-                            .clip(RoundedCornerShape(16.dp))
-                            .clickable { onSelect(key) },
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        val p = meaningPainter(key)
-                        if (p != null) Image(p, null, Modifier.fillMaxWidth().aspectRatio(1f), contentScale = ContentScale.Crop)
-                        else CardGlyph(size = 24)
+            // 내장 그림 선택 격자(5개씩 한 줄)
+            PICKER_KEYS.chunked(5).forEach { rowKeys ->
+                Row(
+                    Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    rowKeys.forEach { key ->
+                        val selected = key == selectedKey
+                        Box(
+                            Modifier
+                                .weight(1f)
+                                .aspectRatio(1f)
+                                .background(V2C.Surface, RoundedCornerShape(16.dp))
+                                .border(
+                                    if (selected) 3.dp else 1.5.dp,
+                                    if (selected) V2C.Title else Color(0xFFE4DEF2),
+                                    RoundedCornerShape(16.dp),
+                                )
+                                .clip(RoundedCornerShape(16.dp))
+                                .clickable { onSelect(key) },
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            val p = meaningPainter(key)
+                            if (p != null) Image(p, null, Modifier.fillMaxWidth().aspectRatio(1f), contentScale = ContentScale.Crop)
+                            else CardGlyph(size = 24)
+                        }
                     }
+                    // 마지막 줄이 짧아도 칸 크기를 같게 유지
+                    repeat(5 - rowKeys.size) { Spacer(Modifier.weight(1f)) }
                 }
+                Spacer(Modifier.height(10.dp))
             }
             Spacer(Modifier.height(12.dp))
             // 학생에게 익숙한 실제 사진을 그림으로 쓸 수 있다(예: 산책 장소 사진).
