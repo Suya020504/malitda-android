@@ -477,6 +477,20 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         viewModelScope.launch { resetSession(); c.profiles.switchTo(id) }
     }
 
+    // ---------- 학생별 그림체·R4 그림 만들기 ----------
+    val artStyle: StateFlow<String> = _profileId.flatMapLatest { c.settings.artStyle(it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, kr.voicemate.malitda.domain.ArtStyles.DEFAULT)
+
+    fun setArtStyle(styleId: String) { viewModelScope.launch { c.settings.setArtStyle(_profileId.value, styleId) } }
+
+    /** 지금 학생 그림체로 뜻 그림을 만들어 앱 안에 저장하고 그림 키를 돌려준다. */
+    suspend fun r4GenerateMeaningImage(context: android.content.Context, meaning: String): String {
+        val pid = _profileId.value
+        val anon = c.settings.r4AnonId(pid)
+        val bytes = kr.voicemate.malitda.data.ai.R4Client.generate(anon, artStyle.value, meaning)
+        return kr.voicemate.malitda.data.repo.MeaningImageStore.importBytes(context, bytes)
+    }
+
     fun v2RenameStudent(name: String) { viewModelScope.launch { c.profiles.rename(_profileId.value, name) } }
 
     suspend fun v2RemoveSamples(): Int {

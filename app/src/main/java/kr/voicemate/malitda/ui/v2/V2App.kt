@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
+import kr.voicemate.malitda.data.ai.R4Client as R4
 import kr.voicemate.malitda.data.db.MeaningEntity
 import kr.voicemate.malitda.tts.TtsState
 import kr.voicemate.malitda.ui.vm.SessionEvent
@@ -32,6 +33,15 @@ import kr.voicemate.malitda.ui.vm.SessionViewModel.V2Origin
  * U06 다른 뜻 선택과 예외 변형(U02-D, U03-E/M/V, U04-F/S)을 포함한다.
  * 등록(U05·U07)·내 표현(U08~U11)·설정(U12)·소리 확인(U13)은 다음 단계.
  */
+/** 그림 만들기 화면에 보여 줄 서버 상태 안내. null이면 생성할 수 있다. */
+private fun r4Note(s: R4.Status?): String? = when {
+    s == null -> "PC 서버 연결을 확인하고 있어요…"
+    !s.reachable -> "PC 서버에 연결되지 않았어요.\nPC에서 R4 서버를 켜고 adb reverse로 연결해 주세요."
+    s.reviewMode -> "PC 서버가 점검 모드예요.\n새 그림은 만들 수 없고, 사진이나 기본 그림을 쓸 수 있어요."
+    !s.ready -> "PC 서버에 그림 생성 키가 설정되지 않았어요."
+    else -> null
+}
+
 @Composable
 fun MalitdaV2App(vm: SessionViewModel) {
     val ctx = LocalContext.current
@@ -70,6 +80,12 @@ fun MalitdaV2App(vm: SessionViewModel) {
     var generating by remember { mutableStateOf(false) }
     // 그림 생성 회차. 그만두거나 등록을 끝내면 올려서, 늦게 도착한 그림이 다른 폼에 붙지 않게 한다.
     var genRound by remember { mutableStateOf(0) }
+    // R4 서버(팀원 그림 생성 서버) 상태·동의·그림체 미리보기
+    var r4Status by remember { mutableStateOf<R4.Status?>(null) }
+    var r4CheckRound by remember { mutableStateOf(0) }
+    var r4Consent by remember { mutableStateOf(false) }
+    var stylePreviews by remember { mutableStateOf<Map<String, ByteArray>>(emptyMap()) }
+    var u15Return by rememberSaveable { mutableStateOf("U12") }
 
     fun resetRegForm() {
         regExpression = ""; regMeaning = ""; regImageKey = null; regSituation = ""
@@ -87,6 +103,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
     val meanings by vm.meanings.collectAsStateWithLifecycle()
     val name by vm.profileName.collectAsStateWithLifecycle()
     val speaking by vm.ttsSpeaking.collectAsStateWithLifecycle()
+    val artStyle by vm.artStyle.collectAsStateWithLifecycle()
     val ttsState by vm.ttsState.collectAsStateWithLifecycle()
 
     fun toast(m: String) = Toast.makeText(ctx, m, Toast.LENGTH_SHORT).show()
@@ -216,6 +233,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
             "U11" -> route = "U08"
             "U12" -> route = "U01"
             "U12P", "U12T", "U14" -> route = "U12"
+            "U15" -> route = u15Return
             "U13" -> route = u13Return
             else -> goHome()
         }
@@ -451,7 +469,10 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onHelp = ::help,
         )
 
-        "U05M" -> U05PickImage(
+        "U05M" -> {
+          // 화면에 들어올 때 PC 서버 상태를 확인한다(꺼짐·점검 모드면 생성 대신 안내).
+          LaunchedEffect(r4CheckRound) { if (R4.isEnabled) r4Status = R4.status() }
+          U05PickImage(
             meaningText = regMeaning,
             selectedKey = regImageKey,
             onSelect = { regImageKey = it },
@@ -459,28 +480,55 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onUse = { route = "U05" },
             onCancel = { route = "U05" },
             onHelp = ::help,
-            onGenerate = if (!kr.voicemate.malitda.data.ai.MeaningImageGenerator.isAvailable) null else ({
+            serverNote = r4Note(r4Status),
+            styleLabel = kr.voicemate.malitda.domain.ArtStyles.label(artStyle),
+            onChangeStyle = { u15Return = "U05M"; route = "U15" },
+            consent = r4Consent,
+            onConsent = { r4Consent = it },
+            onRecheckServer = { r4CheckRound++ },
+            onGenerate = if (!R4.isEnabled) null else ({
                 if (regMeaning.isBlank()) {
                     toast("먼저 '전할 뜻'을 입력해 주세요")
                 } else if (!generating) {
                     generating = true
                     val round = ++genRound
                     scope.launch {
-                        val result = runCatching {
-                            val png = kr.voicemate.malitda.data.ai.MeaningImageGenerator.generate(ctx, regMeaning)
-                            kr.voicemate.malitda.data.repo.MeaningImageStore.importBytes(ctx, png)
-                        }
+                        val result = runCatching { vm.r4GenerateMeaningImage(ctx, regMeaning) }
                         // 그사이 그만뒀거나 등록을 끝냈다면 결과를 버린다(파일은 다음 정리 때 지워진다).
                         if (round != genRound) return@launch
                         generating = false
+                        // 한 번 생성할 때마다 동의를 다시 받는다(비용이 드는 동작).
+                        r4Consent = false
                         result.onSuccess { key -> regImageKey = key; toast("그림을 만들었어요. 학생과 함께 확인해 주세요.") }
-                            .onFailure { e -> toast((e.message ?: "그림을 만들지 못했어요") + " 사진이나 기본 그림을 써도 돼요.") }
+                            .onFailure { e ->
+                                toast(e.message ?: "그림을 만들지 못했어요")
+                                r4CheckRound++
+                            }
                     }
                 }
             }),
             generating = generating,
             onCancelGenerate = { genRound++; generating = false; toast("그림 만들기를 그만뒀어요") },
-        )
+          )
+        }
+
+        "U15" -> {
+            LaunchedEffect(Unit) {
+                if (R4.isEnabled) {
+                    r4Status = R4.status()
+                    if (r4Status?.reachable == true && stylePreviews.isEmpty()) stylePreviews = R4.stylePreviews()
+                }
+            }
+            U15ArtStyle(
+                studentName = name,
+                selected = artStyle,
+                previews = stylePreviews,
+                serverNote = if (!R4.isEnabled) "이 배포본에는 그림 만들기가 들어 있지 않아요." else if (r4Status?.reachable == false) "PC 서버에 연결되지 않아 미리보기 그림이 보이지 않아요. 그래도 고를 수 있어요." else null,
+                onSelect = { vm.setArtStyle(it) },
+                onBack = { route = u15Return },
+                onHelp = ::help,
+            )
+        }
 
         "U10" -> U10Activate(
             studentName = name,
@@ -578,6 +626,8 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onLargeText = { large -> vm.setFontScale(if (large) 1.2f else 1.0f) },
             trialLogging = settings.trialLogging,
             onTrialLog = { route = "U14" },
+            artStyleLabel = kr.voicemate.malitda.domain.ArtStyles.label(artStyle),
+            onArtStyle = { u15Return = "U12"; route = "U15" },
             onRemoveSamples = {
                 scope.launch {
                     val n = vm.v2RemoveSamples()

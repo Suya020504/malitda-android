@@ -12,15 +12,6 @@ val keystoreProps = Properties().apply {
     if (f.exists()) f.inputStream().use { load(it) }
 }
 
-// 그림 생성용 OpenAI 키. local.properties(깃 제외)에만 두고, 디버그 빌드에만 넣는다.
-// 릴리스 APK는 공개 배포되므로 키를 넣지 않는다 — APK에서 키를 꺼낼 수 있기 때문.
-val localProps = Properties().apply {
-    val f = rootProject.file("local.properties")
-    if (f.exists()) f.inputStream().use { load(it) }
-}
-val openAiKey: String = localProps.getProperty("OPENAI_API_KEY", "").trim()
-val openAiImageModel: String = localProps.getProperty("OPENAI_IMAGE_MODEL", "gpt-image-1").trim()
-
 android {
     namespace = "kr.voicemate.malitda"
     compileSdk = 36
@@ -32,8 +23,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 5
         versionName = "0.2.2"
-        buildConfigField("String", "OPENAI_API_KEY", "\"\"")
-        buildConfigField("String", "OPENAI_IMAGE_MODEL", "\"$openAiImageModel\"")
+        // 그림 만들기용 R4 서버 주소. 키는 서버에만 있고 앱에는 넣지 않는다. 릴리스는 비워 기능을 끈다.
+        buildConfigField("String", "R4_SERVER_URL", "\"\"")
         vectorDrawables { useSupportLibrary = true }
         // 제출용 빌드: -PsubmitAbis=arm 이면 x86_64(에뮬레이터용)를 뺀다
         val arm = listOf("arm64-v8a", "armeabi-v7a")
@@ -76,7 +67,8 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
-            buildConfigField("String", "OPENAI_API_KEY", "\"$openAiKey\"")
+            // adb reverse tcp:8769 tcp:8769 로 PC의 R4 서버에 연결한다.
+            buildConfigField("String", "R4_SERVER_URL", "\"http://127.0.0.1:8769\"")
         }
     }
 

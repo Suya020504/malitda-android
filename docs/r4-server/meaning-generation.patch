@@ -1,0 +1,84 @@
+diff --git a/backend/image_api.py b/backend/image_api.py
+index f1214ca..9df4a05 100644
+--- a/backend/image_api.py
++++ b/backend/image_api.py
+@@ -30,7 +30,7 @@ STYLE_ID = 'malitda-storybook-v1'
+ REFERENCE = ROOT / 'assets' / 'style-anchor.jpg'
+ if str(Path(__file__).parent) not in sys.path:
+     sys.path.insert(0, str(Path(__file__).parent))
+-from style_profiles import attach_routes, profile_prompt, store_candidate
++from style_profiles import attach_routes, meaning_prompt, profile_prompt, store_candidate
+ from tts_api import attach_tts_routes
+ 
+ 
+@@ -43,6 +43,8 @@ class Generation(BaseModel):
+     profile_id: str | None = Field(default=None, pattern=r'^[a-zA-Z0-9_-]{8,64}$')
+     profile_revision: int | None = Field(default=None, ge=1)
+     scene: Literal['walk','speak','balloon'] | None = None
++    # Malitda v2: generate the supporter's registered meaning in the student's saved style.
++    meaning: str | None = Field(default=None, min_length=1, max_length=120)
+ 
+ 
+ class KeySettings(BaseModel):
+@@ -217,7 +219,12 @@ def create_app(provider=None, tts_provider=None):
+         if not engine.ready:
+             raise HTTPException(503, '새 재료 화면에서 OpenRouter API 키를 입력해 주세요.')
+         context = None
+-        if any(v is not None for v in (body.profile_id, body.profile_revision, body.scene)):
++        if body.meaning is not None:
++            # Meaning path: profile + revision required, fixed scene not allowed.
++            if body.profile_id is None or body.profile_revision is None or body.scene is not None:
++                raise HTTPException(422, '뜻 그림은 프로필과 버전을 지정하고 장면은 비워 주세요.')
++            context = meaning_prompt(body.profile_id, body.profile_revision, body.meaning)
++        elif any(v is not None for v in (body.profile_id, body.profile_revision, body.scene)):
+             if any(v is None for v in (body.profile_id, body.profile_revision, body.scene)):
+                 raise HTTPException(422, '프로필, 버전, 장면을 모두 지정해 주세요.')
+             context = profile_prompt(body.profile_id, body.profile_revision, body.scene)
+@@ -241,8 +248,9 @@ def create_app(provider=None, tts_provider=None):
+                 result = engine.generate(prompt, reference=True, anchor_path=context['anchor_path']) if context else engine.generate(prompt, reference=body.style=='cartoon')
+             else:
+                 result = engine.generate(prompt)
+-            if context:
++            if context and body.scene is not None:
+                 store_candidate(body.profile_id, body.profile_revision, body.scene, result['data_url'])
++            if context:
+                 result.update(style_id=context['style_id'], reference_id=context['character_id'], profile_id=body.profile_id, profile_revision=body.profile_revision, scene=body.scene)
+             data = {**result, 'request_id': body.request_id, 'review_status': 'pending'}
+             code = 200
+diff --git a/backend/style_profiles.py b/backend/style_profiles.py
+index b3b6881..4229699 100644
+--- a/backend/style_profiles.py
++++ b/backend/style_profiles.py
+@@ -154,6 +154,32 @@ def profile_prompt(profile_id, expected_revision, scene, db_path=None):
+             'revision': profile['revision'], 'character_id': profile['character_id'], 'scene': scene}
+ 
+ 
++def meaning_prompt(profile_id, expected_revision, meaning, db_path=None):
++    """Student's saved style + a meaning sentence registered by the supporter (Malitda v2).
++
++    Unlike fixed scenes, the result is returned to the app only and is not stored as a
++    profile candidate: the app saves it locally and the student must confirm it first.
++    """
++    profile = get_profile(profile_id, db_path)
++    if profile['revision'] != expected_revision:
++        raise HTTPException(409, '표현 방식이 변경되었습니다. 최신 설정을 확인하세요.')
++    style = profile['style_id']
++    reference = ASSETS.get(style, {}).get('walk', '/assets/style-anchor.jpg')
++    anchor = ROOT / reference.lstrip('/')
++    if not anchor.is_file():
++        anchor = ROOT / 'assets' / 'style-anchor.jpg'
++    prompt = ('Create one visual communication card candidate. Keep the main subject centered so the image still '
++              'reads when cropped to a wide 3:2 card. No text, no letters, '
++              'no numbers, no logos, no speech bubbles. A person who cannot read must understand the meaning '
++              'from the picture alone. Keep the scene calm and friendly; avoid dark, scary or injury scenes. '
++              'If people appear, keep faces simple. The supplied reference depicts fictional people, not a real student. '
++              f"Target representation: {STYLE_MAP[style]['prompt']} "
++              'Use the reference only for the visual medium and mood; do not copy its scene. '
++              'Meaning to depict (Korean, written by the supporter): ' + meaning)
++    return {'prompt': prompt, 'anchor_path': anchor, 'style_id': style,
++            'revision': profile['revision'], 'character_id': profile['character_id']}
++
++
+ class StyleSelection(BaseModel):
+     model_config = ConfigDict(extra='forbid')
+     style_id: str = Field(min_length=1, max_length=32)

@@ -154,10 +154,17 @@ fun U05PickImage(
     onUse: () -> Unit,
     onCancel: () -> Unit,
     onHelp: () -> Unit,
-    // null이면 '그림 만들기'를 숨긴다(키가 없는 빌드).
+    // null이면 '그림 만들기'를 숨긴다(서버 연결이 없는 릴리스 빌드).
     onGenerate: (() -> Unit)? = null,
     generating: Boolean = false,
     onCancelGenerate: (() -> Unit)? = null,
+    // R4 서버 상태 안내(꺼짐·점검 모드). null이면 생성 가능.
+    serverNote: String? = null,
+    styleLabel: String = "",
+    onChangeStyle: () -> Unit = {},
+    consent: Boolean = false,
+    onConsent: (Boolean) -> Unit = {},
+    onRecheckServer: () -> Unit = {},
 ) {
     V2Screen {
         V2Header(onBack = onCancel, onHelp = onHelp)
@@ -233,13 +240,55 @@ fun U05PickImage(
                     V2SecondaryButton("기다리는 동안 다른 칸 채우기") { onUse() }
                     onCancelGenerate?.let { cancel -> V2TextButton("그림 만들기 그만두기") { cancel() } }
                 } else {
-                    V2SecondaryButton("✨  이 뜻으로 그림 만들기") { onGenerate() }
-                    Spacer(Modifier.height(6.dp))
-                    Text(
-                        "그림을 만들 때 '전할 뜻' 문장이 OpenAI로 전송돼요.\n학생 이름과 학생이 쓰는 표현은 보내지 않아요.",
-                        style = jua(13, V2C.Muted, 1.5f), textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
-                    )
+                    // 그림체 줄
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp)
+                            .background(V2C.BannerBg, RoundedCornerShape(18.dp))
+                            .clip(RoundedCornerShape(18.dp))
+                            .clickable { onChangeStyle() }
+                            .padding(horizontal = 18.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text("그림체: $styleLabel", style = jua(16, V2C.Title), modifier = Modifier.weight(1f))
+                        Text("바꾸기 →", style = jua(15, V2C.Muted))
+                    }
+                    Spacer(Modifier.height(10.dp))
+                    if (serverNote != null) {
+                        V2Banner(serverNote, icon = Icons.Rounded.Info)
+                        V2TextButton("연결 다시 확인") { onRecheckServer() }
+                    } else {
+                        // 외부 전송·비용 동의(팀원 R4 규칙: 동의와 생성 버튼을 분리)
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp)
+                                .clip(RoundedCornerShape(18.dp))
+                                .clickable { onConsent(!consent) }
+                                .padding(horizontal = 8.dp, vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Box(
+                                Modifier.size(26.dp)
+                                    .background(if (consent) V2C.GreenText else Color.Transparent, RoundedCornerShape(6.dp))
+                                    .border(2.dp, if (consent) V2C.GreenText else Color(0xFFC9C2DF), RoundedCornerShape(6.dp)),
+                                contentAlignment = Alignment.Center,
+                            ) { if (consent) Text("✓", style = jua(16, Color.White)) }
+                            Spacer(Modifier.width(12.dp))
+                            Text(
+                                "'전할 뜻' 문장이 PC 서버를 거쳐 그림 AI로 전송되고, 비용이 들어요. 학생 이름·사진·목소리는 보내지 않아요.",
+                                style = jua(14, V2C.Ink, 1.5f),
+                            )
+                        }
+                        Spacer(Modifier.height(8.dp))
+                        if (consent) V2SecondaryButton("✨  이 뜻으로 그림 만들기") { onGenerate() }
+                        else Box(
+                            Modifier.fillMaxWidth().padding(horizontal = 20.dp).height(60.dp)
+                                .background(Color(0xFFE9E6F2), RoundedCornerShape(30.dp)),
+                            contentAlignment = Alignment.Center,
+                        ) { Text("✨  이 뜻으로 그림 만들기", style = jua(20, Color(0xFFA9A3BE))) }
+                    }
                 }
             }
             Spacer(Modifier.height(14.dp))

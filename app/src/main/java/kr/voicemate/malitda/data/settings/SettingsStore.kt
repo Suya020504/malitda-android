@@ -63,6 +63,26 @@ class SettingsStore(context: Context) {
     suspend fun setSttEngine(id: String) { ds.edit { it[K.sttEngine] = id } }
     suspend fun setV2Seeded(v: Boolean) { ds.edit { it[K.v2Seeded] = v } }
     suspend fun setTrialLogging(v: Boolean) { ds.edit { it[K.trialLogging] = v } }
+
+    // ---------- 학생별 그림체·R4 익명 ID ----------
+    fun artStyle(profileId: Long): Flow<String> =
+        ds.data.map { kr.voicemate.malitda.domain.ArtStyles.normalize(it[stringKey("art_style_$profileId")]) }
+
+    suspend fun setArtStyle(profileId: Long, styleId: String) {
+        ds.edit { it[stringKey("art_style_$profileId")] = kr.voicemate.malitda.domain.ArtStyles.normalize(styleId) }
+    }
+
+    /** R4 서버에 보낼 익명 ID. 학생 이름·DB id 대신 이 무작위 값만 서버에 간다. */
+    suspend fun r4AnonId(profileId: Long): String {
+        val key = stringKey("r4_anon_$profileId")
+        ds.data.first()[key]?.let { return it }
+        val created = java.util.UUID.randomUUID().toString()
+        var result = created
+        ds.edit { p -> result = p[key] ?: created.also { p[key] = it } }
+        return result
+    }
+
+    private fun stringKey(name: String) = androidx.datastore.preferences.core.stringPreferencesKey(name)
     suspend fun clearAll() { ds.edit { it.clear() } }
 
     private object K {

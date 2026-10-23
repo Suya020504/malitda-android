@@ -54,6 +54,8 @@ fun U12Settings(
     trialLogging: Boolean = false,
     onTrialLog: () -> Unit = {},
     onRemoveSamples: () -> Unit = {},
+    artStyleLabel: String? = null,
+    onArtStyle: () -> Unit = {},
 ) {
     var confirmRemove by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
     V2Screen {
@@ -108,6 +110,10 @@ fun U12Settings(
             SettingRow(icon = Icons.Rounded.AddCircle, label = "지원자와 함께 등록") { onRegister() }
             Spacer(Modifier.height(12.dp))
             SettingRow(icon = Icons.Rounded.Info, label = if (largeText) "글자 크기: 크게" else "글자 크기: 보통") { onLargeText(!largeText) }
+            if (artStyleLabel != null) {
+                Spacer(Modifier.height(12.dp))
+                SettingRow(icon = Icons.Rounded.AddCircle, label = "그림체: $artStyleLabel") { onArtStyle() }
+            }
             Spacer(Modifier.height(12.dp))
             SettingRow(icon = Icons.Rounded.Check, label = if (trialLogging) "실증 기록 (기록 중)" else "실증 기록") { onTrialLog() }
             Spacer(Modifier.height(10.dp))
