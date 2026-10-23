@@ -1,4 +1,4 @@
-import java.util.Properties
+﻿import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -12,8 +12,8 @@ val keystoreProps = Properties().apply {
     if (f.exists()) f.inputStream().use { load(it) }
 }
 
-// 그림 생성용 OpenAI 키. local.properties(깃 제외)에만 두고, 디버그 빌드에만 넣는다.
-// 릴리스 APK는 공개 배포되므로 키를 넣지 않는다 — APK에서 키를 꺼낼 수 있기 때문.
+// 洹몃┝ ?앹꽦??OpenAI ?? local.properties(源??쒖쇅)?먮쭔 ?먭퀬, ?붾쾭洹?鍮뚮뱶?먮쭔 ?ｋ뒗??
+// 由대━??APK??怨듦컻 諛고룷?섎?濡??ㅻ? ?ｌ? ?딅뒗????APK?먯꽌 ?ㅻ? 爰쇰궪 ???덇린 ?뚮Ц.
 val localProps = Properties().apply {
     val f = rootProject.file("local.properties")
     if (f.exists()) f.inputStream().use { load(it) }
@@ -30,13 +30,12 @@ android {
         minSdk = 26
         targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionCode = 4
-        versionName = "0.2.1"
+        versionCode = 5
+        versionName = "0.2.2"
         buildConfigField("String", "OPENAI_API_KEY", "\"\"")
         buildConfigField("String", "OPENAI_IMAGE_MODEL", "\"$openAiImageModel\"")
         vectorDrawables { useSupportLibrary = true }
-        // 제출용 빌드: -PsubmitAbis=arm 이면 x86_64(에뮬레이터용)를 뺀다
-        val arm = listOf("arm64-v8a", "armeabi-v7a")
+        // ?쒖텧??鍮뚮뱶: -PsubmitAbis=arm ?대㈃ x86_64(?먮??덉씠?곗슜)瑜?類??        val arm = listOf("arm64-v8a", "armeabi-v7a")
         ndk { abiFilters += if (project.findProperty("submitAbis") == "arm") arm else arm + "x86_64" }
         externalNativeBuild {
             cmake {
@@ -80,7 +79,7 @@ android {
         }
     }
 
-    // 마이그레이션 테스트가 내보낸 스키마(1.json·2.json)를 읽는다.
+    // 留덉씠洹몃젅?댁뀡 ?뚯뒪?멸? ?대낫???ㅽ궎留?1.json쨌2.json)瑜??쎈뒗??
     sourceSets { getByName("androidTest").assets.srcDir("$projectDir/schemas") }
 
     compileOptions {
@@ -114,7 +113,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    // room-testing의 스키마 읽기가 kotlinx-serialization 버전 불일치로 깨지지 않도록 맞춘다(PR #1).
+    // room-testing???ㅽ궎留??쎄린媛 kotlinx-serialization 踰꾩쟾 遺덉씪移섎줈 源⑥?吏 ?딅룄濡?留욎텣??PR #1).
     implementation(platform("org.jetbrains.kotlinx:kotlinx-serialization-bom:1.8.1"))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
@@ -135,8 +134,7 @@ dependencies {
     implementation(libs.sqlcipher.android)
     debugImplementation(libs.androidx.compose.ui.tooling)
     testImplementation(libs.junit)
-    // 계측 테스트(PR #1에서 이식): 마이그레이션·저장소 검증
-    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    // 怨꾩륫 ?뚯뒪??PR #1?먯꽌 ?댁떇): 留덉씠洹몃젅?댁뀡쨌??μ냼 寃利?    androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test:runner:1.7.0")
     androidTestImplementation("androidx.test:core:1.7.0")
     androidTestImplementation("androidx.room:room-testing:2.8.2")
