@@ -27,6 +27,8 @@ data class Settings(
     val sttEngine: String = "whisper",
     /** v2 기본 의미 4종을 넣었는지(최초 1회만). */
     val v2Seeded: Boolean = false,
+    /** 실증 기록. 기본 꺼짐 — 지원자가 설정에서 켰을 때만 대화 시도 결과를 남긴다. */
+    val trialLogging: Boolean = false,
 )
 
 class SettingsStore(context: Context) {
@@ -44,6 +46,7 @@ class SettingsStore(context: Context) {
             currentProfileId = p[K.profile] ?: 0L,
             sttEngine = p[K.sttEngine] ?: "whisper",
             v2Seeded = p[K.v2Seeded] ?: false,
+            trialLogging = p[K.trialLogging] ?: false,
         )
     }
 
@@ -59,6 +62,7 @@ class SettingsStore(context: Context) {
     suspend fun setCurrentProfile(id: Long) { ds.edit { it[K.profile] = id } }
     suspend fun setSttEngine(id: String) { ds.edit { it[K.sttEngine] = id } }
     suspend fun setV2Seeded(v: Boolean) { ds.edit { it[K.v2Seeded] = v } }
+    suspend fun setTrialLogging(v: Boolean) { ds.edit { it[K.trialLogging] = v } }
     suspend fun clearAll() { ds.edit { it.clear() } }
 
     private object K {
@@ -72,5 +76,6 @@ class SettingsStore(context: Context) {
         val profile = longPreferencesKey("current_profile")
         val sttEngine = androidx.datastore.preferences.core.stringPreferencesKey("stt_engine")
         val v2Seeded = booleanPreferencesKey("v2_seeded")
+        val trialLogging = booleanPreferencesKey("trial_logging")
     }
 }

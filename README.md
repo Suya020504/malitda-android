@@ -66,6 +66,8 @@ adb push x.wav /data/local/tmp/ && adb shell "cat /data/local/tmp/x.wav | run-as
 
 원음성 파일 미저장, 인식 문장 로그 미기록, 공유 이력·상대방 미저장, 사용자별 분리 저장, 앱 안에서 개별 삭제·전체 초기화, 백업 제외(`data_extraction_rules`).
 
+**실증 기록(설정 › 실증 기록, 기본 꺼짐)**: 지원자가 켰을 때만 대화 시도마다 시작 방식(말/카드), 말로 바로 맞았는지, 카드로 바꿨는지, '다른 뜻' 횟수, 전달 여부, 상대 이해 여부, 지원자 도움 여부, 전달한 뜻 문장을 기기 안 암호화 DB에 남긴다. 학생이 한 말·앱이 들은 문장·음성은 남기지 않는다. CSV로 내보내기와 학생별 삭제를 지원한다.
+
 ## 서드파티 라이선스
 
 - [whisper.cpp](https://github.com/ggml-org/whisper.cpp) — MIT · ggml 모델 `ggml-base-q5_1`(OpenAI Whisper, MIT)

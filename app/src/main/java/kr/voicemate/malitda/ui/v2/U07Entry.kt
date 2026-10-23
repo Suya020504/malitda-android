@@ -96,10 +96,13 @@ fun U07NewSession(
     onAdd: (String) -> Unit,
     onCancel: () -> Unit,
     onHelp: () -> Unit,
+    onRename: (String) -> Unit = {},
 ) {
     val name = studentName.ifBlank { "친구" }
     var adding by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf(false) }
     var newName by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf("") }
+    var renaming by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf(false) }
+    var renameText by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf("") }
     V2Screen {
         V2Header(onBack = onCancel, onHelp = onHelp)
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
@@ -131,7 +134,20 @@ fun U07NewSession(
                     }
                 }
             }
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(12.dp))
+            // 지금 학생 이름 바꾸기(사전은 그대로)
+            if (renaming) {
+                Box(Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
+                    V2TextField(value = renameText, onValueChange = { renameText = it }, placeholder = "학생 이름")
+                }
+                Spacer(Modifier.height(10.dp))
+                V2SecondaryButton("이 이름으로 바꾸기") {
+                    if (renameText.isNotBlank()) { onRename(renameText.trim()); renaming = false }
+                }
+            } else {
+                V2TextButton("${name} 이름 바꾸기") { renameText = if (name == "친구") "" else name; renaming = true }
+            }
+            Spacer(Modifier.height(8.dp))
             V2Banner("학생을 바꾸면,\n말하던 내용과 선택한 뜻은 지워져요.", icon = Icons.Rounded.Refresh)
             // 다른 학생 전환
             if (others.isNotEmpty()) {

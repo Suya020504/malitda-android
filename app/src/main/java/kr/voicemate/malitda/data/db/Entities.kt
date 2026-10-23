@@ -69,6 +69,33 @@ data class MeaningEntity(
     val useCount: Int,
 )
 
+/**
+ * 실증 기록(DB v3): 대화 시도 한 번의 결과. 설정에서 켰을 때만 남긴다.
+ * 학생이 한 말·앱이 들은 문장은 저장하지 않는다 — 결과 종류와 전달한 뜻만 남긴다.
+ */
+@Entity(tableName = "trial_logs", indices = [Index("profileId")])
+data class TrialLogEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val profileId: Long,
+    val startedAt: Long,
+    val endedAt: Long,
+    /** 시작 방식: VOICE(말하기) / CARD(홈 카드). */
+    val origin: String,
+    /** 말로 시작해 첫 후보가 바로 맞았는가. */
+    val voiceFirstHit: Boolean,
+    /** 말로 시작했다가 카드로 바꿨는가. */
+    val usedCardFallback: Boolean,
+    /** '다른 뜻이에요'를 누른 횟수. */
+    val otherMeaningCount: Int,
+    /** 학생이 뜻을 확정해 전달 화면까지 갔는가. */
+    val delivered: Boolean,
+    /** 상대가 이해했는가: 1 예, 0 아니요, -1 기록 안 함. */
+    val understood: Int,
+    val supporterHelped: Boolean,
+    val meaningId: Long?,
+    val meaningText: String?,
+)
+
 /** 표현→뜻 연결: 정규화된 표현(key) 하나가 뜻 하나를 가리킨다. */
 @Entity(
     tableName = "meaning_expressions",

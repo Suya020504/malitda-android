@@ -11,9 +11,9 @@ import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 @Database(
     entities = [
         ProfileEntity::class, ExpressionEntity::class, CorrectionEntity::class, CounterEntity::class,
-        MeaningEntity::class, MeaningExpressionEntity::class,
+        MeaningEntity::class, MeaningExpressionEntity::class, TrialLogEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -22,6 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun correctionDao(): CorrectionDao
     abstract fun counterDao(): CounterDao
     abstract fun meaningDao(): MeaningDao
+    abstract fun trialLogDao(): TrialLogDao
 
     companion object {
         const val NAME = "malitda.db"
@@ -47,12 +48,28 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        /** v2 → v3: 실증 기록(trial_logs)만 추가. 기존 데이터는 그대로 보존한다. */
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `trial_logs` (" +
+                        "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `profileId` INTEGER NOT NULL, " +
+                        "`startedAt` INTEGER NOT NULL, `endedAt` INTEGER NOT NULL, `origin` TEXT NOT NULL, " +
+                        "`voiceFirstHit` INTEGER NOT NULL, `usedCardFallback` INTEGER NOT NULL, " +
+                        "`otherMeaningCount` INTEGER NOT NULL, `delivered` INTEGER NOT NULL, " +
+                        "`understood` INTEGER NOT NULL, `supporterHelped` INTEGER NOT NULL, " +
+                        "`meaningId` INTEGER, `meaningText` TEXT)"
+                )
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_trial_logs_profileId` ON `trial_logs` (`profileId`)")
+            }
+        }
+
         /** SQLCipher로 암호화된 로컬 DB. 키는 Android Keystore가 감싼 무작위 32바이트. */
         fun build(context: Context, passphrase: ByteArray): AppDatabase {
             System.loadLibrary("sqlcipher")
             return Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, NAME)
                 .openHelperFactory(SupportOpenHelperFactory(passphrase))
-                .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .build()
         }
     }

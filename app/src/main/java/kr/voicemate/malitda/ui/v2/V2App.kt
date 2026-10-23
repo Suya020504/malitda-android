@@ -90,8 +90,8 @@ fun MalitdaV2App(vm: SessionViewModel) {
     val ttsState by vm.ttsState.collectAsStateWithLifecycle()
 
     fun toast(m: String) = Toast.makeText(ctx, m, Toast.LENGTH_SHORT).show()
-    fun stub(what: String) = toast("$what 은(는) 다음 단계에서 열려요")
-    fun help() = toast("도움말은 준비 중이에요")
+    var helpOpen by remember { mutableStateOf(false) }
+    fun help() { helpOpen = true }
 
     // 선택된 뜻을 계속 관찰한다(수정·삭제 감지 → U03-V).
     var meaning by remember { mutableStateOf<MeaningEntity?>(null) }
@@ -151,6 +151,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
     fun startMic() {
         vm.prepareRespeak()
         vm.v2ClearHeard()
+        vm.trialStartVoice()
         val files = vm.testAudioFiles()
         // 에뮬레이터 등 평가음원이 있으면 마이크 없이 같은 인식 흐름을 탄다.
         if (files.isNotEmpty()) { route = "U02"; vm.recognizeTestFile(files.first()); return }
@@ -214,7 +215,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
             "U09D" -> route = "U09"
             "U11" -> route = "U08"
             "U12" -> route = "U01"
-            "U12P", "U12T" -> route = "U12"
+            "U12P", "U12T", "U14" -> route = "U12"
             "U13" -> route = u13Return
             else -> goHome()
         }
@@ -224,6 +225,10 @@ fun MalitdaV2App(vm: SessionViewModel) {
     val m = meaning
     val changed = m != null && v2.snapshotUpdatedAt != null &&
         (m.updatedAt != v2.snapshotUpdatedAt || !m.confirmed || !m.active)
+    val trialDraft by vm.trialDraft.collectAsStateWithLifecycle()
+    val trialLogs by vm.trialLogs.collectAsStateWithLifecycle()
+
+    if (helpOpen) V2HelpDialog(helpTextFor(route)) { helpOpen = false }
 
     when (route) {
         "U00" -> U00Guide(
@@ -243,7 +248,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
             name = name,
             meanings = meanings,
             onSpeak = { startMic() },
-            onCard = { picked -> vm.v2SelectMeaning(picked, V2Origin.CARD); route = "U03" },
+            onCard = { picked -> vm.trialStartCard(); vm.v2SelectMeaning(picked, V2Origin.CARD); route = "U03" },
             onRegister = { route = "U07" },
             onGuide = { route = "U00" },
             onHelp = ::help,
@@ -278,8 +283,8 @@ fun MalitdaV2App(vm: SessionViewModel) {
                 origin = v2.origin,
                 studentName = name,
                 onListen = { openSound(m.text, m.imageKey, from = "U03") },
-                onYes = { vm.v2ConfirmUse(); soundless = false; route = "U04" },
-                onOther = { route = "U06" },
+                onYes = { vm.v2ConfirmUse(m.text); soundless = false; route = "U04" },
+                onOther = { vm.trialOtherMeaning(); route = "U06" },
                 onBack = { goHome() },
                 onHelp = ::help,
             )
@@ -339,6 +344,10 @@ fun MalitdaV2App(vm: SessionViewModel) {
                         }
                     }
                 },
+                trialUnderstood = if (settings.trialLogging) trialDraft?.understood else null,
+                trialHelped = trialDraft?.supporterHelped ?: false,
+                onTrialUnderstood = { vm.trialSetUnderstood(it) },
+                onTrialHelped = { vm.trialSetHelped(it) },
             )
         }
 
@@ -356,7 +365,8 @@ fun MalitdaV2App(vm: SessionViewModel) {
             U04Share(
                 meaning = it,
                 onReturn = { route = "U04" },
-                onCancel = { goHome() },
+                // 안내문("선택을 취소해도 뜻은 그대로예요")대로 전달 화면으로 돌아간다.
+                onCancel = { route = "U04" },
                 onHelp = ::help,
             )
         } ?: V2Screen {}
@@ -379,6 +389,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onAdd = { newName -> vm.v2AddStudent(newName); resetRegForm(); toast("${newName} 학생으로 시작해요"); route = "U01" },
             onCancel = { route = u07sReturn },
             onHelp = ::help,
+            onRename = { newName -> vm.v2RenameStudent(newName); toast("이름을 '$newName'(으)로 바꿨어요") },
         )
 
         "U05" -> U05Register(
@@ -563,6 +574,38 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onHome = { goHome() },
             onLibrary = { route = "U08" },
             onHelp = ::help,
+            largeText = settings.fontScale > 1.05f,
+            onLargeText = { large -> vm.setFontScale(if (large) 1.2f else 1.0f) },
+            trialLogging = settings.trialLogging,
+            onTrialLog = { route = "U14" },
+            onRemoveSamples = {
+                scope.launch {
+                    val n = vm.v2RemoveSamples()
+                    toast(if (n > 0) "예시 뜻 ${n}개를 지웠어요" else "지울 예시 뜻이 없어요")
+                }
+            },
+        )
+
+        "U14" -> U14TrialLog(
+            studentName = name,
+            enabled = settings.trialLogging,
+            summary = kr.voicemate.malitda.domain.TrialSummary.of(trialLogs),
+            onToggle = { vm.setTrialLogging(it) },
+            onExport = {
+                scope.launch {
+                    val csv = vm.trialCsv()
+                    val send = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_SUBJECT, "말잇다 실증 기록")
+                        putExtra(Intent.EXTRA_TEXT, csv)
+                    }
+                    runCatching { ctx.startActivity(Intent.createChooser(send, "실증 기록 내보내기").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
+                        .onFailure { toast("내보낼 수 있는 앱이 없어요") }
+                }
+            },
+            onClear = { vm.clearTrialLogs(); toast("이 학생 기록을 지웠어요") },
+            onBack = { route = "U12" },
+            onHelp = ::help,
         )
 
         "U12P" -> U12MicGuide(
@@ -600,7 +643,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
                 .sortedBy { rank[it.id] ?: (rank.size + meanings.indexOf(it)) }
             U06Pick(
                 meanings = list,
-                onPick = { picked -> vm.v2SelectMeaning(picked, V2Origin.CARD); route = "U03" },
+                onPick = { picked -> vm.trialCardPicked(); vm.v2SelectMeaning(picked, V2Origin.CARD); route = "U03" },
                 onNotHere = { route = "U03M" },
                 onRespeak = { startMic() },
                 onCancel = { route = if (v2.meaningId != null) "U03" else "U01" },

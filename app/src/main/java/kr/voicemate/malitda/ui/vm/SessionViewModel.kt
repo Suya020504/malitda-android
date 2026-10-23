@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -419,12 +420,14 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
             )
         }
         matches.firstOrNull()?.let { top -> v2SelectMeaning(top.meaning, V2Origin.VOICE) }
+        trial.onVoiceResult(matches.firstOrNull()?.meaning?.id); syncTrial()
         return matches
     }
 
     /** '맞아요' 확정: 사용 횟수만 올린다(문장 내용은 어디에도 추가 저장하지 않음). */
-    fun v2ConfirmUse() {
+    fun v2ConfirmUse(meaningText: String) {
         val id = _v2.value.meaningId ?: return
+        trial.onDelivered(id, meaningText); syncTrial()
         viewModelScope.launch { c.meanings.recordUse(id) }
     }
 
@@ -474,6 +477,14 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         viewModelScope.launch { resetSession(); c.profiles.switchTo(id) }
     }
 
+    fun v2RenameStudent(name: String) { viewModelScope.launch { c.profiles.rename(_profileId.value, name) } }
+
+    suspend fun v2RemoveSamples(): Int {
+        val n = c.meanings.removeSamples(_profileId.value)
+        v2CleanupImages()
+        return n
+    }
+
     /** 새 학생 추가 후 바로 전환. 새 학생의 의미 사전은 비어 있다(U01-E부터 시작). */
     fun v2AddStudent(name: String) {
         viewModelScope.launch { val id = c.profiles.add(name); resetSession(); c.profiles.switchTo(id) }
@@ -504,8 +515,41 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         return r
     }
 
+    // ---------- 실증 기록 ----------
+    private val trial = kr.voicemate.malitda.domain.TrialTracker()
+    /** 전달 화면의 기록 입력(상대 이해·지원자 도움) 표시용. null이면 진행 중인 시도 없음. */
+    private val _trialDraft = MutableStateFlow<kr.voicemate.malitda.domain.TrialTracker.Draft?>(null)
+    val trialDraft: StateFlow<kr.voicemate.malitda.domain.TrialTracker.Draft?> = _trialDraft.asStateFlow()
+    private fun syncTrial() { _trialDraft.value = trial.draft }
+
+    val trialLogs: StateFlow<List<kr.voicemate.malitda.data.db.TrialLogEntity>> =
+        _profileId.flatMapLatest { c.trialLogs.observeAll(it) }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    fun trialStartVoice() { trial.start(kr.voicemate.malitda.domain.TrialTracker.Origin.VOICE, System.currentTimeMillis()); syncTrial() }
+    fun trialStartCard() { trial.start(kr.voicemate.malitda.domain.TrialTracker.Origin.CARD, System.currentTimeMillis()); syncTrial() }
+    fun trialCardPicked() { trial.onCardPicked(); syncTrial() }
+    fun trialOtherMeaning() { trial.onOtherMeaning(); syncTrial() }
+    fun trialSetUnderstood(v: Boolean?) { trial.setUnderstood(v); syncTrial() }
+    fun trialSetHelped(v: Boolean) { trial.setSupporterHelped(v); syncTrial() }
+
+    /** 시도를 끝낸다. 기록이 켜져 있을 때만 저장한다. */
+    private fun finishTrial() {
+        val log = trial.finish(_profileId.value, System.currentTimeMillis()) ?: return
+        syncTrial()
+        if (settings.value.trialLogging) viewModelScope.launch { c.trialLogs.insert(log) }
+    }
+
+    fun setTrialLogging(v: Boolean) { viewModelScope.launch { c.settings.setTrialLogging(v) } }
+    fun clearTrialLogs() { viewModelScope.launch { c.trialLogs.deleteAll(_profileId.value) } }
+    suspend fun trialCsv(): String {
+        val names = c.profiles.all.first().associate { it.id to it.name }
+        return kr.voicemate.malitda.domain.TrialCsv.of(c.trialLogs.allProfiles(), names)
+    }
+
     // ---------- 세션 정리 ----------
     fun resetSession() {
+        finishTrial()
         c.stt.cancel(); c.tts.stop()
         _ui.value = SessionUiState()
         _v2.value = V2State()

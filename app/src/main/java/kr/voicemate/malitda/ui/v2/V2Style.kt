@@ -383,6 +383,51 @@ fun V2BottomNav(selected: String, onHome: () -> Unit, onLibrary: () -> Unit, onS
     }
 }
 
+/** 화면별 도움말 창. '도움' 버튼으로 연다. */
+@Composable
+fun V2HelpDialog(text: String, onClose: () -> Unit) {
+    androidx.compose.ui.window.Dialog(onDismissRequest = onClose) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .background(V2C.Surface, RoundedCornerShape(28.dp))
+                .padding(horizontal = 22.dp, vertical = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text("도움", style = jua(24, V2C.Title))
+            Spacer(Modifier.height(14.dp))
+            Text(text, style = jua(18, V2C.Ink, 1.6f), textAlign = TextAlign.Center)
+            Spacer(Modifier.height(20.dp))
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .background(V2Gradient, RoundedCornerShape(28.dp))
+                    .clip(RoundedCornerShape(28.dp))
+                    .clickable { onClose() },
+                contentAlignment = Alignment.Center,
+            ) { Text("알겠어요", style = jua(20, Color.White)) }
+        }
+    }
+}
+
+/** 화면 ID별 도움말 문구. */
+fun helpTextFor(route: String): String = when (route) {
+    "U00" -> "말잇다는 학생이 평소 쓰는 말을\n상대가 알아들을 수 있게 이어 줘요.\n처음에는 지원자와 함께 뜻을 등록해요."
+    "U01" -> "'말하기'를 누르고 천천히 말해요.\n말하기 어려우면 아래 카드에서\n전하고 싶은 뜻을 골라도 돼요."
+    "U02", "U02D" -> "말이 끝나면 '말하기 끝내기'를 눌러요.\n잘 안 되면 '카드로 고르기'를 눌러요."
+    "U03" -> "그림과 문장을 보고, 내가 전하고 싶은 뜻이면\n'맞아요', 아니면 '다른 뜻이에요'를 눌러요."
+    "U03E", "U03M" -> "다시 말하거나, 카드에서 뜻을 골라요.\n자주 쓰는 말이면 지원자와 함께 등록해요."
+    "U04", "U04F", "U04S", "U13" -> "이 화면을 상대에게 보여 주거나\n'소리로 들려주기'를 눌러 전해요."
+    "U06" -> "그림을 보고 전하고 싶은 뜻을 골라요.\n없으면 '여기에 없어요'를 눌러요."
+    "U05", "U05M" -> "학생이 평소 쓰는 말과 전할 뜻을 적어요.\n그림을 고르면 글을 읽기 어려운 학생도\n뜻을 확인할 수 있어요."
+    "U07", "U07S" -> "누구의 표현인지 먼저 확인해요.\n뜻은 지원자 혼자 정하지 않고\n학생과 함께 확인해요."
+    "U10" -> "그림·문장·소리로 학생에게 뜻을 보여 주고,\n학생이 맞다고 하면 체크한 뒤\n'이 뜻 사용하기'를 눌러요."
+    "U08", "U09", "U09D", "U11" -> "등록한 뜻을 고치거나 잠시 쉬게 할 수 있어요.\n바꾼 뜻은 학생과 다시 확인해야 쓰여요."
+    "U14" -> "실증 기록을 켜면 대화마다 결과만 남아요.\n학생이 한 말은 남기지 않아요."
+    else -> "궁금한 점은 지원자와 함께 확인해요."
+}
+
 /** 붉은 위험 버튼(U09-D 삭제하기). */
 @Composable
 fun V2DangerButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {

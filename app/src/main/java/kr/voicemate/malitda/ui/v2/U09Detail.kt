@@ -99,7 +99,13 @@ fun U09Detail(
             }
             Spacer(Modifier.height(8.dp))
         }
-        if (meaning.active) {
+        if (meaning.active && !meaning.confirmed) {
+            // 수정 뒤처럼 아직 학생과 확인하지 않은 뜻: 확인이 다음 할 일이다.
+            V2PrimaryButton("학생과 뜻 확인하기", icon = "✓") { onReconfirm() }
+            Spacer(Modifier.height(12.dp))
+            V2SecondaryButton("표현과 뜻 수정") { onEdit() }
+            V2TextButton("이 뜻 삭제") { onDelete() }
+        } else if (meaning.active) {
             V2PrimaryButton("표현과 뜻 수정") { onEdit() }
             Spacer(Modifier.height(12.dp))
             V2SecondaryButton("잠깐 사용하지 않기") { onDeactivate() }

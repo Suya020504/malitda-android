@@ -32,6 +32,7 @@ class AppContainer(private val app: Application) {
     val corrections: CorrectionRepository by lazy { CorrectionRepository(db.correctionDao()) }
     val counters: CounterRepository by lazy { CounterRepository(db.counterDao()) }
     val meanings: MeaningRepository by lazy { MeaningRepository(db.meaningDao()) }
+    val trialLogs by lazy { db.trialLogDao() }
 
     val vosk: SttEngine by lazy { VoskSttEngine(app, ModelInstaller.vosk(app)) }
     val whisper: SttEngine by lazy { WhisperSttEngine(app, ModelInstaller.whisper(app)) }

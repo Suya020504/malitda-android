@@ -48,6 +48,11 @@ fun U04Deliver(
     // 오인식 학습 제안: 말로 시도했는데 카드로 고친 경우에만 들어온다.
     learnHeard: String? = null,
     onLearn: () -> Unit = {},
+    // 실증 기록 입력: 기록이 켜져 있을 때만 들어온다(-1 기록 안 함, 1 예, 0 아니요).
+    trialUnderstood: Int? = null,
+    trialHelped: Boolean = false,
+    onTrialUnderstood: (Boolean?) -> Unit = {},
+    onTrialHelped: (Boolean) -> Unit = {},
 ) {
     V2Screen {
         V2Header(onBack = onBack, onHelp = onHelp)
@@ -84,6 +89,33 @@ fun U04Deliver(
                     ) { Text("이 뜻에 “$learnHeard” 추가", style = jua(17, V2C.Title)) }
                 }
             }
+            if (trialUnderstood != null) {
+                Spacer(Modifier.height(14.dp))
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .background(V2C.Surface, RoundedCornerShape(22.dp))
+                        .padding(horizontal = 18.dp, vertical = 14.dp),
+                ) {
+                    Text("실증 기록 · 지원자", style = jua(14, V2C.Muted))
+                    Spacer(Modifier.height(8.dp))
+                    Text("상대가 뜻을 이해했나요?", style = jua(17, V2C.Ink))
+                    Spacer(Modifier.height(8.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        TrialChip("이해했어요", trialUnderstood == 1, Modifier.weight(1f)) {
+                            onTrialUnderstood(if (trialUnderstood == 1) null else true)
+                        }
+                        TrialChip("못 했어요", trialUnderstood == 0, Modifier.weight(1f)) {
+                            onTrialUnderstood(if (trialUnderstood == 0) null else false)
+                        }
+                    }
+                    Spacer(Modifier.height(10.dp))
+                    TrialChip(if (trialHelped) "✓ 지원자가 도와줬어요" else "지원자가 도와줬어요", trialHelped, Modifier.fillMaxWidth()) {
+                        onTrialHelped(!trialHelped)
+                    }
+                }
+            }
             Spacer(Modifier.height(16.dp))
         }
         if (!soundless) {
@@ -96,6 +128,18 @@ fun U04Deliver(
         V2TextButton("다른 앱으로 보내기") { onShare() }
         Spacer(Modifier.height(8.dp))
     }
+}
+
+@Composable
+private fun TrialChip(label: String, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
+    Box(
+        modifier
+            .height(48.dp)
+            .background(if (selected) V2C.GreenBg else V2C.BannerBg, RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(24.dp))
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center,
+    ) { Text(label, style = jua(16, if (selected) V2C.GreenText else V2C.Title)) }
 }
 
 /** U04-F · 소리가 나오지 않아요(화면 34). */

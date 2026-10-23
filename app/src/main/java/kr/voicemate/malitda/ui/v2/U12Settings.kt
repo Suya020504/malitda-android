@@ -23,6 +23,8 @@ import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,7 +49,13 @@ fun U12Settings(
     onHome: () -> Unit,
     onLibrary: () -> Unit,
     onHelp: () -> Unit,
+    largeText: Boolean = false,
+    onLargeText: (Boolean) -> Unit = {},
+    trialLogging: Boolean = false,
+    onTrialLog: () -> Unit = {},
+    onRemoveSamples: () -> Unit = {},
 ) {
+    var confirmRemove by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
     V2Screen {
         V2Header(onHelp = onHelp, logoStart = true)
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
@@ -98,8 +106,15 @@ fun U12Settings(
             SettingRow(icon = Icons.Rounded.Settings, label = "소리 설정 안내") { onSoundGuide() }
             Spacer(Modifier.height(12.dp))
             SettingRow(icon = Icons.Rounded.AddCircle, label = "지원자와 함께 등록") { onRegister() }
+            Spacer(Modifier.height(12.dp))
+            SettingRow(icon = Icons.Rounded.Info, label = if (largeText) "글자 크기: 크게" else "글자 크기: 보통") { onLargeText(!largeText) }
+            Spacer(Modifier.height(12.dp))
+            SettingRow(icon = Icons.Rounded.Check, label = if (trialLogging) "실증 기록 (기록 중)" else "실증 기록") { onTrialLog() }
             Spacer(Modifier.height(10.dp))
             V2TextButton("처음 화면 안내") { onFirstGuide() }
+            V2TextButton(if (confirmRemove) "한 번 더 누르면 예시 뜻 4개가 지워져요" else "예시 뜻 지우기 (실증 전)") {
+                if (confirmRemove) { onRemoveSamples(); confirmRemove = false } else confirmRemove = true
+            }
             Spacer(Modifier.height(8.dp))
         }
         V2BottomNav(selected = "settings", onHome = onHome, onLibrary = onLibrary, onSettings = {})

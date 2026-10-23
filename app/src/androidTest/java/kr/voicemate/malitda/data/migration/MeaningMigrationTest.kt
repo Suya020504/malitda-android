@@ -40,7 +40,7 @@ class MeaningMigrationTest {
         }
 
         val migrated = helper.runMigrationsAndValidate(
-            "meaning-migration-preservation", 2, true, AppDatabase.MIGRATION_1_2,
+            "meaning-migration-preservation", 3, true, AppDatabase.MIGRATION_1_2, AppDatabase.MIGRATION_2_3,
         )
         migrated.query("SELECT id, name, createdAt FROM profiles").use { cursor ->
             assertTrue(cursor.moveToFirst())
@@ -93,6 +93,29 @@ class MeaningMigrationTest {
             "INSERT OR REPLACE INTO meaning_expressions (profileId, meaningId, text, key) VALUES (1, 1, '바람', '바람')"
         )
         assertEquals(1L, count(migrated, "meaning_expressions"))
+    }
+
+    @Test
+    fun migration2to3KeepsMeaningsAndAddsTrialLogs() {
+        helper.createDatabase("trial-migration", 2).apply {
+            execSQL("INSERT INTO profiles (id, name, createdAt) VALUES (1, '학생', 100)")
+            execSQL(
+                "INSERT INTO meanings (id, profileId, text, imageKey, situation, confirmed, active, createdAt, updatedAt, useCount) " +
+                    "VALUES (1, 1, '산책하고 싶어요', 'walk', NULL, 1, 1, 101, 101, 3)"
+            )
+            execSQL("INSERT INTO meaning_expressions (profileId, meaningId, text, key) VALUES (1, 1, '바람', '바람')")
+            close()
+        }
+        val migrated = helper.runMigrationsAndValidate("trial-migration", 3, true, AppDatabase.MIGRATION_2_3)
+        assertEquals(1L, count(migrated, "meanings"))
+        assertEquals(1L, count(migrated, "meaning_expressions"))
+        assertEquals(0L, count(migrated, "trial_logs"))
+        migrated.execSQL(
+            "INSERT INTO trial_logs (profileId, startedAt, endedAt, origin, voiceFirstHit, usedCardFallback, " +
+                "otherMeaningCount, delivered, understood, supporterHelped, meaningId, meaningText) " +
+                "VALUES (1, 0, 5000, 'VOICE', 1, 0, 0, 1, 1, 0, 1, '산책하고 싶어요')"
+        )
+        assertEquals(1L, count(migrated, "trial_logs"))
     }
 
     private fun count(database: SupportSQLiteDatabase, table: String): Long =

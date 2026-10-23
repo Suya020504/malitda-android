@@ -70,6 +70,7 @@ interface MeaningDao {
     @Query("SELECT * FROM meanings WHERE id = :id") suspend fun byId(id: Long): MeaningEntity?
     @Query("SELECT * FROM meanings WHERE id = :id") fun observe(id: Long): Flow<MeaningEntity?>
     @Query("SELECT COUNT(*) FROM meanings WHERE profileId = :profileId") suspend fun count(profileId: Long): Int
+    @Query("SELECT * FROM meanings WHERE profileId = :profileId") suspend fun allFor(profileId: Long): List<MeaningEntity>
     @Insert suspend fun insert(m: MeaningEntity): Long
     @Update suspend fun update(m: MeaningEntity)
     @Query("DELETE FROM meanings WHERE id = :id") suspend fun delete(id: Long)
@@ -102,6 +103,16 @@ interface MeaningDao {
     /** 모든 프로필이 참조 중인 그림 키(사진 정리용). */
     @Query("SELECT imageKey FROM meanings WHERE imageKey IS NOT NULL")
     suspend fun allImageKeys(): List<String>
+}
+
+@Dao
+interface TrialLogDao {
+    @Insert suspend fun insert(t: TrialLogEntity): Long
+    @Query("SELECT * FROM trial_logs WHERE profileId = :profileId ORDER BY startedAt DESC")
+    fun observeAll(profileId: Long): Flow<List<TrialLogEntity>>
+    @Query("SELECT * FROM trial_logs ORDER BY profileId, startedAt")
+    suspend fun allProfiles(): List<TrialLogEntity>
+    @Query("DELETE FROM trial_logs WHERE profileId = :profileId") suspend fun deleteAll(profileId: Long)
 }
 
 @Dao

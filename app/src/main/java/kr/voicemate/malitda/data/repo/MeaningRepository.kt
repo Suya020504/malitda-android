@@ -101,6 +101,19 @@ class MeaningRepository(private val dao: MeaningDao) {
         return id
     }
 
+    /**
+     * 예시 뜻 지우기: 첫 실행 때 넣은 기본 4종을 지운다(실증 전 정리용).
+     * 지원자가 같은 문장으로 직접 등록한 뜻과 구별하기 위해 기본 그림 키까지 함께 맞춘다.
+     */
+    suspend fun removeSamples(profileId: Long): Int {
+        val samples = mapOf(
+            "산책하고 싶어요" to "walk", "물이 필요해요" to "water", "쉬고 싶어요" to "rest", "바람이 차가워요" to "cold",
+        )
+        var removed = 0
+        dao.allFor(profileId).filter { samples[it.text] == it.imageKey }.forEach { delete(it.id); removed++ }
+        return removed
+    }
+
     /** 첫 실행 데모용 기본 4종(디자인 42화면의 카드와 동일). 학생과 확인을 마친 상태로 넣는다. */
     suspend fun seedDefaults(profileId: Long) {
         if (dao.count(profileId) > 0) return
