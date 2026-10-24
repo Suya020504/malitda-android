@@ -59,7 +59,8 @@ fun U04Deliver(
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
             V2Title("이렇게 전달해요")
             Spacer(Modifier.height(10.dp))
-            MeaningBigCard(meaning)
+            // 지원자 칸(오인식 연결·실증 기록)이 뜨면 그림을 낮춰 아래 버튼에 가리지 않게 한다.
+            MeaningBigCard(meaning, imageAspect = if (learnHeard != null || trialUnderstood != null) 2.2f else 1.42f)
             Spacer(Modifier.height(14.dp))
             V2Banner("내가 확인한 뜻이에요.", green = true, icon = Icons.Rounded.Check)
             if (learnHeard != null) {

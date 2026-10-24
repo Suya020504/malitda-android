@@ -56,11 +56,11 @@ fun OriginBadge(origin: V2Origin) {
 
 /** 큰 뜻 카드: 그림(있으면) + 문장. 그림이 없으면 U03-I 모습. */
 @Composable
-fun MeaningBigCard(m: MeaningEntity, noImageCaption: String? = null) {
+fun MeaningBigCard(m: MeaningEntity, noImageCaption: String? = null, imageAspect: Float = 1.42f) {
     V2Card {
         Column(Modifier.fillMaxWidth().padding(14.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             if (meaningImageAvailable(m.imageKey)) {
-                MeaningPicture(m.imageKey, Modifier.fillMaxWidth().aspectRatio(1.42f).clip(RoundedCornerShape(24.dp)))
+                MeaningPicture(m.imageKey, Modifier.fillMaxWidth().aspectRatio(imageAspect).clip(RoundedCornerShape(24.dp)))
                 Spacer(Modifier.height(22.dp))
                 Text(m.text, style = jua(30, V2C.Ink), textAlign = TextAlign.Center)
                 Spacer(Modifier.height(26.dp))
@@ -76,7 +76,8 @@ fun MeaningBigCard(m: MeaningEntity, noImageCaption: String? = null) {
                     Spacer(Modifier.height(30.dp))
                     Text(m.text, style = jua(30, V2C.Ink), textAlign = TextAlign.Center)
                 }
-                if (noImageCaption != null) {
+                // 일부러 그림 없이 등록한 뜻에는 '불러올 수 없어요'를 띄우지 않는다.
+                if (noImageCaption != null && !m.imageKey.isNullOrBlank()) {
                     Spacer(Modifier.height(18.dp))
                     Text(noImageCaption, style = jua(16, V2C.Muted, 1.5f), textAlign = TextAlign.Center)
                     Spacer(Modifier.height(8.dp))

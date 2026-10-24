@@ -61,6 +61,8 @@ fun MalitdaV2App(vm: SessionViewModel) {
     var editId by rememberSaveable { mutableStateOf(-1L) }
     // U10·U07-S·U13을 어디서 열었는지(돌아갈 곳)
     var u10Return by rememberSaveable { mutableStateOf("U07") }
+    // 뜻 상세(U09)를 연 곳: 내 표현(U08) 또는 미확인 보관함(U11).
+    var u09Return by rememberSaveable { mutableStateOf("U08") }
     var u07sReturn by rememberSaveable { mutableStateOf("U07") }
     var u13Return by rememberSaveable { mutableStateOf("U04") }
     var u13Text by rememberSaveable { mutableStateOf("") }
@@ -228,7 +230,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
             "U07S" -> route = u07sReturn
             "U10" -> { toast("미확인으로 두었어요"); val r = u10Return; resetRegForm(); route = r }
             "U08" -> route = "U01"
-            "U09" -> route = "U08"
+            "U09" -> route = u09Return
             "U09D" -> route = "U09"
             "U11" -> route = "U08"
             "U12" -> route = "U01"
@@ -541,7 +543,13 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onUse = {
                 scope.launch {
                     val id = regSavedId
-                    if (id > 0) {
+                    if (id > 0 && u10Return == "U09") {
+                        // 내 표현에서 고친 뜻: 상세로 돌아간다. 바로 전달 화면으로 가면 실증 기록에 시도가 섞인다.
+                        vm.v2ActivateMeaning(id)
+                        toast("고친 뜻을 저장했어요")
+                        resetRegForm()
+                        route = "U09"
+                    } else if (id > 0) {
                         vm.v2ActivateMeaning(id)
                         vm.v2MeaningById(id)?.let { vm.v2SelectMeaning(it, V2Origin.CARD) }
                         resetRegForm()
@@ -560,7 +568,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
         "U08" -> U08Library(
             studentName = name,
             meanings = meanings,
-            onOpen = { picked -> libId = picked.id; route = "U09" },
+            onOpen = { picked -> libId = picked.id; u09Return = "U08"; route = "U09" },
             onRegister = { route = "U07" },
             onArchive = { route = "U11" },
             onHome = { goHome() },
@@ -583,7 +591,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
                 onReconfirm = { startReconfirm(lm, from = "U09") },
                 onDelete = { route = "U09D" },
                 onToLibrary = { route = "U08" },
-                onBack = { route = "U08" },
+                onBack = { route = u09Return },
                 onHelp = ::help,
             )
         } ?: V2Screen {}
@@ -596,7 +604,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
                         vm.v2DeleteMeaning(lm.id)
                         toast("뜻을 삭제했어요")
                         libId = -1L
-                        route = "U08"
+                        route = u09Return
                     }
                 },
                 onKeep = { route = "U09" },
@@ -607,6 +615,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
         "U11" -> U11Archive(
             meanings = archived,
             onConfirm = { picked -> libId = picked.id; startReconfirm(picked, from = "U11") },
+            onOpen = { picked -> libId = picked.id; u09Return = "U11"; route = "U09" },
             onToLibrary = { route = "U08" },
             onBack = { route = "U08" },
             onHelp = ::help,

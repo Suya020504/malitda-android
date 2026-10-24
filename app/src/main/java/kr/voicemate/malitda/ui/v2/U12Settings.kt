@@ -118,7 +118,7 @@ fun U12Settings(
             SettingRow(icon = Icons.Rounded.Check, label = if (trialLogging) "실증 기록 (기록 중)" else "실증 기록") { onTrialLog() }
             Spacer(Modifier.height(10.dp))
             V2TextButton("처음 화면 안내") { onFirstGuide() }
-            V2TextButton(if (confirmRemove) "한 번 더 누르면 예시 뜻 4개가 지워져요" else "예시 뜻 지우기 (실증 전)") {
+            V2TextButton(if (confirmRemove) "한 번 더 누르면 예시 뜻이 지워져요(그림을 바꾼 뜻은 남아요)" else "예시 뜻 지우기 (실증 전)") {
                 if (confirmRemove) { onRemoveSamples(); confirmRemove = false } else confirmRemove = true
             }
             Spacer(Modifier.height(8.dp))

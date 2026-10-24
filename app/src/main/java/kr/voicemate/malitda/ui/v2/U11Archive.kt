@@ -15,6 +15,7 @@ import kr.voicemate.malitda.data.db.MeaningEntity
 fun U11Archive(
     meanings: List<MeaningEntity>,
     onConfirm: (MeaningEntity) -> Unit,
+    onOpen: (MeaningEntity) -> Unit,
     onToLibrary: () -> Unit,
     onBack: () -> Unit,
     onHelp: () -> Unit,
@@ -30,7 +31,7 @@ fun U11Archive(
                 Spacer(Modifier.height(16.dp))
             }
             meanings.forEach { m ->
-                LibraryRow(m, chip = if (!m.confirmed) "미확인" else "사용 중지") { onConfirm(m) }
+                LibraryRow(m, chip = if (!m.confirmed) "미확인" else "사용 중지") { onOpen(m) }
                 Spacer(Modifier.height(14.dp))
             }
             Spacer(Modifier.height(4.dp))
