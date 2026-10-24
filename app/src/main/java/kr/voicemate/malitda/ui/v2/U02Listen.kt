@@ -131,6 +131,8 @@ private fun ListeningCard(listening: ListenState.Listening?) {
             }
             Spacer(Modifier.height(12.dp))
             Dots()
+            Spacer(Modifier.height(10.dp))
+            Text("10초가 지나면 저절로 끝나요", style = jua(14, V2C.Muted))
         }
     }
 }

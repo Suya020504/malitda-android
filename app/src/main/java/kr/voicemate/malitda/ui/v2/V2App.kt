@@ -10,6 +10,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +19,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
@@ -48,6 +50,13 @@ fun MalitdaV2App(vm: SessionViewModel) {
     val scope = rememberCoroutineScope()
 
     var route by rememberSaveable { mutableStateOf("U00") }
+    // 말하기·뜻 고르기·확인·전달 중에는 화면이 꺼지지 않게 한다 — 상대가 읽는 도중 꺼지면 전달이 끊긴다.
+    val view = LocalView.current
+    val keepAwake = listOf("U02", "U03", "U04", "U06", "U13").any { route.startsWith(it) }
+    DisposableEffect(keepAwake) {
+        view.keepScreenOn = keepAwake
+        onDispose { view.keepScreenOn = false }
+    }
     var soundless by rememberSaveable { mutableStateOf(false) }
     // 지원자 등록 폼(U05) 작성 상태
     var regExpression by rememberSaveable { mutableStateOf("") }

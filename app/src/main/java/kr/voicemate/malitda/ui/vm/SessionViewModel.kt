@@ -199,6 +199,9 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
     }
 
     // ---------- 말하기(S09) ----------
+    // '말하기 끝내기'를 잊거나 누르기 어려운 학생을 위해 일정 시간이 지나면 저절로 끝낸다.
+    private var autoStopJob: kotlinx.coroutines.Job? = null
+
     fun startListening() {
         if (_ui.value.listen !is ListenState.Idle) return
         _ui.update { it.copy(listen = ListenState.Listening()) }
@@ -214,16 +217,24 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         if (!ok) {
             _ui.update { it.copy(listen = ListenState.Idle) }
             _events.tryEmit(SessionEvent.GoSttError("음성인식 엔진이 준비되지 않았어요"))
+            return
+        }
+        autoStopJob?.cancel()
+        autoStopJob = viewModelScope.launch {
+            kotlinx.coroutines.delay(MAX_LISTEN_MS)
+            stopListening()
         }
     }
 
     fun stopListening() {
+        autoStopJob?.cancel(); autoStopJob = null
         if (_ui.value.listen !is ListenState.Listening) return
         _ui.update { it.copy(listen = ListenState.Processing) }
         c.stt.stop()
     }
 
     fun cancelListening() {
+        autoStopJob?.cancel(); autoStopJob = null
         c.stt.cancel()
         _ui.update { it.copy(listen = ListenState.Idle) }
     }
@@ -575,6 +586,9 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
     override fun onCleared() { c.stt.cancel(); c.tts.stop() }
 
     companion object {
+        /** 한 번 말하기의 최대 녹음 시간. 의미 표현은 짧고, 길수록 인식이 느려진다. */
+        const val MAX_LISTEN_MS = 10_000L
+
         fun factory(c: AppContainer) = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T = SessionViewModel(c) as T
