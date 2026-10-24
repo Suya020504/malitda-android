@@ -48,13 +48,16 @@ Java_kr_voicemate_malitda_stt_WhisperNative_systemInfo(JNIEnv * env, jclass) {
  * 반환: 세그먼트 텍스트를 공백으로 이은 문자열. 모든 세그먼트가 '무발화' 판정이면 빈 문자열.
  */
 extern "C" JNIEXPORT jstring JNICALL
-Java_kr_voicemate_malitda_stt_WhisperNative_transcribe(JNIEnv * env, jclass, jlong handle, jfloatArray jpcm, jstring jlang, jint nThreads, jfloat noSpeechThold) {
+Java_kr_voicemate_malitda_stt_WhisperNative_transcribe(JNIEnv * env, jclass, jlong handle, jfloatArray jpcm, jstring jlang, jint nThreads, jfloat noSpeechThold, jstring jprompt) {
     whisper_context * ctx = reinterpret_cast<whisper_context *>(handle);
     if (!ctx) return env->NewStringUTF("");
     jsize n = env->GetArrayLength(jpcm);
     std::vector<float> pcm(n);
     env->GetFloatArrayRegion(jpcm, 0, n, pcm.data());
     const char * lang = env->GetStringUTFChars(jlang, nullptr);
+    const char * promptChars = env->GetStringUTFChars(jprompt, nullptr);
+    const std::string prompt(promptChars ? promptChars : "");
+    if (promptChars) env->ReleaseStringUTFChars(jprompt, promptChars);
 
     whisper_full_params params = whisper_full_default_params(WHISPER_SAMPLING_GREEDY);
     params.language = lang;
@@ -72,6 +75,9 @@ Java_kr_voicemate_malitda_stt_WhisperNative_transcribe(JNIEnv * env, jclass, jlo
     params.temperature = 0.0f;
     params.greedy.best_of = 1;
     params.n_threads = nThreads > 0 ? nThreads : (int) std::max(1u, std::min(4u, std::thread::hardware_concurrency()));
+    // 학생이 등록한 표현을 '앞서 나온 말'로 넣어 비슷하게 들린 말을 그 단어로 받아쓰게 한다("아람" → "바람").
+    // 무음은 앞단(Kotlin)에서 걸러 인식기에 넣지 않으므로 프롬프트 단어를 지어내는 위험이 줄어든다.
+    if (!prompt.empty()) params.initial_prompt = prompt.c_str();
     // 인코더는 기본적으로 30초 창(1500 위치)을 통째로 계산한다. 짧은 발화는 창을 발화 길이(+2초)에 맞춰 줄여
     // 처리시간을 크게 낮춘다(whisper.cpp stream 예제와 같은 기법). 최소 5초 창은 유지한다.
     {

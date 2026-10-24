@@ -190,6 +190,7 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         if (_ui.value.listen !is ListenState.Idle) return
         _ui.update { it.copy(listen = ListenState.Processing) }
         viewModelScope.launch {
+            refreshSttHints()
             val r = runCatching { java.io.File(c.filesDir, "testaudio/$name").inputStream().use { c.stt.recognizeWav(it) } }
             r.onSuccess { onSttFinal(it) }.onFailure { e ->
                 _ui.update { it.copy(listen = ListenState.Idle) }
@@ -202,8 +203,18 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
     // '말하기 끝내기'를 잊거나 누르기 어려운 학생을 위해 일정 시간이 지나면 저절로 끝낸다.
     private var autoStopJob: kotlinx.coroutines.Job? = null
 
+    /** 인식기에 이 학생의 등록 표현(자주 쓰는 뜻 먼저)을 힌트로 준다. 듣기 시작할 때마다 새로 읽어 방금 연결한 표현도 들어간다. */
+    private suspend fun refreshSttHints() {
+        val hints = c.meanings.usableWithExpressions(_profileId.value)
+            .sortedByDescending { it.meaning.useCount }
+            .flatMap { e -> e.expressions.map { it.text } }
+        c.stt.setHints(hints)
+    }
+
     fun startListening() {
         if (_ui.value.listen !is ListenState.Idle) return
+        // 녹음이 끝나야 인식하므로, 녹음하는 동안 힌트를 채우면 된다.
+        viewModelScope.launch { refreshSttHints() }
         _ui.update { it.copy(listen = ListenState.Listening()) }
         val ok = c.stt.startListening(object : SttCallback {
             override fun onPartial(text: String) { _ui.update { s -> (s.listen as? ListenState.Listening)?.let { l -> s.copy(listen = l.copy(partial = text)) } ?: s } }

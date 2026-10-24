@@ -143,8 +143,14 @@ class WhisperSttEngine(
         val threads = Runtime.getRuntime().availableProcessors().coerceIn(2, 4)
         // 동시 추론 금지(메모리·스레드 경합)
         inferLock.lock()
-        val raw = try { WhisperNative.transcribe(h, pcm, "ko", threads, NO_SPEECH_THOLD) } finally { inferLock.unlock() }
+        val raw = try { WhisperNative.transcribe(h, pcm, "ko", threads, NO_SPEECH_THOLD, prompt) } finally { inferLock.unlock() }
         return SentenceCleanup.clean(raw)
+    }
+
+    @Volatile private var prompt: String = ""
+
+    override fun setHints(hints: List<String>) {
+        prompt = buildPrompt(hints)
     }
 
     override fun release() {
@@ -224,5 +230,18 @@ class WhisperSttEngine(
         const val MIN_SPEECH_RATIO = 0.04f
         /** whisper 세그먼트 무발화 확률 문턱. */
         const val NO_SPEECH_THOLD = 0.6f
+        /** 초기 프롬프트 최대 글자 수. Whisper 프롬프트 한도(약 224토큰) 안에 넉넉히 든다. */
+        const val PROMPT_MAX_CHARS = 200
+
+        /** 등록 표현 → "바람, 산책 가자, 목말라" 형태. 겹치는 표현은 한 번만, 한도를 넘으면 앞쪽(자주 쓰는 뜻)만 남긴다. */
+        fun buildPrompt(hints: List<String>): String {
+            val sb = StringBuilder()
+            hints.map { it.trim() }.filter { it.isNotEmpty() }.distinct().forEach { h ->
+                val add = if (sb.isEmpty()) h else ", $h"
+                if (sb.length + add.length > PROMPT_MAX_CHARS) return sb.toString()
+                sb.append(add)
+            }
+            return sb.toString()
+        }
     }
 }

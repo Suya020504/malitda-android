@@ -13,5 +13,6 @@ object WhisperNative {
     @JvmStatic external fun release(handle: Long)
     @JvmStatic external fun version(): String
     @JvmStatic external fun systemInfo(): String
-    @JvmStatic external fun transcribe(handle: Long, pcm: FloatArray, lang: String, nThreads: Int, noSpeechThold: Float): String
+    /** prompt: 초기 프롬프트(등록 표현 힌트). 빈 문자열이면 쓰지 않는다. */
+    @JvmStatic external fun transcribe(handle: Long, pcm: FloatArray, lang: String, nThreads: Int, noSpeechThold: Float, prompt: String): String
 }

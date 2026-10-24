@@ -100,6 +100,42 @@ class MeaningResolverTest {
     }
 
     @Test
+    fun oneJamoMisrecognitionBecomesLowRankCandidate() {
+        val cold = meaning("바람이 차가워요")
+        val water = meaning("물이 필요해요")
+        val reg = listOf(entry(cold, "바람", "추워"), entry(water, "물", "목말라"))
+        // 2026-10-24 TTS 음성 시험에서 Whisper가 실제로 낸 오인식
+        assertEquals(cold.id, MeaningResolver.resolve("아람", emptyList(), reg).single().meaning.id)   // 초성 하나
+        assertEquals(water.id, MeaningResolver.resolve("못말라", emptyList(), reg).single().meaning.id) // 받침 하나
+        assertEquals(water.id, MeaningResolver.resolve("나 못말라", emptyList(), reg).single().meaning.id) // 문장 속 한 단어
+        // 정확히 맞는 다른 뜻이 있으면 그쪽이 먼저
+        val both = MeaningResolver.resolve("바람 못말라", emptyList(), reg)
+        assertEquals(cold.id, both.first().meaning.id)
+        assertTrue(both.first().score > both.last().score)
+    }
+
+    @Test
+    fun fuzzyDoesNotOverreach() {
+        val cold = meaning("바람이 차가워요")
+        val water = meaning("물이 필요해요")
+        val rest = meaning("쉬고 싶어요")
+        val reg = listOf(entry(cold, "바람", "추워"), entry(water, "물"), entry(rest, "쉬고 싶어"))
+        assertTrue(MeaningResolver.resolve("좋아", emptyList(), reg).isEmpty())          // 추워 오인식은 너무 달라 못 잡는다
+        assertTrue(MeaningResolver.resolve("불", emptyList(), reg).isEmpty())            // 한 글자 표현 "물"은 ④ 제외
+        assertTrue(MeaningResolver.resolve("물론 좋아요", emptyList(), reg).isEmpty())
+        assertTrue(MeaningResolver.resolve("집에 가고 싶어", emptyList(), reg).isEmpty()) // 쉬고↔가고는 자모 둘
+        assertTrue(MeaningResolver.resolve("화장실 가고 싶어요", emptyList(), reg).isEmpty())
+    }
+
+    @Test
+    fun jamoDistance() {
+        assertTrue(MeaningResolver.oneJamoApart("아람", "바람"))
+        assertTrue(MeaningResolver.oneJamoApart("바라", "바람"))      // 받침 빠짐
+        assertTrue(!MeaningResolver.oneJamoApart("사랑", "바람"))     // 둘 다름
+        assertTrue(!MeaningResolver.oneJamoApart("물", "불"))         // 자모 3개 미만 표현은 제외
+    }
+
+    @Test
     fun emptyWhenNothingRegisteredOrNoMatch() {
         assertTrue(MeaningResolver.resolve("바람", emptyList(), emptyList()).isEmpty())
         val walk = meaning("산책하고 싶어요")

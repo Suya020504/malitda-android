@@ -43,4 +43,9 @@ interface SttEngine {
     /** 16kHz mono PCM16 WAV 파일 인식(비교실험·개발용). */
     suspend fun recognizeWav(input: InputStream): SttResult
     fun release()
+    /**
+     * 지금 학생이 등록한 표현 목록. 인식기가 비슷하게 들린 말을 이 단어 쪽으로 받아쓰게 돕는다(Whisper 초기 프롬프트).
+     * 기기 안에서만 쓰고 저장하지 않는다. 지원하지 않는 엔진은 무시한다.
+     */
+    fun setHints(hints: List<String>) {}
 }

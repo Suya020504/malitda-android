@@ -48,6 +48,8 @@ class SttRouter(
     override fun cancel() = current.cancel()
     override suspend fun recognizeWav(input: InputStream): SttResult = current.recognizeWav(input)
     override fun release() = current.release()
+    // 엔진을 바꿔도 같은 힌트를 쓰도록 모든 엔진에 전달한다.
+    override fun setHints(hints: List<String>) = engines.values.forEach { it.setHints(hints) }
 
     companion object {
         const val VOSK = "vosk"
