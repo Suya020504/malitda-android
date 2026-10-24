@@ -1,5 +1,9 @@
 # 말잇다 · 디자인 (Figma 전체 반영)
 
+## 2026-10-25 버튼과 화면 모션
+
+[Figma 모션 개발 인계](motion-20261025/README.md)에 최신 화면·버튼 상태·전환 시간과 검증 결과를 정리했습니다. 이 자료는 Figma 반영본이며 Android 소스·APK 적용은 별도 작업입니다.
+
 Figma **`rRl8r1ktRCzPcKl5jyu7uR`** (말잇다 · VOICE MATE | PDF 원안 · 와이어프레임 · 목업)의 전체 디자인을 이 폴더로 가져왔습니다. 2026-09-21 개발 인계본 기준. (원본 인계 안내: [HANDOFF.md](HANDOFF.md))
 
 **전체를 한 페이지로 보기: [gallery.html](gallery.html)** (브라우저로 열기)

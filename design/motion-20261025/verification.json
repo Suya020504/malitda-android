@@ -1,0 +1,185 @@
+{
+  "ok": true,
+  "readOnly": true,
+  "pageId": "271:2",
+  "rootCount": 190,
+  "rootGeometryPass": 190,
+  "controllerCount": 1134,
+  "controllersPresentWithPositiveBounds": 1134,
+  "core": {
+    "hash": "cf93c928",
+    "receiptHash": "cf93c928",
+    "reactions": 1091,
+    "onClick": 1089,
+    "timeout": 2,
+    "variables": 34,
+    "conditionalCount": 778,
+    "maxConditionalBlocks": 2
+  },
+  "disabled": {
+    "expectedFromOriginalMetadata": 45,
+    "noEvents": 45,
+    "originalKindCounts": {
+      "nav": 12,
+      "button": 10,
+      "choice": 23
+    }
+  },
+  "font": {
+    "textNodes": 2210,
+    "names": {
+      "Jua/Regular": 2196
+    }
+  },
+  "library": {
+    "expectedOriginalMains": 40,
+    "present": 40,
+    "knownLinkedInstances": 1663,
+    "unknownMainCount": 0,
+    "backgrounds": [
+      {
+        "id": "269:73",
+        "raisedId": "327:31",
+        "pressedId": "327:25",
+        "paired": false,
+        "width": 342,
+        "height": 56
+      },
+      {
+        "id": "269:85",
+        "raisedId": "327:43",
+        "pressedId": "327:37",
+        "paired": false,
+        "width": 342,
+        "height": 56
+      },
+      {
+        "id": "269:97",
+        "raisedId": "327:55",
+        "pressedId": "327:49",
+        "paired": true,
+        "width": 342,
+        "height": 44
+      },
+      {
+        "id": "269:103",
+        "raisedId": "327:67",
+        "pressedId": "327:61",
+        "paired": false,
+        "width": 342,
+        "height": 56
+      },
+      {
+        "id": "269:109",
+        "raisedId": "327:109",
+        "pressedId": "327:103",
+        "paired": false,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "id": "269:112",
+        "raisedId": "327:121",
+        "pressedId": "327:115",
+        "paired": false,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "id": "269:196",
+        "raisedId": "327:181",
+        "pressedId": "327:175",
+        "paired": true,
+        "width": 104,
+        "height": 64
+      },
+      {
+        "id": "269:201",
+        "raisedId": "327:193",
+        "pressedId": "327:187",
+        "paired": true,
+        "width": 104,
+        "height": 64
+      }
+    ]
+  },
+  "pointer": {
+    "targetCount": 742,
+    "pairedTargets": 65,
+    "uiVariableCount": 13,
+    "defaults": {
+      "pressed/screen/03": false,
+      "pressed/screen/04": false,
+      "pressed/screen/02": false,
+      "pressed/screen/05": false,
+      "pressed/screen/01": false,
+      "raised/screen/00": true,
+      "raised/screen/01": true,
+      "raised/screen/02": true,
+      "raised/screen/03": true,
+      "raised/screen/04": true,
+      "raised/screen/05": true,
+      "raised/overlay/00": true,
+      "raised/overlay/01": true
+    },
+    "overlaySlotIsolationChecked": true,
+    "mouseEnterRecoveryChecked": true,
+    "dragReleaseOutsideFullyRestores": false
+  },
+  "transitions": {
+    "NAVIGATE": {
+      "count": 1324,
+      "durations": {
+        "0.11999999731779099": 1324
+      }
+    },
+    "OVERLAY": {
+      "count": 316,
+      "durations": {
+        "0.1599999964237213": 316
+      }
+    }
+  },
+  "timeoutTransitions": {
+    "excludedFromOnClickPolish": true,
+    "originalTransitionsPreserved": true,
+    "entries": [
+      {
+        "id": "276:859",
+        "triggerTimeout": 0.800000011920929,
+        "navigation": "OVERLAY",
+        "destinationId": "276:10611",
+        "transition": {
+          "type": "DISSOLVE",
+          "easing": {
+            "type": "EASE_OUT"
+          },
+          "duration": 0.15000000596046448
+        }
+      },
+      {
+        "id": "276:3455",
+        "triggerTimeout": 1.5,
+        "navigation": "NAVIGATE",
+        "destinationId": "276:3551",
+        "transition": null
+      }
+    ]
+  },
+  "flowCount": 6,
+  "geometryEvidence": {
+    "rootsComparedToOriginalSnapshot": 190,
+    "originalMainBoundsCompared": 8,
+    "mutationTimeControllerChecks": 742,
+    "globalCoreExactlyPreservedAtMutation": true,
+    "controllerPerNodeOriginalBoundsAvailable": false
+  },
+  "issueCount": 0,
+  "issueCounts": {},
+  "issueSamples": [],
+  "limits": [
+    "Readback proves stored structure/state wiring; actual hold/click/cancel playback is separate evidence.",
+    "Figma can retain the pressed visual after drag-release outside. MOUSE_ENTER restores it on re-entry; APK requires separate native pointerCancel/releaseOutside handling.",
+    "All 1134 original controller IDs and positive bounds are read live. Exact historical per-controller bounds were not stored; 742 mutation-time checks and original root/main geometry provide preservation evidence."
+  ]
+}
