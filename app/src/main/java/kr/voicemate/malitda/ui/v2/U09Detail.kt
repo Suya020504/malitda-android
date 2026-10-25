@@ -67,7 +67,11 @@ fun U09Detail(
             Spacer(Modifier.height(12.dp))
             // 상태 칩
             Box(Modifier.padding(horizontal = 20.dp)) {
-                if (meaning.active && meaning.confirmed) {
+                if (meaning.isSample) {
+                    Box(Modifier.background(V2C.BannerBg, RoundedCornerShape(14.dp)).padding(horizontal = 14.dp, vertical = 7.dp)) {
+                        Text("연습용 예시 · 학생 확인 전", style = jua(14, V2C.Title))
+                    }
+                } else if (meaning.active && meaning.confirmed) {
                     Box(Modifier.background(Color(0xFFE2F4E8), RoundedCornerShape(14.dp)).padding(horizontal = 14.dp, vertical = 7.dp)) {
                         Text("함께 확인함", style = jua(14, V2C.GreenText))
                     }

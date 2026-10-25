@@ -25,7 +25,11 @@ import kr.voicemate.malitda.tts.TtsManager
 class AppContainer(private val app: Application) {
     val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     val filesDir: java.io.File get() = app.filesDir
+    val cacheDir: java.io.File get() = app.cacheDir
+    val pilot by lazy { kr.voicemate.malitda.data.pilot.PilotStore(app) }
+    val dataManagement by lazy { kr.voicemate.malitda.data.repo.DataManagementRepository(db, filesDir, cacheDir) }
     val settings: SettingsStore by lazy { SettingsStore(app) }
+    val feedback by lazy { kr.voicemate.malitda.data.feedback.FeedbackSignal(app) }
     val db: AppDatabase by lazy { AppDatabase.build(app, DbKeyManager(app).getOrCreateKey()) }
     val profiles: ProfileRepository by lazy { ProfileRepository(db.profileDao(), settings) }
     val expressions: ExpressionRepository by lazy { ExpressionRepository(db.expressionDao()) }

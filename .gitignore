@@ -32,3 +32,10 @@ design/figma/
 design/devmaster/
 design/previews/
 design/ui-assets/
+
+# Local model downloads and private QA artifacts
+/.scratch/
+
+__pycache__/
+*.pyc
+/docs/feedback-20261026/ai-demo/logs/

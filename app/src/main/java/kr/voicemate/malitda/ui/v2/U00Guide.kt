@@ -62,11 +62,12 @@ fun U00Guide(onStart: () -> Unit, onPrepare: () -> Unit, onBack: (() -> Unit)?, 
                 }
             }
             Spacer(Modifier.height(16.dp))
-            GuideRow(icon = { Image(painterResource(R.drawable.ic_consent_mic), null, Modifier.size(24.dp)) }, text = "말하거나 카드로 골라요.")
+            GuideRow(icon = { Image(painterResource(R.drawable.ic_consent_mic), null, Modifier.size(24.dp)) }, text = "1. 말하거나 카드로 뜻을 고릅니다.")
             Spacer(Modifier.height(12.dp))
-            GuideRow(icon = { CardGlyph() }, text = "그림과 문장으로 뜻을 확인해요.")
+            GuideRow(icon = { CardGlyph() }, text = "2. 원문과 후보를 비교합니다.")
             Spacer(Modifier.height(12.dp))
-            GuideRow(icon = { Icon(Icons.Rounded.Check, null, tint = V2C.BannerIcon, modifier = Modifier.size(24.dp)) }, text = "맞는 뜻을 상대에게 보여줘요.")
+            GuideRow(icon = { Icon(Icons.Rounded.Check, null, tint = V2C.BannerIcon, modifier = Modifier.size(24.dp)) }, text = "3. 원하는 뜻인지 직접 확인합니다.")
+            GuideRow(icon = { CardGlyph() }, text = "4. 승인한 뜻을 보여 주거나 공유합니다.")
             Spacer(Modifier.height(16.dp))
             V2Banner(
                 "처음에는 지원자와\n자주 쓰는 표현의 뜻을 준비해요.",

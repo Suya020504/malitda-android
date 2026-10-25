@@ -37,6 +37,15 @@ endif()
 
 add_subdirectory(${WHISPER_CPP_DIR} whisper_build EXCLUDE_FROM_ALL)
 
+# A debug JNI wrapper with -O2 does not optimize ggml's C kernels. Keep symbols,
+# but use release-like math optimization for the speech engine in pilot APKs.
+# The previous x86 debug build took 21-35s for one 2s synthetic utterance.
+foreach(speech_target ggml-base ggml-cpu whisper)
+    if(TARGET ${speech_target})
+        target_compile_options(${speech_target} PRIVATE "$<$<CONFIG:Debug>:-O3>")
+    endif()
+endforeach()
+
 add_library(malitda_whisper SHARED whisper_jni.cpp)
 target_include_directories(malitda_whisper PRIVATE ${WHISPER_CPP_DIR}/include ${WHISPER_CPP_DIR}/ggml/include)
 target_compile_options(malitda_whisper PRIVATE -O2 -fvisibility=hidden)

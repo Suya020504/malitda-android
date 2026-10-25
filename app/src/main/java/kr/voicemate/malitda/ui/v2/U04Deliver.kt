@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -53,6 +54,10 @@ fun U04Deliver(
     trialHelped: Boolean = false,
     onTrialUnderstood: (Boolean?) -> Unit = {},
     onTrialHelped: (Boolean) -> Unit = {},
+    onDone: () -> Unit = {},
+    onFeedback: (() -> Unit)? = null,
+    onStopSound: () -> Unit = {},
+    onCopy: () -> Unit = {},
 ) {
     V2Screen {
         V2Header(onBack = onBack, onHelp = onHelp)
@@ -82,7 +87,7 @@ fun U04Deliver(
                     Box(
                         Modifier
                             .fillMaxWidth()
-                            .height(52.dp)
+                            .heightIn(min = 52.dp).padding(vertical = 10.dp)
                             .background(V2C.Surface, RoundedCornerShape(26.dp))
                             .clip(RoundedCornerShape(26.dp))
                             .clickable { onLearn() },
@@ -103,11 +108,11 @@ fun U04Deliver(
                     Spacer(Modifier.height(8.dp))
                     Text("상대가 뜻을 이해했나요?", style = jua(17, V2C.Ink))
                     Spacer(Modifier.height(8.dp))
-                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        TrialChip("이해했어요", trialUnderstood == 1, Modifier.weight(1f)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        TrialChip("이해했어요", trialUnderstood == 1, Modifier.fillMaxWidth()) {
                             onTrialUnderstood(if (trialUnderstood == 1) null else true)
                         }
-                        TrialChip("못 했어요", trialUnderstood == 0, Modifier.weight(1f)) {
+                        TrialChip("못 했어요", trialUnderstood == 0, Modifier.fillMaxWidth()) {
                             onTrialUnderstood(if (trialUnderstood == 0) null else false)
                         }
                     }
@@ -117,12 +122,16 @@ fun U04Deliver(
                     }
                 }
             }
+            if (speaking) V2SecondaryButton("소리 멈추기", onClick = onStopSound)
+            V2TextButton("문장 복사", onClick = onCopy)
+            if (onFeedback != null) V2TextButton("실증 응답 기록 · 지원자", onClick = onFeedback)
+            V2TextButton("마치고 홈으로", onClick = onDone)
             Spacer(Modifier.height(16.dp))
         }
         if (!soundless) {
             V2PrimaryButton(if (speaking) "들려주는 중…" else "소리로 들려주기", icon = "🔊", enabled = !speaking) { onSound() }
         } else {
-            V2PrimaryButton("그림으로 보여주는 중") { }
+            Text("그림과 문장으로 보여주고 있습니다.", style = jua(18, V2C.Ink), modifier = Modifier.padding(horizontal = 24.dp))
         }
         Spacer(Modifier.height(12.dp))
         V2SecondaryButton("다시 고르기") { onRepick() }
@@ -135,7 +144,7 @@ fun U04Deliver(
 private fun TrialChip(label: String, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
     Box(
         modifier
-            .height(48.dp)
+            .heightIn(min = 48.dp).padding(vertical = 10.dp)
             .background(if (selected) V2C.GreenBg else V2C.BannerBg, RoundedCornerShape(24.dp))
             .clip(RoundedCornerShape(24.dp))
             .clickable { onClick() },

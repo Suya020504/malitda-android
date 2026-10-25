@@ -20,7 +20,7 @@ class ModelInstaller(
 
     fun isInstalled(): Boolean {
         val marker = File(targetDir, MARKER)
-        return marker.exists() && marker.readText().trim() == version && File(targetDir, checkFile).exists()
+        return marker.exists() && marker.readText().trim() == version && File(targetDir, checkFile).let { it.isFile && it.length() > 0 }
     }
 
     fun installedBytes(): Long = if (targetDir.exists()) targetDir.walkTopDown().filter { it.isFile && it.name != MARKER }.sumOf { it.length() } else 0L
@@ -34,6 +34,7 @@ class ModelInstaller(
             if (children.isEmpty()) { files += path; return }
             for (c in children) walk("$path/$c")
         }
+        check(!am.list(assetRoot).isNullOrEmpty()) { "APK에 음성인식 모델이 포함되지 않았습니다. 모델을 포함한 APK로 업데이트해야 합니다." }
         walk(assetRoot)
         if (files.isEmpty()) throw IllegalStateException("APK 안에 모델($assetRoot)이 없어요")
         val tmp = File(context.filesDir, "$target.tmp")

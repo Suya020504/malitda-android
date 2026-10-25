@@ -16,7 +16,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,7 +41,24 @@ fun U08Library(
     onHome: () -> Unit,
     onSettings: () -> Unit,
     onHelp: () -> Unit,
+    onUse: (MeaningEntity) -> Unit = onOpen,
+    onListen: (MeaningEntity) -> Unit = {},
+    onFavorite: (MeaningEntity) -> Unit = {},
+    aliases: Map<Long, String> = emptyMap(),
 ) {
+    var query by rememberSaveable { mutableStateOf("") }
+    var category by rememberSaveable { mutableStateOf("") }
+    var favorites by rememberSaveable { mutableStateOf(false) }
+    var sort by rememberSaveable { mutableStateOf(0) }
+    val filtered = meanings.filter { m ->
+        (category.isEmpty() || m.category == category) && (!favorites || m.favorite) &&
+            (query.isBlank() || listOf(m.text, m.situation.orEmpty(), aliases[m.id].orEmpty(), meaningCategories[m.category].orEmpty())
+                .any { it.contains(query.trim(), ignoreCase = true) })
+    }.let { list -> when (sort) {
+        1 -> list.sortedBy { it.text }
+        2 -> list.sortedWith(compareBy<MeaningEntity> { it.category }.thenBy { it.text })
+        else -> list.sortedWith(compareByDescending<MeaningEntity> { it.lastUsedAt }.thenByDescending { it.updatedAt })
+    } }
     V2Screen {
         V2Header(onHelp = onHelp, logoStart = true)
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
@@ -50,8 +69,16 @@ fun U08Library(
                 V2Banner("아직 함께 확인한 뜻이 없어요.\n지원자와 함께 등록해 주세요.", leading = { CardGlyph() })
                 Spacer(Modifier.height(16.dp))
             }
-            meanings.forEach { m ->
-                LibraryRow(m) { onOpen(m) }
+            V2TextField(query, { query = it }, "뜻·평소 표현·분류 검색")
+            MeaningCategoryField(category, { category = it }, allowAll = true)
+            V2TextButton(if (favorites) "✓ 즐겨찾기만 보기" else "즐겨찾기만 보기", onClick = { favorites = !favorites })
+            V2TextButton("정렬: ${listOf("최근 사용", "가나다", "분류")[sort]}", onClick = { sort = (sort + 1) % 3 })
+            if (filtered.isEmpty() && meanings.isNotEmpty()) V2Banner("검색한 뜻이 없습니다. 검색어와 분류를 확인합니다.")
+            filtered.forEach { m ->
+                LibraryRow(m, chip = if (m.favorite) "★ 즐겨찾기" else meaningCategories[m.category]) { onUse(m) }
+                V2TextButton("소리 듣기", onClick = { onListen(m) })
+                V2TextButton(if (m.favorite) "즐겨찾기 해제" else "즐겨찾기", onClick = { onFavorite(m) })
+                V2TextButton("등록 내용 관리 · 지원자", onClick = { onOpen(m) })
                 Spacer(Modifier.height(14.dp))
             }
             V2PrimaryButton("뜻 함께 등록하기", icon = "⊕") { onRegister() }
@@ -75,7 +102,7 @@ fun LibraryRow(m: MeaningEntity, chip: String? = null, onClick: () -> Unit) {
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        MeaningPicture(m.imageKey, Modifier.size(width = 112.dp, height = 78.dp).clip(RoundedCornerShape(16.dp)), glyphSize = 28)
+        MeaningPicture(m.imageKey, Modifier.size(width = if (LocalDensity.current.fontScale >= 1.4f) 64.dp else 112.dp, height = 78.dp).clip(RoundedCornerShape(16.dp)), glyphSize = 28)
         Spacer(Modifier.width(16.dp))
         Column(Modifier.weight(1f)) {
             Text(m.text, style = jua(19, V2C.Ink))

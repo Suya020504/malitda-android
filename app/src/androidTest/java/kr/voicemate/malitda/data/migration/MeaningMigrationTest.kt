@@ -12,8 +12,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * DB v1 → v2 마이그레이션이 기존 데이터를 보존하는지 검증(PR #1의 테스트를 현 스키마로 이식).
- * v2는 meanings·meaning_expressions 두 테이블만 추가하고 기존 4개 테이블은 건드리지 않는다.
+ * 기존 버전과 v5의 비파괴 마이그레이션을 검증한다.
  */
 @RunWith(AndroidJUnit4::class)
 class MeaningMigrationTest {
@@ -40,7 +39,8 @@ class MeaningMigrationTest {
         }
 
         val migrated = helper.runMigrationsAndValidate(
-            "meaning-migration-preservation", 3, true, AppDatabase.MIGRATION_1_2, AppDatabase.MIGRATION_2_3,
+            "meaning-migration-preservation", 4, true,
+            AppDatabase.MIGRATION_1_2, AppDatabase.MIGRATION_2_3, AppDatabase.MIGRATION_3_4,
         )
         migrated.query("SELECT id, name, createdAt FROM profiles").use { cursor ->
             assertTrue(cursor.moveToFirst())
@@ -116,6 +116,65 @@ class MeaningMigrationTest {
                 "VALUES (1, 0, 5000, 'VOICE', 1, 0, 0, 1, 1, 0, 1, '산책하고 싶어요')"
         )
         assertEquals(1L, count(migrated, "trial_logs"))
+    }
+
+    @Test
+    fun migration3to4PreservesAmbiguousOldMeaningAndTrialLogs() {
+        helper.createDatabase("sample-provenance-migration", 3).apply {
+            execSQL("INSERT INTO profiles (id, name, createdAt) VALUES (1, '학생', 100)")
+            // 기존 예시와 문장·그림이 같아도 개인 기록일 수 있다. 출처를 추정해서 표시하거나 지우지 않는다.
+            execSQL(
+                "INSERT INTO meanings (id, profileId, text, imageKey, situation, confirmed, active, createdAt, updatedAt, useCount) " +
+                    "VALUES (1, 1, '산책하고 싶어요', 'walk', '직접 등록', 1, 1, 101, 102, 3)"
+            )
+            execSQL("INSERT INTO meaning_expressions (profileId, meaningId, text, key) VALUES (1, 1, '나의 산책', '나의 산책')")
+            execSQL(
+                "INSERT INTO trial_logs (profileId, startedAt, endedAt, origin, voiceFirstHit, usedCardFallback, " +
+                    "otherMeaningCount, delivered, understood, supporterHelped, meaningId, meaningText) " +
+                    "VALUES (1, 200, 400, 'VOICE', 1, 0, 0, 1, 1, 0, 1, '산책하고 싶어요')"
+            )
+            close()
+        }
+        val migrated = helper.runMigrationsAndValidate("sample-provenance-migration", 4, true, AppDatabase.MIGRATION_3_4)
+        migrated.query(
+            "SELECT text, imageKey, situation, confirmed, useCount, isSample, confirmationMethod, confirmationResponse, confirmedAt " +
+                "FROM meanings WHERE id = 1"
+        ).use { cursor ->
+            assertTrue(cursor.moveToFirst())
+            assertEquals("산책하고 싶어요", cursor.getString(0))
+            assertEquals("walk", cursor.getString(1))
+            assertEquals("직접 등록", cursor.getString(2))
+            assertEquals(1, cursor.getInt(3))
+            assertEquals(3, cursor.getInt(4))
+            assertEquals(0, cursor.getInt(5))
+            assertTrue(cursor.isNull(6) && cursor.isNull(7) && cursor.isNull(8))
+        }
+        assertEquals(1L, count(migrated, "meaning_expressions"))
+        assertEquals(1L, count(migrated, "trial_logs"))
+    }
+
+    @Test
+    fun migration4to5PreservesDataAllowsContextMeaningsAndKeepsOldTrialsPrivate() {
+        helper.createDatabase("personalization-migration", 4).apply {
+            execSQL("INSERT INTO profiles (id, name, createdAt) VALUES (1, '기존 사용자', 100)")
+            execSQL("INSERT INTO meanings (id, profileId, text, imageKey, situation, confirmed, active, createdAt, updatedAt, useCount, isSample) VALUES (1, 1, '산책', NULL, '점심 후', 1, 1, 101, 102, 3, 0)")
+            execSQL("INSERT INTO meaning_expressions (id, profileId, meaningId, text, key) VALUES (1, 1, 1, '바람', '바람')")
+            execSQL("INSERT INTO trial_logs (profileId, startedAt, endedAt, origin, voiceFirstHit, usedCardFallback, otherMeaningCount, delivered, understood, supporterHelped, meaningId, meaningText) VALUES (1, 200, 400, 'VOICE', 1, 0, 0, 1, 1, 0, 1, '이전 뜻 문장')")
+            close()
+        }
+        val migrated = helper.runMigrationsAndValidate("personalization-migration", 5, true, AppDatabase.MIGRATION_4_5)
+        assertEquals(1L, count(migrated, "meanings"))
+        migrated.execSQL("INSERT INTO meanings (id, profileId, text, imageKey, situation, confirmed, active, createdAt, updatedAt, useCount, isSample) VALUES (2, 1, '추워요', NULL, '야외', 1, 1, 103, 103, 0, 0)")
+        migrated.execSQL("INSERT INTO meaning_expressions (profileId, meaningId, text, key) VALUES (1, 2, '바람', '바람')")
+        assertEquals(2L, count(migrated, "meaning_expressions"))
+        migrated.query("SELECT practice, consented, participantCode, meaningText FROM trial_logs").use { c ->
+            assertTrue(c.moveToFirst())
+            assertEquals(1, c.getInt(0))
+            assertEquals(0, c.getInt(1))
+            assertEquals("", c.getString(2))
+            assertTrue(c.isNull(3))
+        }
+        assertEquals(0L, count(migrated, "confirmation_events"))
     }
 
     private fun count(database: SupportSQLiteDatabase, table: String): Long =

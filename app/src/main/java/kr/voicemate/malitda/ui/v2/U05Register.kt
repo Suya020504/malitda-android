@@ -24,6 +24,10 @@ import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +46,13 @@ fun U05Register(
     showError: Boolean,
     conflictMessage: String?,
     imageGenerating: Boolean,
+    saving: Boolean = false,
+    category: String = "often",
+    onCategory: (String) -> Unit = {},
+    onPreview: () -> Unit = {},
+    onPreviewStop: () -> Unit = {},
+    similarMeanings: List<kr.voicemate.malitda.data.db.MeaningEntity> = emptyList(),
+    onOpenExisting: (kr.voicemate.malitda.data.db.MeaningEntity) -> Unit = {},
     onExpression: (String) -> Unit,
     onMeaning: (String) -> Unit,
     onSituation: (String) -> Unit,
@@ -59,6 +70,13 @@ fun U05Register(
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
             V2Title("표현과 뜻을 등록해요")
             Spacer(Modifier.height(8.dp))
+            MeaningCategoryField(category, onCategory)
+            if (similarMeanings.isNotEmpty()) {
+                V2Banner("비슷한 뜻이 이미 있습니다. 기존 뜻을 확인하거나, 상황이 다른 뜻이면 새로 등록합니다. 자동으로 합치지 않습니다.")
+                similarMeanings.forEach { existing ->
+                    V2TextButton("기존 뜻 확인: ${existing.text}", onClick = { onOpenExisting(existing) })
+                }
+            }
             if (conflictMessage != null) {
                 Row(
                     Modifier
@@ -66,7 +84,7 @@ fun U05Register(
                         .padding(horizontal = 20.dp)
                         .background(Color(0xFFFDF1F3), RoundedCornerShape(20.dp))
                         .padding(horizontal = 18.dp, vertical = 14.dp),
-                ) { Text(conflictMessage, style = jua(16, Color(0xFFD95D7B), 1.5f)) }
+                ) { Text(conflictMessage, style = jua(16, Color(0xFFA52D4C), 1.5f)) }
                 Spacer(Modifier.height(12.dp))
             }
             V2Card(radius = 28) {
@@ -88,6 +106,13 @@ fun U05Register(
                         placeholder = if (meaningError) "뜻을 입력해 주세요" else "예: 산책하고 싶어요",
                         error = meaningError,
                     )
+                    Text("${meaning.trim().length}/100자", style = jua(14, if (meaning.trim().length > 100) Color(0xFFA52D4C) else V2C.Muted))
+                    val compared = kr.voicemate.malitda.domain.TextNormalizer.comparison(meaning)
+                    Spacer(Modifier.height(8.dp))
+                    Text("비교용 표현: $compared", style = jua(14, V2C.Muted))
+                    Text("전달 문장은 입력한 원문을 유지합니다.", style = jua(14, V2C.Muted))
+                    V2TextButton("저장 전 소리로 확인", onClick = onPreview)
+                    V2TextButton("소리 멈추기", onClick = onPreviewStop)
                     Spacer(Modifier.height(18.dp))
                     // 의미 그림 선택 줄
                     Row(
@@ -128,7 +153,9 @@ fun U05Register(
             }
             Spacer(Modifier.height(16.dp))
         }
-        if (showError && (expression.isBlank() || meaning.isBlank())) {
+        if (saving) {
+            V2PrimaryButton("저장 중…", enabled = false) {}
+        } else if (showError && (expression.isBlank() || meaning.isBlank())) {
             V2PrimaryButton("표현 다시 입력하기") { onRetry() }
             Spacer(Modifier.height(12.dp))
             V2SecondaryButton("취소") { onCancel() }
@@ -158,6 +185,7 @@ fun U05PickImage(
     onGenerate: (() -> Unit)? = null,
     generating: Boolean = false,
     onCancelGenerate: (() -> Unit)? = null,
+    demoMode: Boolean = false,
     // R4 서버 상태 안내(꺼짐·점검 모드). null이면 생성 가능.
     serverNote: String? = null,
     styleLabel: String = "",
@@ -196,9 +224,11 @@ fun U05PickImage(
                     }
                 }
             }
+            if (demoMode) V2Banner("모의 서버 · 실제 AI 생성 아님\n연결 시험용 물 그림을 반환합니다. 생성 성능이나 뜻 일치를 검증한 결과가 아닙니다.")
             Spacer(Modifier.height(14.dp))
             // 내장 그림 선택 격자(5개씩 한 줄)
-            PICKER_KEYS.chunked(5).forEach { rowKeys ->
+            val columns = if (androidx.compose.ui.platform.LocalDensity.current.fontScale >= 1.4f) 2 else 4
+            PICKER_KEYS.chunked(columns).forEach { rowKeys ->
                 Row(
                     Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -216,7 +246,8 @@ fun U05PickImage(
                                     RoundedCornerShape(16.dp),
                                 )
                                 .clip(RoundedCornerShape(16.dp))
-                                .clickable { onSelect(key) },
+                                .clickable(role = Role.RadioButton) { onSelect(key) }
+                                .semantics { contentDescription = (mapOf("walk" to "산책 그림", "water" to "물 그림", "rest" to "쉬기 그림", "cold" to "추위 그림")[key] ?: "그림 없음") + " 선택"; this.selected = selected },
                             contentAlignment = Alignment.Center,
                         ) {
                             val p = meaningPainter(key)
@@ -225,7 +256,7 @@ fun U05PickImage(
                         }
                     }
                     // 마지막 줄이 짧아도 칸 크기를 같게 유지
-                    repeat(5 - rowKeys.size) { Spacer(Modifier.weight(1f)) }
+                    repeat(columns - rowKeys.size) { Spacer(Modifier.weight(1f)) }
                 }
                 Spacer(Modifier.height(10.dp))
             }

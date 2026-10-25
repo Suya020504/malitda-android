@@ -1,0 +1,22 @@
+{
+  "sample_rate": 16000,
+  "channels": 1,
+  "bits_per_sample": 16,
+  "frames": 32160,
+  "duration_seconds": 2.01,
+  "compression": "NONE",
+  "synthetic": true,
+  "human_recording": false,
+  "cloud_service_used": false,
+  "voice_installed_previously": true,
+  "voice_name": "Microsoft Heami Desktop",
+  "voice_culture": "ko-KR",
+  "engine": "Windows System.Speech.Synthesis.SpeechSynthesizer",
+  "rate": 0,
+  "volume": 100,
+  "source_text": "물 마시고 싶어요",
+  "created_date": "2026-10-26",
+  "sha256": "325ee417e926da55f122333b4e549b9521753c4ab8a3c7cc5c99871a2e5954f7",
+  "bytes": 64366,
+  "scope": "one synthetic local speech condition; not disability speech or participant evaluation"
+}

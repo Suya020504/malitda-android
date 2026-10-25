@@ -77,9 +77,11 @@ class TrialTrackerTest {
     @Test
     fun summaryAndCsv() {
         val t = TrialTracker()
-        t.start(TrialTracker.Origin.VOICE, 0); t.onVoiceResult(1); t.onDelivered(1, "산책, 하고 싶어요"); t.setUnderstood(true)
+        val config = PilotConfig(participantCode = "P001", consented = true, practice = false, suitabilityReviewed = true,
+            consentVersion = PilotConfig.CONSENT_VERSION, consentedAt = 1, targetMeaningId = 1)
+        t.startNew(TrialTracker.Origin.VOICE, 0, config); t.onVoiceResult(1); t.onDelivered(1, "산책, 하고 싶어요"); t.setUnderstood(true)
         val a = t.finish(1, 3_000)!!
-        t.start(TrialTracker.Origin.CARD, 0); t.setUnderstood(false)
+        t.startNew(TrialTracker.Origin.CARD, 0, config); t.setUnderstood(false)
         val b = t.finish(1, 1_000)!!
         val s = TrialSummary.of(listOf(a, b))
         assertEquals(2, s.total)
@@ -87,10 +89,11 @@ class TrialTrackerTest {
         assertEquals(1, s.understoodYes)
         assertEquals(2, s.understoodAnswered)
         assertEquals(1, s.voiceFirstHit)
-        val csv = TrialCsv.of(listOf(a), mapOf(1L to "지우"))
+        val csv = TrialCsv.of(listOf(a), TrialExportScope(1L, "P001", true))
         val row = csv.lines()[1]
-        assertTrue(row.startsWith("지우,"))
-        assertTrue(row.contains(",3,voice,true,false,0,true,yes,false,"))
-        assertTrue(row.endsWith("\"산책, 하고 싶어요\""))
+        assertTrue(row.startsWith("P001,T01,local-v1,C,3,voice,"))
+        assertFalse(row.contains("산책"))
+        assertFalse(csv.contains("지우"))
+        assertEquals(TrialCsv.HEADER.split(',').size, row.split(',').size)
     }
 }

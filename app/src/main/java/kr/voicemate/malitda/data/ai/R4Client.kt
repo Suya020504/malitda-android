@@ -1,6 +1,11 @@
 package kr.voicemate.malitda.data.ai
 
 import android.util.Base64
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.concurrent.thread
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kr.voicemate.malitda.BuildConfig
@@ -20,7 +25,7 @@ import java.util.UUID
 object R4Client {
     class R4Exception(val status: Int, override val message: String) : Exception(message)
 
-    data class Status(val reachable: Boolean, val reviewMode: Boolean, val ready: Boolean, val notice: String?)
+    data class Status(val reachable: Boolean, val reviewMode: Boolean, val ready: Boolean, val notice: String?, val demoMode: Boolean = false)
 
     private val base: String get() = BuildConfig.R4_SERVER_URL
 
@@ -37,8 +42,9 @@ object R4Client {
                 reviewMode = health.optString("mode") == "review" || config.optString("mode") == "review",
                 ready = config.optBoolean("ready", false),
                 notice = config.optString("notice").ifBlank { null },
+                demoMode = config.optString("demo_mode") == "offline-mock" || health.optString("demo_mode") == "offline-mock",
             )
-        }.getOrElse { Status(reachable = false, reviewMode = false, ready = false, notice = null) }
+        }.getOrElse { if (it is CancellationException) throw it; Status(reachable = false, reviewMode = false, ready = false, notice = null) }
     }
 
     /** 학생 그림체를 서버에 맞추고 현재 버전을 돌려준다. */
@@ -88,15 +94,15 @@ object R4Client {
 
     // ---------- HTTP ----------
 
-    private fun get(path: String): JSONObject = request(path, null, 15_000)
+    private suspend fun get(path: String): JSONObject = request(path, null, 15_000)
 
-    private fun post(path: String, body: JSONObject, readTimeoutMs: Int = 15_000): JSONObject {
+    private suspend fun post(path: String, body: JSONObject, readTimeoutMs: Int = 15_000): JSONObject {
         // 서버가 다시 켜지면 토큰이 바뀌므로 쓰기 직전에 받아 온다.
         val token = get("/api/config").getString("session_token")
         return request(path, body, readTimeoutMs, token)
     }
 
-    private fun request(path: String, body: JSONObject?, readTimeoutMs: Int, token: String? = null): JSONObject {
+    private suspend fun request(path: String, body: JSONObject?, readTimeoutMs: Int, token: String? = null): JSONObject {
         val conn = (URL(base + path).openConnection() as HttpURLConnection).apply {
             instanceFollowRedirects = false
             connectTimeout = 5_000
@@ -109,24 +115,30 @@ object R4Client {
                 setRequestProperty("X-Demo-Token", token)
             }
         }
-        try {
-            body?.let { b -> conn.outputStream.use { it.write(b.toString().toByteArray(Charsets.UTF_8)) } }
-            val code = conn.responseCode
-            if (code !in 200..299) {
-                val review = runCatching {
-                    JSONObject(conn.errorStream?.use { it.readBytes().toString(Charsets.UTF_8) }.orEmpty()).optString("mode") == "review"
-                }.getOrDefault(false)
-                throw R4Exception(code, R4Messages.forStatus(code, review))
+        return suspendCancellableCoroutine { continuation ->
+            continuation.invokeOnCancellation { conn.disconnect() }
+            thread(name = "malitda-r4-http", isDaemon = true) {
+                try {
+                    if (!continuation.isActive) return@thread
+                    body?.let { b -> conn.outputStream.use { it.write(b.toString().toByteArray(Charsets.UTF_8)) } }
+                    val code = conn.responseCode
+                    if (code !in 200..299) {
+                        val review = runCatching {
+                            JSONObject(conn.errorStream?.use { it.readBytes().toString(Charsets.UTF_8) }.orEmpty()).optString("mode") == "review"
+                        }.getOrDefault(false)
+                        throw R4Exception(code, R4Messages.forStatus(code, review))
+                    }
+                    val result = JSONObject(readLimited(conn, 24_000_000).toString(Charsets.UTF_8))
+                    if (continuation.isActive) continuation.resume(result)
+                } catch (e: Exception) {
+                    if (continuation.isActive) continuation.resumeWithException(
+                        if (e is java.io.IOException) R4Exception(0, R4Messages.UNREACHABLE) else e)
+                } finally { conn.disconnect() }
             }
-            return JSONObject(readLimited(conn, 24_000_000).toString(Charsets.UTF_8))
-        } catch (e: java.io.IOException) {
-            throw R4Exception(0, R4Messages.UNREACHABLE)
-        } finally {
-            conn.disconnect()
         }
     }
 
-    private fun download(path: String): ByteArray {
+    private suspend fun download(path: String): ByteArray {
         val conn = (URL(base + path).openConnection() as HttpURLConnection).apply {
             instanceFollowRedirects = false; connectTimeout = 5_000; readTimeout = 15_000
         }

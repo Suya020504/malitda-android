@@ -48,10 +48,13 @@ fun MalitdaTheme(
     a11y: A11yPrefs = A11yPrefs(),
     content: @Composable () -> Unit,
 ) {
+    androidx.compose.runtime.SideEffect { kr.voicemate.malitda.ui.v2.V2C.highContrast = a11y.visualEmphasis }
+    val scheme = if (a11y.visualEmphasis) LightScheme.copy(primary = Color(0xFF321168), onPrimary = Color.White,
+        onSurface = Color(0xFF111111), onSurfaceVariant = Color(0xFF333333), outline = Color(0xFF111111), background = Color.White) else LightScheme
     val base = LocalDensity.current
-    // 기기 시스템 글꼴 크기는 무시하고 앱 내 설정만 반영(픽셀 고정 레이아웃 보호).
-    val density = Density(base.density, fontScale)
+    // App enlargement supplements system preferences; it must never make system-enlarged text smaller.
+    val density = Density(base.density, maxOf(base.fontScale, fontScale.takeIf { it.isFinite() }?.coerceIn(1f, 2f) ?: 1f))
     CompositionLocalProvider(LocalDensity provides density, LocalA11y provides a11y) {
-        MaterialTheme(colorScheme = LightScheme, typography = MalitdaTypography, shapes = MalitdaShapes, content = content)
+        MaterialTheme(colorScheme = scheme, typography = MalitdaTypography, shapes = MalitdaShapes, content = content)
     }
 }

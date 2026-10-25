@@ -33,6 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kr.voicemate.malitda.R
@@ -50,11 +51,25 @@ fun U01Home(
     onHelp: () -> Unit,
     onLibrary: () -> Unit,
     onSettings: () -> Unit,
+    onDirectInput: () -> Unit = {},
+    totalRegistered: Int = meanings.count { !it.isSample },
+    lastModified: Long? = null,
+    voiceStatus: String? = null,
+    onRetryVoice: (() -> Unit)? = null,
 ) {
-    V2Screen {
+    V2Screen(background = Color(0xFFFDFAF6)) {
         V2Header(onHelp = onHelp, logoStart = true)
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
             if (meanings.isEmpty()) EmptyHome(onRegister, onGuide) else FilledHome(name, meanings, onSpeak, onCard, onRegister)
+            if (meanings.isEmpty()) V2SecondaryButton("말하기", onClick = onSpeak)
+            V2SecondaryButton("문장 직접 입력", onClick = onDirectInput)
+            if (voiceStatus != null) V2SubTitle(voiceStatus)
+            if (onRetryVoice != null) V2TextButton("음성인식 다시 준비", onClick = onRetryVoice)
+            lastModified?.let { time ->
+                V2SubTitle("최근 수정 " + java.text.SimpleDateFormat("M월 d일 HH:mm", java.util.Locale.KOREA).format(java.util.Date(time)))
+            }
+            V2SubTitle("개인 뜻 ${totalRegistered}/50개 · 등록·개인정보 관리는 설정에서 확인")
+            Spacer(Modifier.height(16.dp))
         }
         V2BottomNav(selected = "home", onHome = {}, onLibrary = onLibrary, onSettings = onSettings)
     }
@@ -68,63 +83,74 @@ private fun FilledHome(
     onCard: (MeaningEntity) -> Unit,
     onRegister: () -> Unit,
 ) {
+    val large = androidx.compose.ui.platform.LocalDensity.current.fontScale >= 1.4f
     Spacer(Modifier.height(4.dp))
-    // 인사 카드
+    // PDF S08의 인사·캐릭터·원형 마이크 구성을 유지한다. 수치는 실제 개인 사전에서만 읽는다.
+    Row(Modifier.fillMaxWidth().padding(horizontal = 24.dp), verticalAlignment = Alignment.CenterVertically) {
+        Text("안녕하세요,\n${name.ifBlank { "친구" }}님", style = jua(29, V2C.Ink), modifier = Modifier.weight(1f))
+        if (!large) Image(painterResource(R.drawable.char_purple), null, Modifier.size(118.dp), contentScale = ContentScale.Fit)
+    }
+    val personalCount = meanings.count { !it.isSample }
     V2Card(radius = 26) {
         Row(
             Modifier
                 .fillMaxWidth()
                 .background(Brush.horizontalGradient(listOf(Color(0xFFF6EFFB), Color(0xFFEFF2FC))))
-                .padding(horizontal = 22.dp, vertical = 22.dp),
+                .clickable(role = Role.Button, onClick = onRegister)
+                .padding(horizontal = 20.dp, vertical = 18.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                "${vocative(name)}, 무엇을\n전하고 싶어?",
-                style = jua(26, V2C.Title, 1.35f),
-                modifier = Modifier.weight(1f),
-            )
-            Image(
-                painterResource(R.drawable.v2_char_robot), contentDescription = null,
-                modifier = Modifier.size(92.dp).clip(RoundedCornerShape(18.dp)),
+            Column(Modifier.weight(1f)) {
+                Text(if (personalCount > 0) "함께 확인한 뜻" else "처음에는 연습 카드로", style = jua(19, V2C.Ink))
+                Spacer(Modifier.height(6.dp))
+                Text(if (personalCount > 0) "${personalCount}개가 있어요" else "천천히 시작해요", style = jua(24, V2C.Title))
+                Spacer(Modifier.height(10.dp))
+                Text("내 표현 함께 준비  ›", style = jua(15, V2C.Muted))
+            }
+            if (!large) Image(
+                painterResource(R.drawable.char_robot_mint), contentDescription = null,
+                modifier = Modifier.size(110.dp),
                 contentScale = ContentScale.Fit,
             )
         }
     }
     Spacer(Modifier.height(18.dp))
-    // 말하기 버튼(홈 전용으로 조금 더 크게)
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp)
-            .height(72.dp)
-            .shadow(8.dp, RoundedCornerShape(36.dp), clip = false, spotColor = V2C.Shadow)
-            .background(V2Gradient, RoundedCornerShape(36.dp))
-            .clip(RoundedCornerShape(36.dp))
-            .clickable { onSpeak() }
-            .semantics { contentDescription = "말하기" },
-        contentAlignment = Alignment.Center,
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(painterResource(R.drawable.ic_mic_white), null, Modifier.size(28.dp))
-            Spacer(Modifier.width(10.dp))
-            Text("말하기", style = jua(26, Color.White))
+    Box(Modifier.fillMaxWidth().height(if (large) 320.dp else 230.dp), contentAlignment = Alignment.Center) {
+        Image(painterResource(R.drawable.char_green), null,
+            Modifier.align(Alignment.BottomStart).size(85.dp), contentScale = ContentScale.Fit)
+        Image(painterResource(R.drawable.char_water), null,
+            Modifier.align(Alignment.BottomEnd).size(85.dp), contentScale = ContentScale.Fit)
+        Box(
+            Modifier.size(if (large) 286.dp else 196.dp)
+                .shadow(14.dp, CircleShape, clip = false, spotColor = V2C.Shadow)
+                .background(Color.White, CircleShape).padding(9.dp)
+                .background(Brush.linearGradient(if (V2C.highContrast) listOf(V2C.GradStart, V2C.GradEnd) else listOf(Color(0xFF62C9FF), Color(0xFF8960FF), Color(0xFFF276E7))), CircleShape)
+                .clip(CircleShape).clickable(role = Role.Button, onClick = onSpeak)
+                .semantics { contentDescription = "눌러서 말하기" },
+            contentAlignment = Alignment.Center,
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Image(painterResource(R.drawable.ic_mic_white), null, Modifier.size(58.dp))
+                Spacer(Modifier.height(14.dp))
+                Text("눌러서 말하기", style = jua(23, Color.White))
+            }
         }
     }
     Spacer(Modifier.height(24.dp))
     Text(
-        "카드로 골라도 돼요",
+        "그림으로 뜻 고르기",
         style = jua(21, V2C.Ink),
         modifier = Modifier.padding(horizontal = 24.dp),
     )
     Spacer(Modifier.height(12.dp))
     // 의미 카드 2열 격자
-    meanings.chunked(2).forEach { rowItems ->
+    meanings.chunked(if (large) 1 else 2).forEach { rowItems ->
         Row(
             Modifier.fillMaxWidth().padding(horizontal = 20.dp),
             horizontalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             rowItems.forEach { m -> MeaningCard(m, Modifier.weight(1f)) { onCard(m) } }
-            if (rowItems.size == 1) Spacer(Modifier.weight(1f))
+            if (!large && rowItems.size == 1) Spacer(Modifier.weight(1f))
         }
         Spacer(Modifier.height(14.dp))
     }
@@ -148,9 +174,10 @@ private fun MeaningCard(m: MeaningEntity, modifier: Modifier = Modifier, onClick
         MeaningPicture(m.imageKey, Modifier.fillMaxWidth().aspectRatio(1.22f).clip(RoundedCornerShape(18.dp)))
         Spacer(Modifier.height(12.dp))
         Text(
-            m.text, style = jua(18, V2C.Ink), textAlign = TextAlign.Center, maxLines = 2,
+            m.text, style = jua(18, V2C.Ink), textAlign = TextAlign.Center,
             modifier = Modifier.padding(bottom = 8.dp),
         )
+        if (m.isSample) Text("연습용 예시", style = jua(13, V2C.Muted), modifier = Modifier.padding(bottom = 4.dp))
     }
 }
 

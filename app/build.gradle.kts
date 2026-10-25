@@ -1,4 +1,5 @@
 import java.util.Properties
+import java.security.MessageDigest
 
 plugins {
     alias(libs.plugins.android.application)
@@ -21,8 +22,8 @@ android {
         minSdk = 26
         targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionCode = 8
-        versionName = "0.2.5"
+        versionCode = 9
+        versionName = "0.3.0"
         // 그림 만들기용 R4 서버 주소. 키는 서버에만 있고 앱에는 넣지 않는다. 릴리스는 비워 기능을 끈다.
         buildConfigField("String", "R4_SERVER_URL", "\"\"")
         vectorDrawables { useSupportLibrary = true }
@@ -132,4 +133,27 @@ dependencies {
     androidTestImplementation("androidx.test:runner:1.7.0")
     androidTestImplementation("androidx.test:core:1.7.0")
     androidTestImplementation("androidx.room:room-testing:2.8.2")
+}
+
+// A previously warm emulator hid missing model assets. Every packaged APK must carry both local engines.
+val verifyBundledSpeechModels by tasks.registering {
+    val manifest = rootProject.file("scripts/model-sha256.properties")
+    inputs.file(manifest)
+    doLast {
+        val checksums = Properties().apply { manifest.inputStream().use { load(it) } }
+        checksums.forEach { relative, expected ->
+            val model = file("src/main/assets/$relative")
+            check(model.isFile) { "Speech model missing: $relative. Run scripts/prepare-models.ps1 before packaging." }
+            val digest = MessageDigest.getInstance("SHA-256")
+            model.inputStream().use { input ->
+                val bytes = ByteArray(1 shl 16)
+                while (true) { val n = input.read(bytes); if (n < 0) break; digest.update(bytes, 0, n) }
+            }
+            val actual = digest.digest().joinToString("") { "%02x".format(it) }
+            check(actual == expected.toString()) { "Speech model checksum mismatch: $relative" }
+        }
+    }
+}
+tasks.configureEach {
+    if (name.matches(Regex("merge(?:Debug|Release)Assets"))) dependsOn(verifyBundledSpeechModels)
 }

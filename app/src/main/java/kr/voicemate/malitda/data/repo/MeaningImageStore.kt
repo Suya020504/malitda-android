@@ -19,6 +19,8 @@ import java.security.MessageDigest
  */
 object MeaningImageStore {
     private const val DIR = "meaning_media"
+    /** 이전 개인 의미 사전 분기의 사진은 원본 참조를 유지한다. 새 사진은 DIR에만 저장한다. */
+    private val READABLE_DIRS = setOf(DIR, "means_media")
     const val KEY_PREFIX = "file:"
 
     suspend fun import(context: Context, uri: Uri): String = withContext(Dispatchers.IO) {
@@ -71,16 +73,33 @@ object MeaningImageStore {
     fun fileFor(filesDir: File, imageKey: String?): File? {
         if (imageKey == null || !imageKey.startsWith(KEY_PREFIX)) return null
         val rel = imageKey.removePrefix(KEY_PREFIX)
-        if (!rel.startsWith("$DIR/")) return null
-        val f = File(filesDir, rel)
-        return if (f.isFile) f else null
+        if (!rel.matches(Regex("(?:meaning_media|means_media)/[a-f0-9]{64}\\.png"))) return null
+        return runCatching {
+            val root = filesDir.canonicalFile
+            val dir = File(root, rel.substringBefore('/')).canonicalFile
+            val file = File(root, rel).canonicalFile
+            if (dir.parentFile == root && file.parentFile == dir && file.isFile) file else null
+        }.getOrNull()
     }
 
     /** 어떤 뜻도 참조하지 않는 사진을 지운다(삭제·수정 뒤 정리). */
-    suspend fun removeUnreferenced(filesDir: File, references: Set<String>) = withContext(Dispatchers.IO) {
-        val dir = File(filesDir, DIR).canonicalFile
-        dir.listFiles()?.filter { it.isFile && it.name.matches(Regex("[a-f0-9]{64}\\.png")) }
-            ?.filter { "$KEY_PREFIX$DIR/${it.name}" !in references }
-            ?.forEach { if (it.canonicalFile.parentFile == dir) it.delete() }
+    suspend fun removeUnreferenced(
+        filesDir: File,
+        references: Set<String>,
+        /** 아직 저장하지 않은 등록/수정 폼의 그림은 호출자가 보호 대상으로 넘긴다. */
+        protectedKeys: Set<String> = emptySet(),
+    ) = withContext(Dispatchers.IO) {
+        val root = filesDir.canonicalFile
+        val keep = references + protectedKeys
+        READABLE_DIRS.forEach { directoryName ->
+            val dir = File(root, directoryName).canonicalFile
+            require(dir.parentFile == root) { "잘못된 그림 저장 경로입니다." }
+            dir.listFiles()?.filter { it.isFile && it.name.matches(Regex("[a-f0-9]{64}\\.png")) }
+                ?.filter { "$KEY_PREFIX$directoryName/${it.name}" !in keep }
+                ?.forEach {
+                    require(it.canonicalFile.parentFile == dir) { "잘못된 그림 파일 경로입니다." }
+                    check(it.delete() || !it.exists()) { "그림을 지우지 못했습니다. 다시 시도해야 합니다." }
+                }
+        }
     }
 }

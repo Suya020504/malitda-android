@@ -1,28 +1,44 @@
 package kr.voicemate.malitda.data.repo
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kr.voicemate.malitda.data.db.ExpressionInsertResult
 import kr.voicemate.malitda.data.db.MeaningDao
 import kr.voicemate.malitda.data.db.MeaningEntity
 import kr.voicemate.malitda.data.db.MeaningExpressionEntity
 import kr.voicemate.malitda.data.db.MeaningWithExpressions
 import kr.voicemate.malitda.domain.TextNormalizer
+import kr.voicemate.malitda.domain.MeaningCategory
+import kr.voicemate.malitda.domain.Limits
 
 /** v2 개인 의미 사전. 뜻(그림·문장)과 표현→뜻 연결을 관리한다. */
 class MeaningRepository(private val dao: MeaningDao) {
 
-    fun observeUsable(profileId: Long): Flow<List<MeaningEntity>> = dao.observeUsable(profileId)
-    fun observeAll(profileId: Long): Flow<List<MeaningEntity>> = dao.observeAll(profileId)
-    fun observe(id: Long): Flow<MeaningEntity?> = dao.observe(id)
-    suspend fun byId(id: Long): MeaningEntity? = dao.byId(id)
+    fun observeUsable(profileId: Long): Flow<List<MeaningEntity>> = dao.observeUsable(profileId).map { list -> list.map(::canonical) }
+    fun observeAll(profileId: Long): Flow<List<MeaningEntity>> = dao.observeAll(profileId).map { list -> list.map(::canonical) }
+    fun observe(id: Long): Flow<MeaningEntity?> = dao.observe(id).map { it?.let(::canonical) }
+    suspend fun byId(id: Long): MeaningEntity? = dao.byId(id)?.let(::canonical)
     suspend fun usableWithExpressions(profileId: Long): List<MeaningWithExpressions> = dao.usableWithExpressions(profileId)
-    suspend fun recordUse(id: Long) = dao.incrementUse(id)
-    /** 학생과 함께 확인(U10-C) 완료 → 전달 흐름에 활성화. */
+        .map { it.copy(meaning = canonical(it.meaning)) }
+    suspend fun recordUse(id: Long) = dao.incrementUse(id, System.currentTimeMillis())
+    /** 구버전 호출 호환용 확인 상태 변경. 확인 근거를 기록할 때는 activateConfirmed를 쓴다. */
     suspend fun setConfirmed(id: Long, confirmed: Boolean) = dao.setConfirmed(id, confirmed)
+    /** 학생 응답과 확인 방식이 갖춰진 현재 버전만 활성화한다. */
+    suspend fun activateConfirmed(id: Long, profileId: Long, expectedUpdatedAt: Long, method: String, confirmedBy: String = "supporter"): Boolean =
+        dao.activateConfirmed(id, profileId, expectedUpdatedAt, method, System.currentTimeMillis(), confirmedBy)
+    suspend fun recordConfirmationResponse(
+        id: Long, profileId: Long, expectedUpdatedAt: Long, response: String,
+        method: String? = null, confirmedBy: String = "supporter",
+    ): Boolean = dao.recordConfirmationResponse(id, profileId, expectedUpdatedAt, response, method, confirmedBy, System.currentTimeMillis())
+    suspend fun confirmationHistory(id: Long) = dao.confirmationHistory(id)
     suspend fun setActive(id: Long, active: Boolean) = dao.setActive(id, active)
-    fun observeArchived(profileId: Long): Flow<List<MeaningEntity>> = dao.observeArchived(profileId)
+    fun observeArchived(profileId: Long): Flow<List<MeaningEntity>> = dao.observeArchived(profileId).map { list -> list.map(::canonical) }
     suspend fun expressionsFor(meaningId: Long) = dao.expressionsFor(meaningId)
+    suspend fun toggleFavorite(id: Long) = dao.toggleFavorite(id)
+    suspend fun setCategory(id: Long, category: String) = dao.setCategory(id, MeaningCategory.normalize(category))
+    suspend fun resetRanking(profileId: Long) = dao.resetUseCount(profileId)
 
-    /** 다른 뜻에 이미 연결된 표현이 있으면 돌려준다(등록·수정 전 중복 검사). */
+    /** 같은 표현의 다른 뜻을 안내한다. 복수 뜻을 금지하는 저장 오류가 아니다. */
     suspend fun findConflicts(profileId: Long, expressions: List<String>, excludeMeaningId: Long = 0L) =
         dao.findExpressionConflicts(
             profileId,
@@ -31,28 +47,17 @@ class MeaningRepository(private val dao: MeaningDao) {
         )
 
     /** 수정(U09-E): 내용을 바꾸면 updatedAt을 올리고 미확인으로 되돌린다 — 학생과 다시 확인해야 쓸 수 있다. */
-    suspend fun update(id: Long, text: String, imageKey: String?, situation: String?, expressions: List<String>) {
-        val cur = dao.byId(id) ?: return
-        // 표현을 먼저 바꾸고 뜻을 마지막에 갱신한다 — 뜻 변경을 관찰하는 화면이 새 표현 목록을 읽도록.
-        dao.deleteExpressionsFor(id)
-        expressions.map { it.trim() }.filter { it.isNotBlank() }.forEach { expr ->
-            dao.insertExpression(
-                MeaningExpressionEntity(profileId = cur.profileId, meaningId = id, text = expr, key = TextNormalizer.normalize(expr))
-            )
-        }
-        dao.update(
-            cur.copy(
-                text = text.trim(), imageKey = imageKey,
-                situation = situation?.trim()?.ifBlank { null },
-                confirmed = false, updatedAt = System.currentTimeMillis(),
-            )
+    suspend fun update(id: Long, text: String, imageKey: String?, situation: String?, expressions: List<String>, category: String? = null) {
+        validateText(text)
+        dao.updateWithExpressions(
+            id, text.trim(), imageKey, situation?.trim()?.ifBlank { null },
+            prepareExpressions(expressions), System.currentTimeMillis(), category?.let(MeaningCategory::normalize),
         )
     }
 
     /** 삭제(U09-D): 연결한 표현도 함께 지운다. 되돌릴 수 없다. */
     suspend fun delete(id: Long) {
-        dao.deleteExpressionsFor(id)
-        dao.delete(id)
+        dao.deleteWithExpressions(id)
     }
 
     suspend fun allImageKeys(): Set<String> = dao.allImageKeys().toSet()
@@ -70,11 +75,13 @@ class MeaningRepository(private val dao: MeaningDao) {
     suspend fun addExpression(profileId: Long, meaningId: Long, expression: String): AddExpressionResult {
         val key = TextNormalizer.normalize(expression)
         require(key.isNotBlank())
-        if (dao.expressionsFor(meaningId).any { it.key == key }) return AddExpressionResult.AlreadyThere
-        dao.findExpressionConflicts(profileId, listOf(key), meaningId).firstOrNull()
-            ?.let { return AddExpressionResult.TakenBy(it.meaningText) }
-        dao.insertExpression(MeaningExpressionEntity(profileId = profileId, meaningId = meaningId, text = expression.trim(), key = key))
-        return AddExpressionResult.Added
+        return when (val result = dao.addExpressionIfAvailable(
+            MeaningExpressionEntity(profileId = profileId, meaningId = meaningId, text = expression.trim(), key = key)
+        )) {
+            ExpressionInsertResult.Added -> AddExpressionResult.Added
+            ExpressionInsertResult.AlreadyThere -> AddExpressionResult.AlreadyThere
+            is ExpressionInsertResult.TakenBy -> AddExpressionResult.TakenBy(result.meaningText)
+        }
     }
 
     suspend fun save(
@@ -84,42 +91,63 @@ class MeaningRepository(private val dao: MeaningDao) {
         situation: String?,
         expressions: List<String>,
         confirmed: Boolean,
+        isSample: Boolean = false,
+        category: String = "often",
     ): Long {
+        validateText(text)
         val now = System.currentTimeMillis()
-        val id = dao.insert(
+        return dao.insertWithExpressions(
             MeaningEntity(
                 profileId = profileId, text = text.trim(), imageKey = imageKey,
                 situation = situation?.trim()?.ifBlank { null },
-                confirmed = confirmed, active = true, createdAt = now, updatedAt = now, useCount = 0,
-            )
+                confirmed = confirmed && !isSample, active = true,
+                createdAt = now, updatedAt = now, useCount = 0, isSample = isSample,
+                category = MeaningCategory.normalize(category),
+            ),
+            prepareExpressions(expressions),
         )
-        expressions.map { it.trim() }.filter { it.isNotBlank() }.forEach { expr ->
-            dao.insertExpression(
-                MeaningExpressionEntity(profileId = profileId, meaningId = id, text = expr, key = TextNormalizer.normalize(expr))
-            )
-        }
-        return id
     }
 
     /**
-     * 예시 뜻 지우기: 첫 실행 때 넣은 기본 4종을 지운다(실증 전 정리용).
-     * 지원자가 같은 문장으로 직접 등록한 뜻과 구별하기 위해 기본 그림 키까지 함께 맞춘다.
+     * 출처가 예시로 표시된 뜻만 지운다. 과거 출처가 불명확한 기록은 보존한다.
      */
-    suspend fun removeSamples(profileId: Long): Int {
-        val samples = mapOf(
-            "산책하고 싶어요" to "walk", "물이 필요해요" to "water", "쉬고 싶어요" to "rest", "바람이 차가워요" to "cold",
+    suspend fun removeSamples(profileId: Long): Int = dao.removeSamples(profileId)
+
+    /** 첫 실행 연습용 4종. 학생 확인 기록과 구분하고 중간 실패 시 전부 되돌린다. */
+    suspend fun seedDefaults(profileId: Long) {
+        val now = System.currentTimeMillis()
+        fun sample(text: String, imageKey: String, situation: String, expressions: List<String>) =
+            MeaningWithExpressions(
+                MeaningEntity(
+                    profileId = profileId, text = text, imageKey = imageKey, situation = situation,
+                    confirmed = false, active = true, createdAt = now, updatedAt = now,
+                    useCount = 0, isSample = true,
+                ),
+                prepareExpressions(expressions),
+            )
+        dao.seedSamplesIfEmpty(
+            profileId,
+            listOf(
+                sample("산책하고 싶어요", "walk", "쉬는 시간, 점심 후", listOf("산책", "산책 가자", "걷고 싶어")),
+                sample("물이 필요해요", "water", "식사·활동 중", listOf("물", "물 주세요", "목말라")),
+                sample("쉬고 싶어요", "rest", "활동이 길어질 때", listOf("쉬고 싶어", "쉬자", "휴식")),
+                sample("바람이 차가워요", "cold", "야외 활동", listOf("바람", "추워", "차가워")),
+            ),
         )
-        var removed = 0
-        dao.allFor(profileId).filter { samples[it.text] == it.imageKey }.forEach { delete(it.id); removed++ }
-        return removed
     }
 
-    /** 첫 실행 데모용 기본 4종(디자인 42화면의 카드와 동일). 학생과 확인을 마친 상태로 넣는다. */
-    suspend fun seedDefaults(profileId: Long) {
-        if (dao.count(profileId) > 0) return
-        save(profileId, "산책하고 싶어요", "walk", "쉬는 시간, 점심 후", listOf("산책", "산책 가자", "걷고 싶어"), confirmed = true)
-        save(profileId, "물이 필요해요", "water", "식사·활동 중", listOf("물", "물 주세요", "목말라"), confirmed = true)
-        save(profileId, "쉬고 싶어요", "rest", "활동이 길어질 때", listOf("쉬고 싶어", "쉬자", "휴식"), confirmed = true)
-        save(profileId, "바람이 차가워요", "cold", "야외 활동", listOf("바람", "추워", "차가워"), confirmed = true)
+    /** 저장 전에 정규화 키가 같은 입력을 합친다. 소유자는 DAO 트랜잭션 안에서 지정한다. */
+    private fun prepareExpressions(expressions: List<String>): List<MeaningExpressionEntity> =
+        expressions.map { it.trim() }
+            .map { MeaningExpressionEntity(profileId = 0, meaningId = 0, text = it, key = TextNormalizer.normalize(it)) }
+            .filter { it.key.isNotBlank() }
+            .distinctBy { it.key }
+
+    private fun validateText(text: String) {
+        require(text.isNotBlank()) { "전할 뜻을 입력해야 합니다." }
+        require(text.trim().length <= 100) { "전할 뜻은 100자까지 입력할 수 있습니다." }
     }
+
+    private fun canonical(meaning: MeaningEntity): MeaningEntity =
+        meaning.copy(category = MeaningCategory.normalize(meaning.category))
 }
