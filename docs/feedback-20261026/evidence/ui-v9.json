@@ -1,0 +1,476 @@
+{
+  "date_kst": "2026-10-26",
+  "apk_sha256": "a73c9d50d5f5e50bbd1953eeaae1f2ea2efe481fd9a45a16e1404b541200f814",
+  "version": "0.3.0-debug/code9",
+  "device": "emulator-5562/API36/read-only",
+  "cases": [
+    {
+      "id": "V9-01",
+      "status": "PASS",
+      "title": "최종0.3.0 설치·앱 재실행",
+      "observed": "versionCode9/versionName0.3.0-debug. 새 합성 프로필의 빈 홈 유지",
+      "evidence": [
+        "v9-ready"
+      ]
+    },
+    {
+      "id": "V9-02",
+      "status": "PASS",
+      "title": "합성 프로필의 개인 뜻 등록·확인·전달",
+      "observed": "QAFinal/waterqa/I need water/물 그림 등록, 맞음+가리킴 뒤 별도의 이번 승인 후 전달",
+      "evidence": [
+        "picker-labelled-v9",
+        "v9-confirm-personal",
+        "v9-delivery-personal"
+      ]
+    },
+    {
+      "id": "V9-03",
+      "status": "PASS",
+      "title": "그림 선택 칩 접근성 이름",
+      "observed": "5개 그림 칩에 이름과 checkable 상태가 UI트리에 존재. 실제 TalkBack 조작 시험은 아님",
+      "evidence": [
+        "picker-labelled-v9"
+      ]
+    },
+    {
+      "id": "V9-04",
+      "status": "PASS",
+      "title": "TEXT 방식 오류 문구 수정",
+      "observed": "글 먼저 선택에서 존재하는 그림을 숨겼다는 이유로 로딩 오류를 표시하지 않음",
+      "evidence": [
+        "text-mode-error-fixed-v9"
+      ]
+    },
+    {
+      "id": "V9-05",
+      "status": "PASS",
+      "title": "직접 편집 뒤로가기",
+      "observed": "뜻 확인에서 직접 편집으로 이동한 뒤 뒤로가면 동일한 뜻의 확인 화면으로 복귀",
+      "evidence": [
+        "literal-from-card-v9",
+        "literal-back-restores-confirm-v9"
+      ]
+    },
+    {
+      "id": "V9-06",
+      "status": "PASS_REPRESENTATIVE",
+      "title": "시스템 200%와 320dp",
+      "observed": "시스템 font_scale2.0,840x2000/420dpi에서 홈·1열카드·확인·전달 대표 이동. 전체 화면/보조기술 인증 아님. 홈 인사 가독성은 root10차 개선 예정",
+      "evidence": [
+        "system200-320dp-home",
+        "system200-320dp-card",
+        "system200-320dp-confirm",
+        "system200-320dp-delivery"
+      ]
+    },
+    {
+      "id": "V9-07",
+      "status": "PASS",
+      "title": "별도 실증 설정",
+      "observed": "합성 코드P901/조건C/과업T01/목표뜻, 비연습·선별검토·동의 체크 후 기록 켜짐. 실제 동의·참여자 없음",
+      "evidence": [
+        "pilot-setup-top-v9",
+        "pilot-setup-middle-v9",
+        "pilot-consent-v9",
+        "pilot-configured-v9"
+      ]
+    },
+    {
+      "id": "V9-08",
+      "status": "PASS",
+      "title": "실증 시도와 완료",
+      "observed": "카드 선택→확인→전달에서 합성 이해 관찰 입력→마치고 홈. 현재 학생의 완료 기록1건",
+      "evidence": [
+        "pilot-observation-v9",
+        "pilot-summary-completed-v9"
+      ]
+    },
+    {
+      "id": "V9-09",
+      "status": "PASS_UI_ONLY",
+      "title": "면담 입력 화면",
+      "observed": "선택형 통제감4 입력, 나머지 무응답0으로 기록 버튼→전달 화면 복귀. DB 내부 값의 직접 검사는 하지 않음",
+      "evidence": [
+        "pilot-feedback-v9",
+        "feedback-bottom-v9"
+      ]
+    },
+    {
+      "id": "V9-10",
+      "status": "PASS",
+      "title": "익명 CSV 실제 파일·범위",
+      "observed": "범위 확인→FileProvider CSV파일의 시스템 공유창→취소. 익명 코드와 수치1행이며 이름·문장·절대시각·면담 없음. 다른 앱 실제 전송 없음",
+      "evidence": [
+        "csv-scope-preview-v9",
+        "csv-file-sharesheet-v9"
+      ]
+    },
+    {
+      "id": "V9-11",
+      "status": "PASS",
+      "title": "실증 중단·기존 반출 구분",
+      "observed": "피로 사유 중단 후 수집 불가 안내와 기존 동의 기록 CSV 버튼은 활성 유지",
+      "evidence": [
+        "pilot-paused-export-v9",
+        "pilot-paused-keeps-export-v9"
+      ]
+    },
+    {
+      "id": "V9-12",
+      "status": "PASS_WITH_CACHE_ISSUE",
+      "title": "철회·DB 삭제·수집 금지",
+      "observed": "철회 뒤 코드미설정/기록0/내보내기disabled. 생성한 앱 내부 임시 CSV캐시는 남아 있어 root에 보완 요청",
+      "evidence": [
+        "pilot-withdrawn-v9"
+      ]
+    },
+    {
+      "id": "V9-13",
+      "status": "PASS",
+      "title": "음성 모델 준비 상태 안내",
+      "observed": "홈에서 준비 실패 대신 기기 내 처리 안내 표시. root의 실제 네이티브Ready 계측 결과는 별도 근거이며 발화 정확도는 미검증",
+      "evidence": [
+        "system200-320dp-card"
+      ]
+    },
+    {
+      "id": "V9-14",
+      "status": "PASS_MOCK_ONLY",
+      "title": "모의 그림 응답과 취소",
+      "observed": "모의서버배너/완료 결과1회/두번째 요청취소/늦은 응답 뒤 산책 선택 유지. 모든 스타일은 기존 물 그림, 유료생성0",
+      "evidence": [
+        "mock-ai-consent-v9",
+        "mock-ai-generating-v9",
+        "mock-ai-result-ready-v9",
+        "mock-ai-cancel-late-result-v9"
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "id": "QA-PILOT-UNDELIVERED",
+      "status": "root_fix_planned_v11",
+      "finding": "전달 전 실패한 완료 과업의 명시적 종료 UI 부재. 중단과 실패완료를 구분하는 지원자 화면 필요"
+    },
+    {
+      "id": "QA-PILOT-CACHE",
+      "status": "root_fix_requested",
+      "finding": "철회 뒤 cache/trial_exports CSV1개 잔류; root에 전용 임시 파일 정리 요청"
+    },
+    {
+      "id": "QA-HOME-LARGE",
+      "status": "root_fix_planned_v10",
+      "finding": "320dp/system200에서 인사·요약이 캐릭터에 밀려 과도하게 줄바꿈. root가 큰 글씨 모드 장식 숨김 예정"
+    }
+  ],
+  "captures": [
+    {
+      "file": "csv-file-sharesheet-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 226493,
+      "sha256": "87081f2c3b1f5ce95e58751f4daed21390bf3623c0c5faa05343da44bf74873d"
+    },
+    {
+      "file": "csv-scope-preview-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 325673,
+      "sha256": "a9bf203dfe0195f9d01e742c8f84342ddf46402a3aea4dd747f22f99e93153a7"
+    },
+    {
+      "file": "feedback-bottom-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 301659,
+      "sha256": "999aa6915a549c6e022984fa4c80bb47444b879abf41a5b9f5d3bf5b76363173"
+    },
+    {
+      "file": "literal-back-restores-confirm-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 270142,
+      "sha256": "6569b80552fc6fa04cf6bef19e1040bbc3ce728f5ebdedf021f760d681fc179f"
+    },
+    {
+      "file": "literal-from-card-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 257098,
+      "sha256": "169405be78378486f8044d2ddec26300a26b6a2dbedb03a630abd93cf5cc1412"
+    },
+    {
+      "file": "mock-ai-cancel-late-result-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 568284,
+      "sha256": "077845151dac1e4d8bc954a7bfb0d7f049aacbfe248d483f923d356bc47c2aaf"
+    },
+    {
+      "file": "mock-ai-consent-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 565694,
+      "sha256": "8faaaf04bf0f4ee40d0532c2e6b06a730036cd82d8d84a1e0a74d0debfa0eb26"
+    },
+    {
+      "file": "mock-ai-controls-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 330941,
+      "sha256": "56c0defa68d0d13fe7615158ac3eeaa447d74b92d1b8cb3ec2fd3d288be00465"
+    },
+    {
+      "file": "mock-ai-generating-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 521294,
+      "sha256": "d09450139acbb7001cccf06ff7a2ba34df0156720eb19bdf0f80ce41ff2f7403"
+    },
+    {
+      "file": "mock-ai-result-ready-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 571821,
+      "sha256": "6eff732ab7e0565bc171bb56e4c885a23a2c9fb33f01cc3665035f50ab98fc78"
+    },
+    {
+      "file": "mock-ai-result-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 521294,
+      "sha256": "d09450139acbb7001cccf06ff7a2ba34df0156720eb19bdf0f80ce41ff2f7403"
+    },
+    {
+      "file": "picker-labelled-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 506797,
+      "sha256": "9715fa8a8d12ab446184730c42238b62c09655fce23c159bdb9c1cf042b07d27"
+    },
+    {
+      "file": "pilot-after-csv-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 357902,
+      "sha256": "ef7c91ff206490d412ac1f5bc6887f48b4b4d888fb6d404bbba4c26485e43573"
+    },
+    {
+      "file": "pilot-configured-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 341996,
+      "sha256": "ae64fc6bf1d67db67f65924c91b2e478e8d522839e5b13e8467974bf0b7d018a"
+    },
+    {
+      "file": "pilot-consent-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 376664,
+      "sha256": "cdad40d2c32701500a96d032e8aa970c3bab7252ce73c683ee691d86fbc02138"
+    },
+    {
+      "file": "pilot-feedback-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 337619,
+      "sha256": "5f53137977504fafdfb160b45f368563bb4e817f8a4b494a9e501b43003c49a2"
+    },
+    {
+      "file": "pilot-observation-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 281478,
+      "sha256": "f37b94e4c4a1579cc2cc2a9d180adb7be8dc508695b8187d861b5d4d8e557e52"
+    },
+    {
+      "file": "pilot-paused-export-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 279803,
+      "sha256": "d2a0c648b6de82307971bb841ff38f22384143002e67fea65a62c7333eba243c"
+    },
+    {
+      "file": "pilot-paused-keeps-export-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 392553,
+      "sha256": "b65a4869c1cd0c25bd5c84168cd18ea06df68877c59a960dfc4119fa1322fe33"
+    },
+    {
+      "file": "pilot-save-controls-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 519074,
+      "sha256": "06a458f13985cfeedc7259a7ca2c8d5fe1e45665ab5cfdd85e35979f8da3e3eb"
+    },
+    {
+      "file": "pilot-setup-middle-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 388625,
+      "sha256": "e2bc47637081c0bca0eb267f9835c8aede57e9b69b9357b9e2761fe0224cdf9d"
+    },
+    {
+      "file": "pilot-setup-top-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 346695,
+      "sha256": "b46788f66996a7b752a47d3c87e835e563dc9a6ed5c3fe77f92fb4e48d085238"
+    },
+    {
+      "file": "pilot-summary-completed-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 358484,
+      "sha256": "9c5e1ad3d919bec8dec2fc9a6b8388a790284c0c01d7d51d4f1cfded839cf276"
+    },
+    {
+      "file": "pilot-withdrawn-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 351036,
+      "sha256": "0a57aeb9a6121fe7e2b14b06990fe11e485ff91b31ccc13f5831cdd4e0186327"
+    },
+    {
+      "file": "system200-320dp-card.png",
+      "size": [
+        840,
+        2000
+      ],
+      "bytes": 436286,
+      "sha256": "f2f01353bd63ad6ce11a0059f981891bc27fd29c7ef06a8fc9675af44100d2b5"
+    },
+    {
+      "file": "system200-320dp-confirm.png",
+      "size": [
+        840,
+        2000
+      ],
+      "bytes": 452877,
+      "sha256": "497d2a507f2349eefc95b6d909e3040f27272a313518a49a28fdc3508ff8449f"
+    },
+    {
+      "file": "system200-320dp-delivery-scrolled.png",
+      "size": [
+        840,
+        2000
+      ],
+      "bytes": 481035,
+      "sha256": "4de0028b2ba7b3fdca110b122dc7b6fd151039a9968dfc14175c931362d5cacf"
+    },
+    {
+      "file": "system200-320dp-delivery.png",
+      "size": [
+        840,
+        2000
+      ],
+      "bytes": 481035,
+      "sha256": "4de0028b2ba7b3fdca110b122dc7b6fd151039a9968dfc14175c931362d5cacf"
+    },
+    {
+      "file": "system200-320dp-home.png",
+      "size": [
+        840,
+        2000
+      ],
+      "bytes": 458376,
+      "sha256": "f0963490603fd8bde57aabb6cecc3f4fc98a54fd2bd852c7294bc9b0ba2989c2"
+    },
+    {
+      "file": "text-mode-error-fixed-v9.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 270142,
+      "sha256": "6569b80552fc6fa04cf6bef19e1040bbc3ce728f5ebdedf021f760d681fc179f"
+    },
+    {
+      "file": "v9-confirm-personal.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 619063,
+      "sha256": "612c10ed55660ce1bc51923a1bae6b3a7884bea88664767bec9ef4dec8425bd0"
+    },
+    {
+      "file": "v9-delivery-personal.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "bytes": 613605,
+      "sha256": "6608eadcf3e1a04d2db54c339f74a4638c01a1cdf6dd4658c46fd8e9fbde89b9"
+    }
+  ],
+  "real_participants": 0,
+  "real_paid_generations": 0,
+  "mock_success": 1,
+  "mock_cancelled": 1,
+  "real_external_messages_sent": 0,
+  "platform_restore": {
+    "font_scale": 1.0,
+    "wm_size": "reset to1080x2400"
+  },
+  "limits": [
+    "전체65화면재생아님",
+    "실기기제조사2종·실제이용자효과미검증",
+    "실제TalkBack/Switch조작미검증",
+    "실제유료R4및운영인증미검증",
+    "공유창실행은실제수신완료가아님",
+    "UI기록은모두합성QA이며효과측정치로인용불가",
+    "U16교정후보표시9차변경은아직실제UI미검증"
+  ],
+  "public_capture_directory": "ui-v9-captures"
+}

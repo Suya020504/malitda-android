@@ -1,0 +1,29 @@
+{
+  "rows": 1,
+  "participant_codes": [
+    "P901"
+  ],
+  "header": [
+    "participant_code",
+    "task_code",
+    "task_set_version",
+    "condition",
+    "duration_sec",
+    "origin",
+    "voice_first_hit",
+    "card_fallback",
+    "retries",
+    "edits",
+    "other_meaning_count",
+    "delivered",
+    "understood",
+    "supporter_helped",
+    "judged_correct",
+    "accidental_sends"
+  ],
+  "names_and_sentences_absent": true,
+  "absolute_time_absent": true,
+  "file_share_verified": true,
+  "external_app_selected": false,
+  "sha256": "48a26134fd62b3ed01c8dad99a54c4f503f87a232247619034290cc3d59a71a5"
+}

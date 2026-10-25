@@ -1,0 +1,3339 @@
+{
+  "date": "2026-10-26",
+  "scope": "90 P0 atomic requirements; source connection and runtime evidence are separate",
+  "implementationRate": null,
+  "doesNotRepresent": "APK success rate, end-user effect, physical device verification or real paid AI validation",
+  "boundary": "Code connected does not mean every acceptance scenario or real-user effect passed. See verification.json for exact APK versions and runtime evidence.",
+  "items": [
+    {
+      "id": "F-START-01",
+      "name": "서비스 목적 안내",
+      "priority": "H",
+      "observation": "현재 동의 화면과 앱 정보에서 개인 표현의 뜻 확인·전달, 치료 제외를 설명한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 36,
+          "symbol": "fun V2ConsentScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U00Guide.kt",
+          "line": 37,
+          "symbol": "fun U00Guide",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-START-02",
+      "name": "사용방식 선택",
+      "priority": "H",
+      "observation": "빈 홈의 말하기와 직접 입력, 카드가 있는 홈의 음성·카드 경로가 현재 V2에 연결됐다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 36,
+          "symbol": "fun V2ConsentScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U00Guide.kt",
+          "line": 37,
+          "symbol": "fun U00Guide",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-START-03",
+      "name": "핵심 제한사항",
+      "priority": "H",
+      "observation": "현재 첫 동의에서 중증·불명확 발화, 미등록 개인 표현·자유 대화의 한계, 기기·지원기기의 개별 확인, 응급 연락 용도 제외를 설명한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 36,
+          "symbol": "fun V2ConsentScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U00Guide.kt",
+          "line": 37,
+          "symbol": "fun U00Guide",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 60,
+          "symbol": "InfoSection(\"사용 범위와 한계\"",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "partial",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-START-04",
+      "name": "도움말 미리보기",
+      "priority": "M",
+      "observation": "시작 가이드를 말하기/카드 선택→원문/후보 비교→직접 확인→승인한 뜻 전달의 4단계로 정리했다. 등록 안내는 별도 배너에 있다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 36,
+          "symbol": "fun V2ConsentScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U00Guide.kt",
+          "line": 37,
+          "symbol": "fun U00Guide",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U00Guide.kt",
+          "line": 70,
+          "symbol": "4. 승인한 뜻을 보여 주거나 공유합니다.",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "partial",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-CONS-01",
+      "name": "필수 안내 분리",
+      "priority": "H",
+      "observation": "현재 역할·기기 저장·적시 마이크·실증·AI 외부 전송을 구분한다. 이전 교정 이력이 남을 수 있음과 초기화 방법도 고지한다. 동의 버전 게이트와 철회 후 자료 관리 경로가 연결됐다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 36,
+          "symbol": "fun V2ConsentScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/data/settings/SettingsStore.kt",
+          "line": 49,
+          "symbol": "CURRENT_CONSENT_VERSION",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "현재 V2 미연결"
+    },
+    {
+      "id": "F-CONS-02",
+      "name": "원격 음성인식 선택",
+      "priority": "H",
+      "observation": "Android SpeechRecognizer/원격 STT 대신 로컬 Whisper·Vosk를 사용한다. 해당 요구는 현재 인식기 처리·준비·오류 안내로 대체하며 원래 API 구현으로 세지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 36,
+          "symbol": "fun V2ConsentScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/data/settings/SettingsStore.kt",
+          "line": 49,
+          "symbol": "CURRENT_CONSENT_VERSION",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "design_changed",
+      "requirementScope": "offline_asr_replacement",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "설계 변경"
+    },
+    {
+      "id": "F-CONS-03",
+      "name": "실증지표 별도 동의",
+      "priority": "H",
+      "observation": "실증 전용 코드·별도 동의·동의 시각·버전·철회와 기본 꺼짐이 현재 경로에 있다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 36,
+          "symbol": "fun V2ConsentScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/data/settings/SettingsStore.kt",
+          "line": 49,
+          "symbol": "CURRENT_CONSENT_VERSION",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-A11Y-01",
+      "name": "후보 개수 설정",
+      "priority": "H",
+      "observation": "프로필별 후보 1/2/3개 설정과 resolver 표시 한도를 연결했다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 173,
+          "symbol": "fun V2ProfilePreferencesScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/theme/Theme.kt",
+          "line": 56,
+          "symbol": "maxOf(base.fontScale",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-A11Y-02",
+      "name": "TTS 속도 설정",
+      "priority": "H",
+      "observation": "프로필별 0.65/0.8/1.0 TTS 속도와 실제 미리듣기가 있다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 173,
+          "symbol": "fun V2ProfilePreferencesScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/theme/Theme.kt",
+          "line": 56,
+          "symbol": "maxOf(base.fontScale",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "현재 V2 미연결"
+    },
+    {
+      "id": "F-A11Y-03",
+      "name": "글자·레이아웃 확대",
+      "priority": "H",
+      "observation": "시스템 확대를 축소하지 않고 앱 100/120/150/200%를 제공한다. 실제 기기 확대·보조기술 완주는 별도 검증이다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 173,
+          "symbol": "fun V2ProfilePreferencesScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/theme/Theme.kt",
+          "line": 56,
+          "symbol": "maxOf(base.fontScale",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-A11Y-04",
+      "name": "고대비·색상 비의존",
+      "priority": "M",
+      "observation": "선택 강조 설정이 Theme SideEffect를 통해 실제 V2 고대비 색상·짙은 단색 주요 버튼·선택 테두리로 연결된다. 모든 실제 기기 화면의 대비 인증으로 해석하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 173,
+          "symbol": "fun V2ProfilePreferencesScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/theme/Theme.kt",
+          "line": 56,
+          "symbol": "maxOf(base.fontScale",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2Style.kt",
+          "line": 81,
+          "symbol": "val GradStart get()",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/theme/Theme.kt",
+          "line": 51,
+          "symbol": "V2C.highContrast =",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "partial",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-A11Y-05",
+      "name": "진동·소리 피드백",
+      "priority": "M",
+      "observation": "현재 프로필 진동 설정이 녹음 시작/완료/오류의 FeedbackSignal과 버튼 피드백에 연결된다. 기기 진동 유무·시스템 설정을 존중하며 실제 진동 발생은 별도 시험 대상이다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 173,
+          "symbol": "fun V2ProfilePreferencesScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/theme/Theme.kt",
+          "line": 56,
+          "symbol": "maxOf(base.fontScale",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 232,
+          "symbol": "FeedbackKind.START",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 241,
+          "symbol": "FeedbackKind.ERROR",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/data/feedback/FeedbackSignal.kt",
+          "line": 17,
+          "symbol": "class FeedbackSignal",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "partial",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "현재 V2 미연결"
+    },
+    {
+      "id": "F-A11Y-06",
+      "name": "보조기술 안내",
+      "priority": "M",
+      "observation": "앱 정보에 TalkBack·Switch Access·Voice Access 안내 및 한국어 지원 한계가 추가됐다. 실제 보조기술 시험 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 173,
+          "symbol": "fun V2ProfilePreferencesScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/theme/Theme.kt",
+          "line": 56,
+          "symbol": "maxOf(base.fontScale",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-PERM-01",
+      "name": "마이크 권한 적시 요청",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 255,
+          "symbol": "micPermLauncher",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/stt/WhisperSttEngine.kt",
+          "line": 31,
+          "symbol": "class WhisperSttEngine",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "구현코드 확인"
+    },
+    {
+      "id": "F-PERM-02",
+      "name": "권한 거절 대체",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 255,
+          "symbol": "micPermLauncher",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/stt/WhisperSttEngine.kt",
+          "line": 31,
+          "symbol": "class WhisperSttEngine",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-PERM-03",
+      "name": "인식서비스 가용성",
+      "priority": "H",
+      "observation": "Android SpeechRecognizer/원격 STT 대신 로컬 Whisper·Vosk를 사용한다. 해당 요구는 현재 인식기 처리·준비·오류 안내로 대체하며 원래 API 구현으로 세지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 255,
+          "symbol": "micPermLauncher",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/stt/WhisperSttEngine.kt",
+          "line": 31,
+          "symbol": "class WhisperSttEngine",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "design_changed",
+      "requirementScope": "offline_asr_replacement",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "설계 변경"
+    },
+    {
+      "id": "F-PERM-04",
+      "name": "온디바이스 가용성",
+      "priority": "H",
+      "observation": "Android SpeechRecognizer/원격 STT 대신 로컬 Whisper·Vosk를 사용한다. 해당 요구는 현재 인식기 처리·준비·오류 안내로 대체하며 원래 API 구현으로 세지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 255,
+          "symbol": "micPermLauncher",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/stt/WhisperSttEngine.kt",
+          "line": 31,
+          "symbol": "class WhisperSttEngine",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "design_changed",
+      "requirementScope": "offline_asr_replacement",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "설계 변경"
+    },
+    {
+      "id": "F-PERM-05",
+      "name": "네트워크·언어팩 점검",
+      "priority": "M",
+      "observation": "Android SpeechRecognizer/원격 STT 대신 로컬 Whisper·Vosk를 사용한다. 해당 요구는 현재 인식기 처리·준비·오류 안내로 대체하며 원래 API 구현으로 세지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 255,
+          "symbol": "micPermLauncher",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/stt/WhisperSttEngine.kt",
+          "line": 31,
+          "symbol": "class WhisperSttEngine",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "design_changed",
+      "requirementScope": "offline_asr_replacement",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "설계 변경"
+    },
+    {
+      "id": "F-HOME-01",
+      "name": "핵심 행동 2개",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U01Home.kt",
+          "line": 44,
+          "symbol": "fun U01Home",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 459,
+          "symbol": "totalRegistered =",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-HOME-03",
+      "name": "표현 등록 현황",
+      "priority": "M",
+      "observation": "실제 개인 뜻/50개와 최근 수정 시각이 연결됐다. 연습 예시는 개인 한도에서 제외한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U01Home.kt",
+          "line": 44,
+          "symbol": "fun U01Home",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 459,
+          "symbol": "totalRegistered =",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-HOME-04",
+      "name": "개인정보 바로가기",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U01Home.kt",
+          "line": 44,
+          "symbol": "fun U01Home",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 459,
+          "symbol": "totalRegistered =",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "현재 V2 미연결"
+    },
+    {
+      "id": "F-HOME-05",
+      "name": "파일럿 모드 진입",
+      "priority": "M",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U01Home.kt",
+          "line": 44,
+          "symbol": "fun U01Home",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 459,
+          "symbol": "totalRegistered =",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-PHL-01",
+      "name": "표현 목록",
+      "priority": "H",
+      "observation": "최근 사용·가나다·분류 정렬을 제공한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U08Library.kt",
+          "line": 35,
+          "symbol": "fun U08Library",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 785,
+          "symbol": "\"U08\" -> U08Library",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-PHL-02",
+      "name": "표현 검색",
+      "priority": "M",
+      "observation": "전달 문장·평소 표현·분류·상황 검색이 있다. 분류 키 불일치는 이 검토 중 별도 승인으로 수정했다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U08Library.kt",
+          "line": 35,
+          "symbol": "fun U08Library",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 785,
+          "symbol": "\"U08\" -> U08Library",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "현재 V2 미연결"
+    },
+    {
+      "id": "F-PHL-03",
+      "name": "표현 듣기",
+      "priority": "H",
+      "observation": "현재 내 표현 목록의 소리 듣기가 연결됐다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U08Library.kt",
+          "line": 35,
+          "symbol": "fun U08Library",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 785,
+          "symbol": "\"U08\" -> U08Library",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "현재 V2 미연결"
+    },
+    {
+      "id": "F-PHL-05",
+      "name": "표현 삭제",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U08Library.kt",
+          "line": 35,
+          "symbol": "fun U08Library",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 785,
+          "symbol": "\"U08\" -> U08Library",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "구현코드 확인"
+    },
+    {
+      "id": "F-PHL-06",
+      "name": "새 표현 추가",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U08Library.kt",
+          "line": 35,
+          "symbol": "fun U08Library",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 785,
+          "symbol": "\"U08\" -> U08Library",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-PHE-01",
+      "name": "표현 텍스트 입력",
+      "priority": "H",
+      "observation": "원문 명세의 등록 1~100자 기준을 현재 UI/저장소에 연결했고 원문 자동 절삭은 하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U05Register.kt",
+          "line": 41,
+          "symbol": "fun U05Register",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/data/repo/MeaningRepository.kt",
+          "line": 87,
+          "symbol": "suspend fun save",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-PHE-02",
+      "name": "분류 선택",
+      "priority": "M",
+      "observation": "people/places/time/daily/request/other/often 7개 UI 키와 저장·조회 키를 일치시키고 이전 name/place/message를 명시 매핑했다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U05Register.kt",
+          "line": 41,
+          "symbol": "fun U05Register",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/data/repo/MeaningRepository.kt",
+          "line": 87,
+          "symbol": "suspend fun save",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "현재 V2 미연결"
+    },
+    {
+      "id": "F-PHE-04",
+      "name": "정규화 미리보기",
+      "priority": "M",
+      "observation": "원문을 유지하고 TextNormalizer.comparison 결과를 별도 미리보기로 표시한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U05Register.kt",
+          "line": 41,
+          "symbol": "fun U05Register",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/data/repo/MeaningRepository.kt",
+          "line": 87,
+          "symbol": "suspend fun save",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-PHE-05",
+      "name": "TTS 미리듣기",
+      "priority": "H",
+      "observation": "등록 전 소리로 확인 버튼이 실제 TTS에 연결됐다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U05Register.kt",
+          "line": 41,
+          "symbol": "fun U05Register",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/data/repo/MeaningRepository.kt",
+          "line": 87,
+          "symbol": "suspend fun save",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-PHE-06",
+      "name": "중복 검사",
+      "priority": "M",
+      "observation": "정규화한 문장 유사도 0.8 이상인 기존 뜻을 최대 3개 안내하고 기존 뜻 보기와 계속 등록을 제공한다. 자동 병합하지 않으며 완전히 같은 내용의 중복은 저장소에서 막는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U05Register.kt",
+          "line": 41,
+          "symbol": "fun U05Register",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/data/repo/MeaningRepository.kt",
+          "line": 87,
+          "symbol": "suspend fun save",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 648,
+          "symbol": "similarMeanings = if",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 653,
+          "symbol": "onOpenExisting =",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U05Register.kt",
+          "line": 77,
+          "symbol": "기존 뜻 확인:",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "partial",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-PHE-07",
+      "name": "표현 저장",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U05Register.kt",
+          "line": 41,
+          "symbol": "fun U05Register",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/data/repo/MeaningRepository.kt",
+          "line": 87,
+          "symbol": "suspend fun save",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "구현코드 확인"
+    },
+    {
+      "id": "F-PHE-08",
+      "name": "최대 개수 관리",
+      "priority": "M",
+      "observation": "개인 뜻 50개를 DB 트랜잭션에서 제한하고 UI에 정리 안내를 표시한다. 연습 예시는 제외한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U05Register.kt",
+          "line": 41,
+          "symbol": "fun U05Register",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/data/repo/MeaningRepository.kt",
+          "line": 87,
+          "symbol": "suspend fun save",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "현재 V2 미연결"
+    },
+    {
+      "id": "F-LSN-01",
+      "name": "음성인식 시작",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 227,
+          "symbol": "fun startListening",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U02Listen.kt",
+          "line": 46,
+          "symbol": "fun U02Listen",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "구현코드 확인"
+    },
+    {
+      "id": "F-LSN-02",
+      "name": "상태 안내",
+      "priority": "H",
+      "observation": "준비·듣기·처리·오류 안내와 시작/성공/오류 진동 호출이 연결됐다. 느린 발화를 자르는 앱 타이머는 제거했다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 227,
+          "symbol": "fun startListening",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U02Listen.kt",
+          "line": 46,
+          "symbol": "fun U02Listen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 268,
+          "symbol": "pulse(if (result.raw.isBlank())",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "partial",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-LSN-04",
+      "name": "인식 취소",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 227,
+          "symbol": "fun startListening",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U02Listen.kt",
+          "line": 46,
+          "symbol": "fun U02Listen",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "구현코드 확인"
+    },
+    {
+      "id": "F-LSN-05",
+      "name": "최종결과 수신",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 227,
+          "symbol": "fun startListening",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U02Listen.kt",
+          "line": 46,
+          "symbol": "fun U02Listen",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "구현코드 확인"
+    },
+    {
+      "id": "F-LSN-06",
+      "name": "말소리 없음",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 227,
+          "symbol": "fun startListening",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U02Listen.kt",
+          "line": 46,
+          "symbol": "fun U02Listen",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "구현코드 확인"
+    },
+    {
+      "id": "F-LSN-07",
+      "name": "네트워크 오류",
+      "priority": "H",
+      "observation": "Android SpeechRecognizer/원격 STT 대신 로컬 Whisper·Vosk를 사용한다. 해당 요구는 현재 인식기 처리·준비·오류 안내로 대체하며 원래 API 구현으로 세지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 227,
+          "symbol": "fun startListening",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U02Listen.kt",
+          "line": 46,
+          "symbol": "fun U02Listen",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "design_changed",
+      "requirementScope": "offline_asr_replacement",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "설계 변경"
+    },
+    {
+      "id": "F-LSN-08",
+      "name": "인식기 사용 중",
+      "priority": "M",
+      "observation": "Android SpeechRecognizer/원격 STT 대신 로컬 Whisper·Vosk를 사용한다. 해당 요구는 현재 인식기 처리·준비·오류 안내로 대체하며 원래 API 구현으로 세지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 227,
+          "symbol": "fun startListening",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U02Listen.kt",
+          "line": 46,
+          "symbol": "fun U02Listen",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "design_changed",
+      "requirementScope": "offline_asr_replacement",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "설계 변경"
+    },
+    {
+      "id": "F-LSN-09",
+      "name": "수명주기 종료",
+      "priority": "H",
+      "observation": "Activity/화면 백그라운드에서 녹음·TTS·승인·세션을 정리하고 늦은 결과를 세대값으로 차단한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 227,
+          "symbol": "fun startListening",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U02Listen.kt",
+          "line": 46,
+          "symbol": "fun U02Listen",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-CAND-01",
+      "name": "ASR 원문 보존",
+      "priority": "H",
+      "observation": "들은 원문이 U16 별도 영역에 남고 기본 선택을 하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/MeaningResolver.kt",
+          "line": 23,
+          "symbol": "fun resolve",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U16Communication.kt",
+          "line": 15,
+          "symbol": "fun U16SpeechCandidates",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-CAND-02",
+      "name": "문장 정규화",
+      "priority": "H",
+      "observation": "숫자 단위·전각 숫자·천단위 쉼표·공백·문장부호를 비교용으로만 정규화한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/MeaningResolver.kt",
+          "line": 23,
+          "symbol": "fun resolve",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U16Communication.kt",
+          "line": 15,
+          "symbol": "fun U16SpeechCandidates",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-CAND-03",
+      "name": "한글 자모 유사도",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/MeaningResolver.kt",
+          "line": 23,
+          "symbol": "fun resolve",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U16Communication.kt",
+          "line": 15,
+          "symbol": "fun U16SpeechCandidates",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "구현코드 확인"
+    },
+    {
+      "id": "F-CAND-04",
+      "name": "문자열 유사도",
+      "priority": "H",
+      "observation": "일반 문자 편집거리의 정규화 유사도를 계산한다. 보수적 기본 임계값에서 낮은 점수의 일반 편집 후보는 제안하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/MeaningResolver.kt",
+          "line": 23,
+          "symbol": "fun resolve",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U16Communication.kt",
+          "line": 15,
+          "symbol": "fun U16SpeechCandidates",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-CAND-05",
+      "name": "사용이력 가중치",
+      "priority": "M",
+      "observation": "사용 3점+최근 3점+이전 승인 교정 2점의 합 상한 8점이다. 새 별칭은 지원자가 명시 등록하며, 인식 원문을 숨겨 자동 이력화하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/MeaningResolver.kt",
+          "line": 23,
+          "symbol": "fun resolve",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U16Communication.kt",
+          "line": 15,
+          "symbol": "fun U16SpeechCandidates",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-CAND-06",
+      "name": "후보 통합·정렬",
+      "priority": "H",
+      "observation": "현재 V2는 개인 뜻과 ASR 후보를 통합하며, 과거 승인 교정인 M1_EXACT 등 CandidateBuilder 출력도 ui.candidates에서 U16으로 전달한다. ASR 대안과 중복을 제거하고 원문은 별도로 유지한다. 사용자가 고르기 전에는 자동 선택하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/MeaningResolver.kt",
+          "line": 23,
+          "symbol": "fun resolve",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U16Communication.kt",
+          "line": 15,
+          "symbol": "fun U16SpeechCandidates",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 961,
+          "symbol": "else (ui.candidates.map { it.text } + ui.alternatives).distinct()",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-CAND-07",
+      "name": "낮은 유사도 폴백",
+      "priority": "H",
+      "observation": "후보 없음·유사 표현 사용 끔일 때 원문 확인/직접 수정/카드 경로를 제공한다. 임계값 효과는 실증으로 검증해야 한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/MeaningResolver.kt",
+          "line": 23,
+          "symbol": "fun resolve",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U16Communication.kt",
+          "line": 15,
+          "symbol": "fun U16SpeechCandidates",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-CAND-08",
+      "name": "후보 선택",
+      "priority": "H",
+      "observation": "후보를 누르기 전 meaningId를 자동 선택하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/MeaningResolver.kt",
+          "line": 23,
+          "symbol": "fun resolve",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U16Communication.kt",
+          "line": 15,
+          "symbol": "fun U16SpeechCandidates",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-CAND-09",
+      "name": "후보별 듣기",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/MeaningResolver.kt",
+          "line": 23,
+          "symbol": "fun resolve",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U16Communication.kt",
+          "line": 15,
+          "symbol": "fun U16SpeechCandidates",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-CAND-10",
+      "name": "다시 말하기",
+      "priority": "H",
+      "observation": "prepareRespeak가 V2 선택과 후보를 초기화하도록 수정됐다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/MeaningResolver.kt",
+          "line": 23,
+          "symbol": "fun resolve",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U16Communication.kt",
+          "line": 15,
+          "symbol": "fun U16SpeechCandidates",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-EDIT-01",
+      "name": "문장 직접수정",
+      "priority": "H",
+      "observation": "직접 입력·수정 후 원문을 보존하며 200자 초과 승인 차단과 승인 무효화를 적용한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U16Communication.kt",
+          "line": 53,
+          "symbol": "fun U17LiteralEdit",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 320,
+          "symbol": "fun approveLiteral",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "현재 V2 미연결"
+    },
+    {
+      "id": "F-EDIT-02",
+      "name": "내 표현에 저장",
+      "priority": "M",
+      "observation": "직접 문장 전달 화면의 내 표현 등록은 별도 선택이며 지원자 PIN을 거쳐 미확인으로 저장한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U16Communication.kt",
+          "line": 53,
+          "symbol": "fun U17LiteralEdit",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 320,
+          "symbol": "fun approveLiteral",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-APP-01",
+      "name": "최종 문장 미리보기",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 516,
+          "symbol": "suspend fun v2ConfirmUse",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/CommunicationSafety.kt",
+          "line": 4,
+          "symbol": "data class LiteralApproval",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "구현코드 확인"
+    },
+    {
+      "id": "F-APP-02",
+      "name": "명시적 승인",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 516,
+          "symbol": "suspend fun v2ConfirmUse",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/CommunicationSafety.kt",
+          "line": 4,
+          "symbol": "data class LiteralApproval",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "구현코드 확인"
+    },
+    {
+      "id": "F-APP-03",
+      "name": "수정 시 승인 해제",
+      "priority": "H",
+      "observation": "내용/그림/버전 스냅샷과 직접 문장 revision에 승인을 묶는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 516,
+          "symbol": "suspend fun v2ConfirmUse",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/CommunicationSafety.kt",
+          "line": 4,
+          "symbol": "data class LiteralApproval",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "구현코드 확인"
+    },
+    {
+      "id": "F-APP-04",
+      "name": "후보 변경 시 승인 해제",
+      "priority": "H",
+      "observation": "후보 교체·재발화·배경 전환에서 승인을 무효화한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 516,
+          "symbol": "suspend fun v2ConfirmUse",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/CommunicationSafety.kt",
+          "line": 4,
+          "symbol": "data class LiteralApproval",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "구현코드 확인"
+    },
+    {
+      "id": "F-APP-05",
+      "name": "승인 취소",
+      "priority": "M",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 516,
+          "symbol": "suspend fun v2ConfirmUse",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/CommunicationSafety.kt",
+          "line": 4,
+          "symbol": "data class LiteralApproval",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-SHARE-01",
+      "name": "Android Sharesheet",
+      "priority": "H",
+      "observation": "명시 승인 후 Android Sharesheet로 전달한다. 앱 선택은 실제 발송 완료 증거가 아니다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/CommunicationIntents.kt",
+          "line": 15,
+          "symbol": "object CommunicationIntents",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 292,
+          "symbol": "fun shareMeaning",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "구현코드 확인"
+    },
+    {
+      "id": "F-SHARE-02",
+      "name": "공유 취소 복귀",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/CommunicationIntents.kt",
+          "line": 15,
+          "symbol": "object CommunicationIntents",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 292,
+          "symbol": "fun shareMeaning",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "구현코드 확인"
+    },
+    {
+      "id": "F-SHARE-03",
+      "name": "선택적 복사",
+      "priority": "M",
+      "observation": "명시 복사와 민감 클립보드 표시, 이후 앱의 클립보드를 덮지 않는 60초 정리를 적용한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/CommunicationIntents.kt",
+          "line": 15,
+          "symbol": "object CommunicationIntents",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 292,
+          "symbol": "fun shareMeaning",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "현재 V2 미연결"
+    },
+    {
+      "id": "F-SHARE-05",
+      "name": "외부 내용 미저장",
+      "priority": "H",
+      "observation": "새 실증 기록에 전사문·뜻 문장을 남기지 않으며 이전 meaningText도 v5에서 비운다. 대상 앱·수신자·실제 발송 여부는 수집하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/CommunicationIntents.kt",
+          "line": 15,
+          "symbol": "object CommunicationIntents",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 292,
+          "symbol": "fun shareMeaning",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-SHARE-06",
+      "name": "공유 실패 대체",
+      "priority": "H",
+      "observation": "공유 실패 안내와 같은 화면의 복사·문장 크게 보기·TTS 대체가 있다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/CommunicationIntents.kt",
+          "line": 15,
+          "symbol": "object CommunicationIntents",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 292,
+          "symbol": "fun shareMeaning",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-SET-01",
+      "name": "후보·TTS 설정",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 173,
+          "symbol": "fun V2ProfilePreferencesScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U12Settings.kt",
+          "line": 45,
+          "symbol": "fun U12Settings",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-SET-02",
+      "name": "원격 인식 설정",
+      "priority": "H",
+      "observation": "Android SpeechRecognizer/원격 STT 대신 로컬 Whisper·Vosk를 사용한다. 해당 요구는 현재 인식기 처리·준비·오류 안내로 대체하며 원래 API 구현으로 세지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 173,
+          "symbol": "fun V2ProfilePreferencesScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U12Settings.kt",
+          "line": 45,
+          "symbol": "fun U12Settings",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "design_changed",
+      "requirementScope": "offline_asr_replacement",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "설계 변경"
+    },
+    {
+      "id": "F-SET-04",
+      "name": "앱 정보·지원범위",
+      "priority": "M",
+      "observation": "버전·Android 범위·서버/치료 한계·Issues 문의 링크가 연결됐다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 173,
+          "symbol": "fun V2ProfilePreferencesScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U12Settings.kt",
+          "line": 45,
+          "symbol": "fun U12Settings",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-DATA-01",
+      "name": "저장 데이터 목록",
+      "priority": "H",
+      "observation": "현재 학생의 뜻·별칭·확인·구형 문장·교정·실증·그림 참조 수와 보관 위치를 실제 저장값으로 보여 준다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/DataControlScreen.kt",
+          "line": 24,
+          "symbol": "fun DataControlScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 766,
+          "symbol": "suspend fun wipeAllData",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-DATA-02",
+      "name": "개인표현 전체삭제",
+      "priority": "H",
+      "observation": "현재 학생의 뜻 전체만 삭제하는 별도 범위가 추가됐다. 학생·설정·실증과 다른 학생을 유지한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/DataControlScreen.kt",
+          "line": 24,
+          "symbol": "fun DataControlScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 766,
+          "symbol": "suspend fun wipeAllData",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "현재 V2 미연결"
+    },
+    {
+      "id": "F-DATA-03",
+      "name": "교정·최근 기록 삭제",
+      "priority": "H",
+      "observation": "추천 순서 초기화가 사용 횟수·최근 사용·교정 이력을 지우고 사전은 유지한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/DataControlScreen.kt",
+          "line": 24,
+          "symbol": "fun DataControlScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 766,
+          "symbol": "suspend fun wipeAllData",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "현재 V2 미연결"
+    },
+    {
+      "id": "F-DATA-04",
+      "name": "실증지표 삭제",
+      "priority": "H",
+      "observation": "현재 학생의 실증 시도만 삭제하거나 코드·동의까지 철회하는 선택을 구분한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/DataControlScreen.kt",
+          "line": 24,
+          "symbol": "fun DataControlScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 766,
+          "symbol": "suspend fun wipeAllData",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-DATA-05",
+      "name": "전체 데이터 삭제",
+      "priority": "H",
+      "observation": "모든 Room 자료·구/신 사진 디렉토리·시험 음원/평가·공유 캐시·자신의 클립보드와 Settings/PilotStore를 정리한다. 앱 모델은 남긴다. 공유된 사본·외부 서버의 삭제를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/DataControlScreen.kt",
+          "line": 24,
+          "symbol": "fun DataControlScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 766,
+          "symbol": "suspend fun wipeAllData",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/data/repo/MeaningImageStore.kt",
+          "line": 23,
+          "symbol": "READABLE_DIRS",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/data/repo/DataManagementRepository.kt",
+          "line": 59,
+          "symbol": "suspend fun wipeAll",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-HELP-01",
+      "name": "첫 사용 가이드",
+      "priority": "H",
+      "observation": "앱의 4단계 시작 안내와 첫 등록 배너, 화면별 도움말, 최신 사용법·실증 Markdown을 연결된 기능과 구분해 정리한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2Style.kt",
+          "line": 445,
+          "symbol": "fun helpTextFor",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 219,
+          "symbol": "fun V2AppInfoScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U00Guide.kt",
+          "line": 70,
+          "symbol": "4. 승인한 뜻을 보여 주거나 공유합니다.",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "partial",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-HELP-02",
+      "name": "오류별 도움말",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2Style.kt",
+          "line": 445,
+          "symbol": "fun helpTextFor",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 219,
+          "symbol": "fun V2AppInfoScreen",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-HELP-03",
+      "name": "알려진 제한사항",
+      "priority": "H",
+      "observation": "중증/불명확 발화·미등록 표현·자유 대화·기기/보조기기·응급 용도 한계를 첫 동의와 앱 정보에 설명한다. 치료 효과·실제 외부 발송 완료를 보장하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2Style.kt",
+          "line": 445,
+          "symbol": "fun helpTextFor",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 219,
+          "symbol": "fun V2AppInfoScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt",
+          "line": 60,
+          "symbol": "InfoSection(\"사용 범위와 한계\"",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "partial",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-OPTC-01",
+      "name": "익명 참여자 코드",
+      "priority": "H",
+      "observation": "수동 기관 코드와 새 익명 코드 제안 액션을 제공한다. SecureRandom으로 P+5자리 코드를 제안하며 코드가 바뀌면 동의를 다시 확인한다. 전 기관의 전역 중복 방지 기능은 아니다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PilotSetupScreen.kt",
+          "line": 26,
+          "symbol": "fun PilotSetupScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/PilotPlan.kt",
+          "line": 4,
+          "symbol": "data class PilotConfig",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PilotSetupScreen.kt",
+          "line": 65,
+          "symbol": "새 익명 코드 제안",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "partial",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-OPTC-02",
+      "name": "선정조건 확인",
+      "priority": "H",
+      "observation": "최신 청소년·고유 표현 의사소통 방향에 맞춰 뜻 확인·거절·중단 가능성 사전 검토를 기록한다. 이전 성인 우선 조건을 그대로 강제하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PilotSetupScreen.kt",
+          "line": 26,
+          "symbol": "fun PilotSetupScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/PilotPlan.kt",
+          "line": 4,
+          "symbol": "data class PilotConfig",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "adapted_scope",
+      "requirementScope": "revised_participant_or_task_scope",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-OPTC-03",
+      "name": "동의 상태 관리",
+      "priority": "H",
+      "observation": "참여 의사·필요 보호자 절차·거절/철회·삭제 설명을 별도 설정으로 둔다. 법적/기관 동의를 앱 체크박스로 대체하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PilotSetupScreen.kt",
+          "line": 26,
+          "symbol": "fun PilotSetupScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/PilotPlan.kt",
+          "line": 4,
+          "symbol": "data class PilotConfig",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-OPTC-04",
+      "name": "중단·철회·삭제 요청",
+      "priority": "H",
+      "observation": "현재 V2 경로와 관련 저장·도메인 코드에서 연결을 확인했다. 개별 인수조건의 실기기 통과를 뜻하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PilotSetupScreen.kt",
+          "line": 26,
+          "symbol": "fun PilotSetupScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/PilotPlan.kt",
+          "line": 4,
+          "symbol": "data class PilotConfig",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-OTSK-01",
+      "name": "과업 세트 관리",
+      "priority": "H",
+      "observation": "T01~T05 개인 의사소통 과업과 목표 사전·세트 버전을 제공한다. 이전 메시지/검색 과업을 의사소통 목적에 맞게 바꾼 범위를 문서화해야 한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PilotSetupScreen.kt",
+          "line": 26,
+          "symbol": "fun PilotSetupScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/PilotPlan.kt",
+          "line": 43,
+          "symbol": "object PilotPlan",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "adapted_scope",
+      "requirementScope": "revised_participant_or_task_scope",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-OTSK-02",
+      "name": "정답 의도 정의",
+      "priority": "H",
+      "observation": "과업별 사전 목표 뜻을 지정하고 실제 이해/지원자 도움을 관찰 입력한다. A의 직접 전사는 의미ID 자동 정답 대신 관찰 결과를 사용한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PilotSetupScreen.kt",
+          "line": 26,
+          "symbol": "fun PilotSetupScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/PilotPlan.kt",
+          "line": 43,
+          "symbol": "object PilotPlan",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-OTSK-03",
+      "name": "조건 A/B/C",
+      "priority": "H",
+      "observation": "A는 기본 전사, B는 개인 후보 텍스트, C는 선호 그림/문장/소리 확인으로 나눈다. 모두 승인을 유지한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/PilotSetupScreen.kt",
+          "line": 26,
+          "symbol": "fun PilotSetupScreen",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/PilotPlan.kt",
+          "line": 43,
+          "symbol": "object PilotPlan",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-OSES-01",
+      "name": "순서 배정",
+      "priority": "M",
+      "observation": "참여자 번호별 A-B-C/B-C-A/C-A-B 순서를 제안한다. 다음 조건은 지원자가 직접 확인한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/TrialTracker.kt",
+          "line": 6,
+          "symbol": "class TrialTracker",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 691,
+          "symbol": "private fun endTrial",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-OSES-02",
+      "name": "기기·환경 기록",
+      "priority": "H",
+      "observation": "환경 선택과 기기·Android·ASR 엔진 스냅샷을 로컬 기록에 연결했다. 현재 STT에 네트워크가 필요 없음을 별도 기록한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/TrialTracker.kt",
+          "line": 6,
+          "symbol": "class TrialTracker",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 691,
+          "symbol": "private fun endTrial",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-OSES-03",
+      "name": "실시간 지표 기록",
+      "priority": "H",
+      "observation": "재시도·수정·시간·선택·이해·도움·완료/중단·오전송 관찰 지표를 구분한다. 실제 외부 전송을 자동 관측하는 기능은 아니다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/TrialTracker.kt",
+          "line": 6,
+          "symbol": "class TrialTracker",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 691,
+          "symbol": "private fun endTrial",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-OSES-04",
+      "name": "중단 기준 실행",
+      "priority": "H",
+      "observation": "참여자 요청/피로/안전 중단 사유 선택과 VM pausePilot, 3회 실패 후 중단, 현재 화면의 즉시 중단·오전송 관찰 경로가 연결됐다. 실제 참여자 실증은 별도다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/TrialTracker.kt",
+          "line": 6,
+          "symbol": "class TrialTracker",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 691,
+          "symbol": "private fun endTrial",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U14TrialLog.kt",
+          "line": 93,
+          "symbol": "실증 중단 사유",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt",
+          "line": 884,
+          "symbol": "onPauseReason = vm::pausePilot",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 724,
+          "symbol": "fun pausePilot(",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "partial",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-OSES-05",
+      "name": "정성 피드백",
+      "priority": "M",
+      "observation": "통제감·피로·계속 사용·후보·TTS의 5개 선택 응답을 원문 면담 없이 로컬에 보관한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/TrialTracker.kt",
+          "line": 6,
+          "symbol": "class TrialTracker",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt",
+          "line": 691,
+          "symbol": "private fun endTrial",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "미구현"
+    },
+    {
+      "id": "F-ORPT-03",
+      "name": "익명 CSV 내보내기",
+      "priority": "M",
+      "observation": "현재 프로필·참여자·동의·완료·비연습 기록만 코드와 수치로 CSV 파일 공유한다. 이름/문장/절대시각/다른 학생은 제외한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/domain/TrialTracker.kt",
+          "line": 136,
+          "symbol": "object TrialCsv",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U14TrialLog.kt",
+          "line": 19,
+          "symbol": "fun U14TrialLog",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "connected",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "부분 구현"
+    },
+    {
+      "id": "F-OQA-01",
+      "name": "기기 매트릭스",
+      "priority": "H",
+      "observation": "기기 매트릭스는 앱 코드 항목과 다른 검증 계약이다. 복수 제조사·API·ASR·TTS·TalkBack의 실제 휴대전화 시험은 아직 필요하다. 에뮬레이터의 통과를 이 항목의 완료로 대체하지 않는다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/MainActivity.kt",
+          "line": 15,
+          "symbol": "class MainActivity",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "verification_only",
+      "requirementScope": "verification_contract",
+      "codeConnection": "not_applicable",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "REQUIRED_EXTERNAL_VALIDATION",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "previousRequirementStatus": "검증 필요"
+    },
+    {
+      "id": "F-OGDE-01",
+      "name": "쉬운 사용가이드",
+      "priority": "M",
+      "observation": "앱의 4단계 안내와 현재 사용법·실증 Markdown이 있다. 새 한 장/시각 가이드의 최종 파일·링크 검수는 루트의 문서 인계 단계로 별도 기록한다.",
+      "evidence": [
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U00Guide.kt",
+          "line": 37,
+          "symbol": "fun U00Guide",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/V2Style.kt",
+          "line": 445,
+          "symbol": "fun helpTextFor",
+          "symbolFound": true,
+          "exists": true
+        },
+        {
+          "path": "app/src/main/java/kr/voicemate/malitda/ui/v2/U00Guide.kt",
+          "line": 37,
+          "symbol": "fun U00Guide",
+          "symbolFound": true,
+          "exists": true
+        }
+      ],
+      "priorIntermediateConnectionStatus": "partial",
+      "requirementScope": "retained",
+      "codeConnection": "connected",
+      "verification": {
+        "sourceReview": "REVIEWED",
+        "acceptance": "NOT_PROVEN_BY_SOURCE",
+        "physicalDevice": "UNRUN",
+        "realParticipantEffect": "UNRUN"
+      },
+      "artifactVerification": {
+        "currentMarkdownExists": true,
+        "finalOnePageVisualGuide": "PENDING_ROOT_DOCUMENT_HANDOFF",
+        "documentPath": "C:\\Users\\HAPPY\\Documents\\codex-work\\malitda-feedback-update-20261025\\docs\\feedback-20261026\\사용법과실증가이드.md"
+      },
+      "previousRequirementStatus": "부분 구현"
+    }
+  ],
+  "sourceHashes": {
+    "app/build.gradle.kts": "990584ab5082cd046f4d551d73c362388ad7ec933f0602f8d5ddcb019fed61d0",
+    "app/src/androidTest/java/kr/voicemate/malitda/data/migration/DbKeyRecoveryTest.kt": "db8040b34fa489f7472f3c7ef903b9e1e3d099fcd2aac1477501b833580da59b",
+    "app/src/androidTest/java/kr/voicemate/malitda/data/migration/FreshSpeechModelTest.kt": "f0931ff84e55a825d4629bd2940a2e5f0de356cec16b6788a9a59ca9931bcdaa",
+    "app/src/androidTest/java/kr/voicemate/malitda/data/migration/LegacyMeaningBranchMigrationTest.kt": "2502f42fc7f37896287425bfc2bceea978ece6d1f4a073481cbcbe27c455b4a6",
+    "app/src/androidTest/java/kr/voicemate/malitda/data/migration/MeaningMigrationTest.kt": "a91803fe2dbb5c9d1ed6b69357ce66e8d53fe276fb5d2ed5185cbfac6f2d2604",
+    "app/src/androidTest/java/kr/voicemate/malitda/data/pilot/PilotStoreInstrumentedTest.kt": "6dc927431241c09e86a3e8fb589ad408e53506348bc2ef1dccca3737e1f24bc5",
+    "app/src/androidTest/java/kr/voicemate/malitda/data/repo/ClearMeaningsRepositoryTest.kt": "33607ecf67303afde462bdd7f3db96c31a83c60fb74788f333c0e7e738be529a",
+    "app/src/androidTest/java/kr/voicemate/malitda/data/repo/DataManagementRepositoryTest.kt": "7dff7c492466c052f909cab209155936966bf17f06b6dc354dc6c15d5d03ce85",
+    "app/src/androidTest/java/kr/voicemate/malitda/data/repo/MeaningRepositoryInstrumentedTest.kt": "9038f1b05877fad78d47d2fd3f25f222a66a4d40633c66f84718d1e03f4379a1",
+    "app/src/androidTest/java/kr/voicemate/malitda/stt/SyntheticSpeechIntegrationTest.kt": "af545775f7003e7ea5d0862c3d16d01be792f5f64a75fdc48c08962b81b45958",
+    "app/src/debug/AndroidManifest.xml": "ab3def36a0f217cbbd6086cccf92c13c972badb0d7fa01d9964548f246e827f1",
+    "app/src/debug/res/xml/r4_network_security.xml": "1662bf9baaeca38783a63a26bdd7495e32d9d8c58430685a24ed3fe09563ed6e",
+    "app/src/main/AndroidManifest.xml": "d7ff1f6199bc4edaa7dbfb6210d7b8d7bfbf02ead5b1a65002463abd239ce2e2",
+    "app/src/main/cpp/whisper_jni.cpp": "7a28add512e20f39438f6036193ab59a14ab59689978f24c74943362f652a3e9",
+    "app/src/main/java/kr/voicemate/malitda/data/ai/R4Client.kt": "452c154773d3865230e8cc4c976d1ef775abf411887579f8b10d571dd4d4d802",
+    "app/src/main/java/kr/voicemate/malitda/data/db/AppDatabase.kt": "ff3e15f7471d46dbffe7c80c815fea76d21a1a415eff62270c26f2c903732e80",
+    "app/src/main/java/kr/voicemate/malitda/data/db/Daos.kt": "5ba38322b1ec47fa93fe6669ae06d419fb687efb50d8057f1e9de70b54bffdf3",
+    "app/src/main/java/kr/voicemate/malitda/data/db/DbKeyManager.kt": "624e998d38f2647939f60b1622e4b4d749b27918285251562a491c7168f82a24",
+    "app/src/main/java/kr/voicemate/malitda/data/db/Entities.kt": "bbaeb47d81b0fb646e14bf7321ff76f96c0b8f3587e1225a16c1c73deaf36020",
+    "app/src/main/java/kr/voicemate/malitda/data/feedback/FeedbackSignal.kt": "71e7d1e724078530ebec72ad5fd8d64f4804832102929b13ccdf795cc81f0dc1",
+    "app/src/main/java/kr/voicemate/malitda/data/pilot/PilotStore.kt": "33073a52a35e55e047642933b228c847ba5e07eaa268f3626095a4124c44718f",
+    "app/src/main/java/kr/voicemate/malitda/data/repo/DataManagementRepository.kt": "3c10d3fb8f994fe39f9b0d1d040cc496b87023ecd9ea8aeaf5de602d4c33412c",
+    "app/src/main/java/kr/voicemate/malitda/data/repo/MeaningImageStore.kt": "c185424295c4b752b716d345f272e67c2d3be6c538af9754459a40b0b985b620",
+    "app/src/main/java/kr/voicemate/malitda/data/repo/MeaningRepository.kt": "54743a8dc2ff70af93e1e7e02370dd057700ba9d4552cc9910bf6b00eaa5abd2",
+    "app/src/main/java/kr/voicemate/malitda/data/repo/Repositories.kt": "2c50a877283bf23236bfc49e474b75977c13a9b80819e6b0bb4a3e99340c7619",
+    "app/src/main/java/kr/voicemate/malitda/data/settings/ProfilePreferences.kt": "02809bcd75955ab1618db9206853c9224e58e5aea4d0116400ff927b720d9194",
+    "app/src/main/java/kr/voicemate/malitda/data/settings/SettingsStore.kt": "2e1583790fb9bb0f855157c74cc01c5356e6e2929a8db0c543b873411235e30d",
+    "app/src/main/java/kr/voicemate/malitda/di/AppContainer.kt": "4f0a3b9be93a81b45a1ab8134a4f14cd48b69ea85f361285a294c4fa557168cb",
+    "app/src/main/java/kr/voicemate/malitda/domain/Approval.kt": "2451a8d811347c8ca0cef6c37d98f146a318df7ad85cfa3b00cffbfdae29017b",
+    "app/src/main/java/kr/voicemate/malitda/domain/ArtStyles.kt": "5f4447402c8c0975d16dd81da994c5b920dd2c5fb4ba1b4c21bc76c5f72f4010",
+    "app/src/main/java/kr/voicemate/malitda/domain/Candidates.kt": "4f891b4684cd6f881e1b2009c6a3def7b0ff779c68de1fb7f56fc4ee0f50c701",
+    "app/src/main/java/kr/voicemate/malitda/domain/Category.kt": "b50675fc1b9850679ebc9921741e600ab3128ba4e260b90060d6cd8b773163e6",
+    "app/src/main/java/kr/voicemate/malitda/domain/Characters.kt": "ddaabbf0d3005d444570afb36bfdc09d602b1b4ea1e304d3d102faf7ad8b274a",
+    "app/src/main/java/kr/voicemate/malitda/domain/CommunicationSafety.kt": "e94c07fa8fce0fb1fe52fa7bcd78eecd701fe1e3dc8ac1548d48c82038bd0dd1",
+    "app/src/main/java/kr/voicemate/malitda/domain/Eval.kt": "08d76907e8da7016496f6dabfaab9d834eba1190e2ad33a9878626008ec36dd1",
+    "app/src/main/java/kr/voicemate/malitda/domain/GuardianPin.kt": "41a6f1f4165833998e842b1206a634bc23458b6f252039110f47946028a68d92",
+    "app/src/main/java/kr/voicemate/malitda/domain/MeaningCategory.kt": "c55fe6dd04a25edd1ee2911f98e8d779bff867783d06c6faf8b28049764b18ba",
+    "app/src/main/java/kr/voicemate/malitda/domain/MeaningConfirmation.kt": "e9c3658aef6c45bd4a1e336993ce02488c2410ba5e9b5d1411facf3c01bad7dd",
+    "app/src/main/java/kr/voicemate/malitda/domain/MeaningResolver.kt": "eb845c964586ba63b551eb83e88ea73331914708d0fbf49676ff0ab14b7c408f",
+    "app/src/main/java/kr/voicemate/malitda/domain/MeaningSafetyReview.kt": "aed6d95a85387aed1147ae84b04e0d07b722816462620dfe0c4ed29ad68fdecf",
+    "app/src/main/java/kr/voicemate/malitda/domain/Normalize.kt": "8e0b6f6d3a19d9d52b6936ccf6d0050e11a15d52b31b47e84327d59958d27c42",
+    "app/src/main/java/kr/voicemate/malitda/domain/OfflineTtsPolicy.kt": "445b5d81ba06c93a7c308835df7effdfd89e1b677d13a42d54750437bb38071c",
+    "app/src/main/java/kr/voicemate/malitda/domain/PilotPlan.kt": "f09aec578531ccc0d6027ab4376d544d415189db38588ce4f8cc58afbdb79e35",
+    "app/src/main/java/kr/voicemate/malitda/domain/SentenceCleanup.kt": "70419619aee564c186cdf530b0d222958ddac09248f75395eeffbcc89067e74f",
+    "app/src/main/java/kr/voicemate/malitda/domain/TrialTracker.kt": "78e2ec63dc82557f4839d2ec39b1a74eef84073b8106519fac3573cde972f02b",
+    "app/src/main/java/kr/voicemate/malitda/MainActivity.kt": "07f5828e58cfcaa2abc339883ece4904fe342b35d131ee5854b80039e2dcc90c",
+    "app/src/main/java/kr/voicemate/malitda/MalitdaApp.kt": "23876fbceec549adcbe6e37e1917ed6416e102d0756bd7489b2f4ee3a7611a36",
+    "app/src/main/java/kr/voicemate/malitda/metrics/Metrics.kt": "cef8415b89e2895f3813953253ebb25b96c012d14a9757860926736af79ce31e",
+    "app/src/main/java/kr/voicemate/malitda/stt/ModelInstaller.kt": "31efc6f6e68e7f3905776ad30ab5e02554a565b71eca7fb7ecf7a2922c2c50aa",
+    "app/src/main/java/kr/voicemate/malitda/stt/SttEngine.kt": "4f4dba7685468292e965246fd0d825fd4a2e4a40760111ae08f65601939ce10a",
+    "app/src/main/java/kr/voicemate/malitda/stt/SttRouter.kt": "2549799cb5af3d02d9aaa72b9764a00594c1da39f380f39a3114ecfe76caa56b",
+    "app/src/main/java/kr/voicemate/malitda/stt/VoskSttEngine.kt": "bc12e3088e054fdd7e30b71e91332b03025ab6064f19fd5e895c94c98702623f",
+    "app/src/main/java/kr/voicemate/malitda/stt/WhisperNative.kt": "c0bef22960219d90166c357da90700b9b6f5f3d91ebd343a9cd4304903de2cdb",
+    "app/src/main/java/kr/voicemate/malitda/stt/WhisperSttEngine.kt": "c889955c0282c1d92508b131433371d7e51b78ee306e8f6b18032f5bb0fe91fb",
+    "app/src/main/java/kr/voicemate/malitda/tts/TtsManager.kt": "f85076fbcaf3d9c538a1366ec60e537e5db4de99a3d30d3c560e851266303a24",
+    "app/src/main/java/kr/voicemate/malitda/ui/components/Components.kt": "f16b726db16c9f4f8a6c119082865597475d94da89bda0e798beb257ac63cea8",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/FaithfulFrame.kt": "047b8f5cdeb2a7507a939552f8d7d6f5f71f5734b7214ff84df48152ae2922a9",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/FigmaApp.kt": "08f041169b696c84bf7598b1a3ea7b9e68f034bc5af160a6a93d9e206517d939",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/FigmaImages.kt": "555c9a6b73e2fbb5e3827812a277fc9bb968ad76de0f455d94517c8eb1a93813",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/FigmaScreen.kt": "85d9bbb5509eb859d4fef4628121efa9b5f2ad4b89604c14801d16dc3cff3b4d",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/Hotspots.kt": "385ff7ee6b7aec26d7660972ade683c71c695c4aabeafdd3e0b12ce23b1db080",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/InfoScreen.kt": "ed9c3d48de075a7cf25525a4e64862b93f75e523890988332823e6e5507b79a6",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/MalitdaFaithfulApp.kt": "fccfe4265df2f0cf814ad59839126bc1a98fcb3aaac50447dea050e4b2e6527a",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/Modals.kt": "7fc3e4e674352a1e92e662dc98951adf253022488fedfeb287fee515fdc4cbc1",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/OnboardingDemo.kt": "538d461f5a97cc5b52c65cd6570793728023134c4f7f9a766167e3c4a8883d99",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S01Splash.kt": "c7da17b73b2dcc552796ad5a2141c66ed73525d628c197485ae75c095aea57a5",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S02Guide.kt": "619998e712903bd29c671b6e42b3a8633a45b1ef723bcf868f3ecef3fb33474e",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S03Consent.kt": "7c4ad57f6a55bc7e0b8e381cc640a43d797eb06f46b12c2efd600fa879d43349",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S04Settings.kt": "b9f35ae22bbd0c2743bf4a7e30c3eb7226cb66fd9d89127864a03a461ee59306",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S05Register.kt": "fb25e7bf81e19ffedb13b3851e89dfddef7c7c03b6894dd1238f3777ccac7952",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S06Template.kt": "bcf55bef410093fa7b82d16973f7c1fa308740a362e706c8a5fee23348b0f8c7",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S07Edit.kt": "9c4935eff9b1c27525dbc03193509d763244796f57bab195d6962ef786ff1c73",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S08Home.kt": "84858fdb7369023cbcefc81eb590b9ee9f83f9edd92e41d356874e5876650ddc",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S09Listen.kt": "d438a45a3b1ea5e7617ee7a7db2553be6520a0724b4bfb2e7796aa3257f6cf54",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S10Result.kt": "b3d7ef9d6661b0390391c78edc08e762a3d32749475ef4f510c6895ba2dd7b0d",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S11Confirm.kt": "dba31915ef66d957c83f8637f649701c3e042ec605e03aa80c9408973dcb5626",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S12Approve.kt": "a0719022952f26f327443f8f88f7a5b483d1045bfd59a876258fe76146b154b5",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S13List.kt": "0fbe43a4bd64739455da4c60b72da374d0b44ac9d85494350b60b101f98c9e1b",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S14Detail.kt": "8c8b66593597ffa7e2e3771b83c025dd2047dfa3ac4da598cf88cd48f567222d",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S15List.kt": "c213b4d73cb1e334bdb0162547de0f1495cf0f76c5e41de4c5a45d4cc8ba59aa",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S16Permission.kt": "91ee1c9534e4654ba5603320a1aa75a7bd5951d670955e1b965c24ada4e14ebd",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S17NoResult.kt": "7791345409ddc8983a3446c1e02149f4df5c5aee86a83593d1b5fe3b7a18c673",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S18Settings.kt": "601b87dcaa8546fdd36a8c01178fd48a017890c7c019dbb53f4007de3695ec82",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S19Reward.kt": "c2b72e2aeab2ddb8e20e7f9d5c005d089389a313041b48a7ea56f0e32d901932",
+    "app/src/main/java/kr/voicemate/malitda/ui/figma/S20Friend.kt": "2bef90b1d1b213b35f674e205b945be32512734d6abbc0d42deccacfef6ab960",
+    "app/src/main/java/kr/voicemate/malitda/ui/nav/MalitdaNavHost.kt": "c8211220c069069991b231a66e2340a45228273eb4b995fc7bd5f4c86673cd82",
+    "app/src/main/java/kr/voicemate/malitda/ui/nav/Routes.kt": "6326deeb4bd8217c028923fbec73e3b64ff61016e595bb02c22a46b964dbad15",
+    "app/src/main/java/kr/voicemate/malitda/ui/screens/CorrectionScreens.kt": "fb2b03e454a7fd314fed0c4d60a4bd99be9f1dd0c1d1ae0a9fd4719fb3a43010",
+    "app/src/main/java/kr/voicemate/malitda/ui/screens/ErrorScreens.kt": "5b528bcd2d1a7be1a339c1d81df055468d3f1d1f1eaf353a5b1097f1388ce6ab",
+    "app/src/main/java/kr/voicemate/malitda/ui/screens/ExpressionScreens.kt": "0f9cfacace1e00c9da6d3cbff972558e91a6894510571581b8c4709d3b1409b0",
+    "app/src/main/java/kr/voicemate/malitda/ui/screens/HomeScreen.kt": "ee021366e2e6efb0b4159192c2c922ec8365ec46d198f1dbb50bfe9e792b9758",
+    "app/src/main/java/kr/voicemate/malitda/ui/screens/OnboardingScreens.kt": "3dd913640457573c9c8d6606af979e81a9fb1f5e188974ca90478a5ae757a0cc",
+    "app/src/main/java/kr/voicemate/malitda/ui/screens/SettingsRewardScreens.kt": "027ca56e614758dc8dd69be07e4d3bc6dcf93ac6c832684ee7856de470321aa3",
+    "app/src/main/java/kr/voicemate/malitda/ui/screens/SpeechScreens.kt": "5942c9f3afc46c033ed60537a75e7e61a72cf03c2718d0660f220bc2cef6def4",
+    "app/src/main/java/kr/voicemate/malitda/ui/theme/Color.kt": "dfc4d56edacd10ddd89dd244c7e456d2fdc74a24e79515af21574ea81288e485",
+    "app/src/main/java/kr/voicemate/malitda/ui/theme/Theme.kt": "c451b9afefe7337ef36a554eaa6a9f090f7f8f4a523b95b5aa9c6bfe377d417a",
+    "app/src/main/java/kr/voicemate/malitda/ui/theme/Type.kt": "a9dcc7e70665416e46855eca500ec7b4147ab58ed866227d0bdbfd6c0a58708d",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/CommunicationIntents.kt": "bdd3bb4f8e14c8e811f0f06a0b1897c7c7d20658141dd3ada3d5f603ac9f1062",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/DatabaseReadiness.kt": "33a336c1679b9926f113c5178c85340f7aa650fb64913558f3d163ffa3663962",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/DataControlScreen.kt": "b3d08471b58b057811254f07ff57f82e688fe7ba985769fb0631f50ea2426a00",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/MeaningCategories.kt": "c49647bba5cf01f7057d3df432679ae353768c379f4218cd025e2a37afc1d307",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/PilotSetupScreen.kt": "5f4f42e4b33db3ac86e228aebe8a51ddd0a522e6bb3db8a4879e2d907f332c6a",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/PilotTaskCompletion.kt": "271539c936d3b87618146b5f60c256f77310815203e0463a9d97d5cb9276c63d",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/PrivacyAndPreferences.kt": "0861de5764ab4e9a161c261ff09b3952a554f040765afee6b622dd958fb6cc1e",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U00Guide.kt": "f19ec32731e48ff93009151bea74843937c2a5308e1fa677f8b51c8966af2409",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U01Home.kt": "205500cefe16e6f227e1f291eb4b029b8215c3369fb5fc328e9e6b7fb542d595",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U02Listen.kt": "69d5202fe1dec3fee10d7a0d5263a9daf548b79a8608c42c50192d3852501e03",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U03Confirm.kt": "3f7cb67f6dd33baf030f6af57e39207cbc071531e1a9b8125dcfa6be31956314",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U04Deliver.kt": "c0a6896ee07688bed06fb233fa60bc1ec0c32098304f9382f8262b5376df0f28",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U05Register.kt": "c90847911e5ca2f08f0833d3df505ea3c5acffa7f321e83617ef39ad47a20364",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U06Pick.kt": "b8e74d3378c30c8a6316298bad3ac4f952bb628512b05890057d27c18cc0283d",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U07Entry.kt": "4a93b9c80bf86612f5b92d508c692473f31e29830d8c76e3f4062550237f3157",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U08Library.kt": "3492180741f27d0469502d1057895b4880e4b2b641eff0e1406a1090c2c6a3da",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U09Detail.kt": "287e621efd02cf8b6496b69d0fe015d395d2aac5665c280a8c1ae40e7c40906b",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U10Activate.kt": "b3b6ee0ee145738dff82f62b425f49eb60b963827bd5e64e496d30ba7af94ebf",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U11Archive.kt": "ae0bac6da9384dd4154e4292498bd17cd5a439955853ae7b70d36749bb8bfa03",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U12Settings.kt": "bd83fc2a7df0321798a612e1411cdf24bd851e70c72419902d52795984b4b566",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U13Sound.kt": "7b73d6efde6dd4e8ececbb840404d77890cc925c557326acdf81e6bd4c49e298",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U14TrialLog.kt": "6449329801a2867891db2a45dcd665e4d5d812b0fbaf7a7674538d2f803331d3",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U15ArtStyle.kt": "274493a10ecfcc33481cc0dc90e97bccd6eb9f5ec06e233715be4bf0b3e8654a",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/U16Communication.kt": "02b84771bac669e6f8c1056c47d63b077346bf24c2494bc395d43e234bd9be25",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt": "6878ef45082221b9b2211a2b6a2e00304e4f6423c379cf206a03116f3add159f",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/V2Style.kt": "c1b3a849fc57ec5ba89d28ffec5f2d36f7aebd9eb1f32bf2c4e03866aaf544b6",
+    "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt": "d509a621d9338c18ad448f08b93bd8be294e9804c8a5da5787317f7afb3c9a80",
+    "app/src/main/res/drawable/ic_arrow.xml": "6f928370d18c6aea8e5c109755b737e516a3faf390de052c2e814f0d53b51972",
+    "app/src/main/res/drawable/ic_back.xml": "43fef107376734e667d06b1e6b607f885d7ec5726a8ccf4844f47727456adc42",
+    "app/src/main/res/drawable/ic_bell.xml": "409294254601bbb5c5cb797166aeb242e850d780d1dc791405e68689330b5a4b",
+    "app/src/main/res/drawable/ic_brand_mark.xml": "a1e352c6b49f5168a9d8a87cf1dbb83cb02d0d034d60e508f8ed85c6816796ea",
+    "app/src/main/res/drawable/ic_chat.xml": "cef87be5fad48013660051daf577304da24c2fbc7d12bf8e4b3bcf4811f4df4d",
+    "app/src/main/res/drawable/ic_check_circle.xml": "e6685a6daa1a143b9b3ffd6a371c8053d4cab4cb1c58047b1673bfae2e87a99d",
+    "app/src/main/res/drawable/ic_clock.xml": "3ab4368d23e1393b325dcac98deb34eb0dcdac6fea243db237769d01a3e57d47",
+    "app/src/main/res/drawable/ic_consent_globe.xml": "f6b97a9e3a7a02f60c9d6bc77d2ff85c630f7920d87e5b0f0f5565fe8ad615a9",
+    "app/src/main/res/drawable/ic_consent_mic.xml": "8f29a016f27e5f4584433e358445e3a74a12b5793c80c4be9a3f25dd40ee23cc",
+    "app/src/main/res/drawable/ic_consent_shield.xml": "e6b8fb5d1279fbf514519ad233e4ff0672c7a7de217a76d430c9a2f50074e84a",
+    "app/src/main/res/drawable/ic_down.xml": "23e15f8af46f61f931e0218fc19524aab1959cab5899f07b621eac8988664f2d",
+    "app/src/main/res/drawable/ic_heart.xml": "841019eb64996a48871e0edd7165129ef8ad0fbfeca9a8b3a90f92a06fbc1972",
+    "app/src/main/res/drawable/ic_heart_outline.xml": "bb6537fa2377a315e5eee17f6b40213e1d02ac87cf0129c65faddb4260eda8b1",
+    "app/src/main/res/drawable/ic_info.xml": "98e1fb7d41f694c3535f35df23461aaba59ded30566c3f02b567f3da6d86ac5e",
+    "app/src/main/res/drawable/ic_listen.xml": "7243b6750aaccf7430919245756cc2d696b500994e0bf1a1809a9d52a4871096",
+    "app/src/main/res/drawable/ic_listen_big.xml": "33e74575d84e56f1e94e8c7ad352ca6a3dff28eee13d20eb3294734753c75e9c",
+    "app/src/main/res/drawable/ic_mic_s09.xml": "3412001ba6891629c1a2c5e4dc20a6252393b905bbd081c9af39e9022e148a14",
+    "app/src/main/res/drawable/ic_mic_white.xml": "69acd9b7f366b7eda2530fa3238079cae3da2f2275a733eba79e65fb6899b301",
+    "app/src/main/res/drawable/ic_person.xml": "c6a20c7f10407bc5c137691ce5b34546286d189735077dd9abebea36d2ba3d7f",
+    "app/src/main/res/drawable/ic_pin.xml": "27bc4c66ce26c0f62d98e60de97f4ca78682337270a13ceafd30e588def1a907",
+    "app/src/main/res/drawable/ic_radio_off.xml": "9340a135cb1b34d166eecda4613ed02d06a5a8538c3155c9b1b816108dcd73eb",
+    "app/src/main/res/drawable/ic_refresh.xml": "852a3f4ad2074ed8f19a1319ca9e5d220b2decab96fed9ba936b0e20390dff67",
+    "app/src/main/res/drawable/ic_reward_heart.xml": "ac06783d1f30c474b64892a8ed342787613a878737c5c60eddc07b37def85a60",
+    "app/src/main/res/drawable/ic_star.xml": "b566c31bc65124987753ffa16e8b6dfa1299891824d1c01128ebc46f0c710ca0",
+    "app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml": "32715ff646f6b9fef7c321138e4a14556c4a1f98a87b06070b56f41643dad718",
+    "app/src/main/res/values/colors.xml": "37cb431109444b9ce46f0d017266a3abb0c1651002bde329ff7231c7089c1427",
+    "app/src/main/res/values/strings.xml": "7f2d81e7705cf122f041b4e9c29fe762e122c0934102187ddda92ce2fe4f831b",
+    "app/src/main/res/values/themes.xml": "b00827b94945b058cafa98dc484c38b45921a01f6546b326425d7e69a7d2e41d",
+    "app/src/main/res/values-v27/themes.xml": "48bb234aed64403a56d30eb6734e7a8aa168ffd57c56e3e3bd16387af7205039",
+    "app/src/main/res/xml/data_extraction_rules.xml": "09b71f0c271e2bdb929011ce33895a64b62053e123af2defb36237fdba8ce326",
+    "app/src/main/res/xml/share_paths.xml": "a887571150e1cfaffce3349cd39954154ef2bb358ddddea8064f4f34bd5fa18a",
+    "app/src/test/java/kr/voicemate/malitda/domain/ArtStylesTest.kt": "6504998d611d47c4e01ce6a68c7660af31215c0a1fd342e681b97329c733a10b",
+    "app/src/test/java/kr/voicemate/malitda/domain/CommunicationSafetyTest.kt": "0099b129b4770aed02df39208b60a033f34d60a3241aaa29a911117c24fe4bf9",
+    "app/src/test/java/kr/voicemate/malitda/domain/DomainTest.kt": "685d82b66b36cf7684549075723381bbe0bd0b01bdc44ccae70d2e386363eac9",
+    "app/src/test/java/kr/voicemate/malitda/domain/EvalTest.kt": "66267f877c6b8ecd3dcd8899b68e2645aaf58af0d27d181b4fb597e60a682475",
+    "app/src/test/java/kr/voicemate/malitda/domain/GuardianPinTest.kt": "6128b7eb6dbba17042b5daf617ce3d38425fb78e193c60de924d0d2951f2e1d8",
+    "app/src/test/java/kr/voicemate/malitda/domain/MeaningCategoryTest.kt": "3621f7643ff672c5822a47f00edcf3c63a876513fbd4372a92d2ad9be7224b4b",
+    "app/src/test/java/kr/voicemate/malitda/domain/MeaningConfirmationTest.kt": "f9167b5b6de317032ef00d749731f53bc63ff22afb9cc0a6f0cb19b42fb9d192",
+    "app/src/test/java/kr/voicemate/malitda/domain/MeaningPersonalizationTest.kt": "bf1ad0592e907824f5f7bddeec8dd6be1890d235d0c5e4d86cac3c97e85b81eb",
+    "app/src/test/java/kr/voicemate/malitda/domain/MeaningResolverTest.kt": "d6a447b84774b5606d65193093a141f5c3477070fa6f1da1bfe4ad687ff702d7",
+    "app/src/test/java/kr/voicemate/malitda/domain/OfflineTtsPolicyTest.kt": "3bb555c7094430febe92c0369aaa2d1918eab1706528b631582ce27993d20db2",
+    "app/src/test/java/kr/voicemate/malitda/domain/PilotSafetyTest.kt": "b839a6b44bf1d30e2731d8cca5a5eae522946ba0cd4054f40061ef281318aa5e",
+    "app/src/test/java/kr/voicemate/malitda/domain/ProfilePreferencesTest.kt": "d79892b246b8aa8089447bfa399f7c5516e22e7654077a4ffa912ae3a38f1ea5",
+    "app/src/test/java/kr/voicemate/malitda/domain/SentenceCleanupTest.kt": "f549b62b431b984561f62a82f779978c90824e6c6b3e2916297c72761208808c",
+    "app/src/test/java/kr/voicemate/malitda/domain/TrialTrackerTest.kt": "0c5de54f6cadd33437602b3465489792c1c65a5c3758e5f613a18aa784c18582",
+    "scripts/model-sha256.properties": "e44e32a4c0b48014f93c9a7f08c76c37352e508aa05b1c72f7e2b304dbd29d6b",
+    "scripts/prepare-models.ps1": "dcb24d33e8f9f4ecce692a700c9c7e125196dd212c281b3e7d69c3ec3749da0e",
+    "app/src/main/cpp/CMakeLists.txt": "411e32ffbf671f626068545375a3b3c7a612336d042490b7d5b792e36ba8381d",
+    "app/schemas/kr.voicemate.malitda.data.db.AppDatabase/1.json": "ad718517910bf520fbe029c09792f8d5933d9768b9b56c0e319831477ffe848e",
+    "app/schemas/kr.voicemate.malitda.data.db.AppDatabase/2.json": "e5d284d78cb4998e94d94b98263fe7a29b8cf569d8bca8f19695ac932a4929f7",
+    "app/schemas/kr.voicemate.malitda.data.db.AppDatabase/3.json": "37c65cd96b592e3dc9bea03fcd2b3e22b0b82e6bb051ce2752158dd1349e6b0e",
+    "app/schemas/kr.voicemate.malitda.data.db.AppDatabase/4.json": "c9fdbc6594d5be872abace82ffc7e9e9a90c04e21599a3dc56e04294f48fc216",
+    "app/schemas/kr.voicemate.malitda.data.db.AppDatabase/5.json": "a6875f7eb4e3e6d270d590c0715d94e102b93ee54aaf7c0e0671872a32b32e41",
+    "app/src/androidTest/assets/synthetic-water.provenance.json": "6b632f75aaf9279a630455a2b408c53b306e0b785f4c88945879c4d4a110f007",
+    "app/src/androidTest/assets/synthetic-water.wav": "325ee417e926da55f122333b4e549b9521753c4ab8a3c7cc5c99871a2e5954f7",
+    "app/src/main/assets/licenses/vosk-model-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "app/src/main/assets/licenses/whisper-cpp-MIT.txt": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d",
+    "app/src/main/assets/licenses/whisper-model-MIT.txt": "b5d65a59060e68c4ff940e1eddfa6f94b2d68fdf58ed7f4dd57721c997e35e9d"
+  },
+  "reviewedAt": "2026-10-26T06:48:11.641606+09:00",
+  "sourceFrozenBuild": "completion-final-build / final optimized native debug and ARM release builds; see verification.json",
+  "requirementScopeCounts": {
+    "retained": 80,
+    "offline_asr_replacement": 7,
+    "revised_participant_or_task_scope": 2,
+    "verification_contract": 1
+  },
+  "connectionByScope": {
+    "retained": {
+      "connected": 80
+    },
+    "offline_asr_replacement": {
+      "connected": 7
+    },
+    "revised_participant_or_task_scope": {
+      "connected": 2
+    },
+    "verification_contract": {
+      "not_applicable": 1
+    }
+  },
+  "closedPriorIntermediateItems": [
+    {
+      "id": "F-START-03",
+      "connection": "connected",
+      "artifactValidationSeparate": false
+    },
+    {
+      "id": "F-START-04",
+      "connection": "connected",
+      "artifactValidationSeparate": false
+    },
+    {
+      "id": "F-A11Y-04",
+      "connection": "connected",
+      "artifactValidationSeparate": false
+    },
+    {
+      "id": "F-A11Y-05",
+      "connection": "connected",
+      "artifactValidationSeparate": false
+    },
+    {
+      "id": "F-PHE-06",
+      "connection": "connected",
+      "artifactValidationSeparate": false
+    },
+    {
+      "id": "F-LSN-02",
+      "connection": "connected",
+      "artifactValidationSeparate": false
+    },
+    {
+      "id": "F-HELP-01",
+      "connection": "connected",
+      "artifactValidationSeparate": false
+    },
+    {
+      "id": "F-HELP-03",
+      "connection": "connected",
+      "artifactValidationSeparate": false
+    },
+    {
+      "id": "F-OPTC-01",
+      "connection": "connected",
+      "artifactValidationSeparate": false
+    },
+    {
+      "id": "F-OSES-04",
+      "connection": "connected",
+      "artifactValidationSeparate": false
+    },
+    {
+      "id": "F-OGDE-01",
+      "connection": "connected",
+      "artifactValidationSeparate": true
+    }
+  ],
+  "openCodeFindings": [],
+  "additionalQualityEvidence": [
+    "source-manifest.json",
+    "verification.json",
+    "evidence/unit-summary.json",
+    "evidence/instrumentation-summary.json"
+  ],
+  "requiredExternalValidation": [
+    {
+      "id": "physical-device-matrix",
+      "status": "UNRUN",
+      "scope": "Real manufacturers/API versions and assistive technologies"
+    },
+    {
+      "id": "participant-effect",
+      "status": "UNRUN",
+      "scope": "Actual comprehension/refusal/communication effect"
+    },
+    {
+      "id": "paid-image-provider",
+      "status": "UNRUN",
+      "scope": "Actual provider generation, production authentication, cost, cancellation and retention"
+    }
+  ],
+  "resolvedReviewFindings": [
+    {
+      "id": "M1-CANDIDATE-TO-U16",
+      "requirements": [
+        "F-CAND-05",
+        "F-CAND-06"
+      ],
+      "result": "SOURCE_CONNECTION_FIXED",
+      "evidence": {
+        "path": "C:\\Users\\HAPPY\\Documents\\codex-work\\malitda-feedback-update-20261025\\app\\src\\main\\java\\kr\\voicemate\\malitda\\ui\\v2\\V2App.kt",
+        "line": 950,
+        "symbol": "else (ui.candidates.map { it.text } + ui.alternatives).distinct()",
+        "symbolFound": true
+      },
+      "acceptance": "Final root rebuild and regression are separate; no user effect is inferred."
+    }
+  ],
+  "finalCodeFindings": []
+}

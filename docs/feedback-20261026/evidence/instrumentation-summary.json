@@ -1,0 +1,8 @@
+{
+  "tests": 48,
+  "passed": 48,
+  "failures": 0,
+  "result": "OK (48 tests)",
+  "target": "Android 36 x86_64 emulator",
+  "scope": "DB,SQLCipher,known migrations,key fail-closed,fresh model preparation,synthetic speech integration; not all acceptance scenarios"
+}

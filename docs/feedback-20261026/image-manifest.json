@@ -1,0 +1,107 @@
+[
+  {
+    "file": "images/home.png",
+    "sha256": "7d1b909e7e01d3578518010f6928a4aabc692dd8738d6791632f967522e09b6f",
+    "dataset": "synthetic QA only",
+    "cohort": "v11",
+    "mock": false
+  },
+  {
+    "file": "images/home-large.png",
+    "sha256": "2177e918702bf43d4b9716e4d9ab0cf1cf8c52e466cb5c4983ead9d547a4100c",
+    "dataset": "synthetic QA only",
+    "cohort": "v11",
+    "mock": false
+  },
+  {
+    "file": "images/confirm.png",
+    "sha256": "612c10ed55660ce1bc51923a1bae6b3a7884bea88664767bec9ef4dec8425bd0",
+    "dataset": "synthetic QA only",
+    "cohort": "v9",
+    "mock": false
+  },
+  {
+    "file": "images/deliver.png",
+    "sha256": "6608eadcf3e1a04d2db54c339f74a4638c01a1cdf6dd4658c46fd8e9fbde89b9",
+    "dataset": "synthetic QA only",
+    "cohort": "v9",
+    "mock": false
+  },
+  {
+    "file": "images/picture-choice.png",
+    "sha256": "9715fa8a8d12ab446184730c42238b62c09655fce23c159bdb9c1cf042b07d27",
+    "dataset": "synthetic QA only",
+    "cohort": "v9",
+    "mock": false
+  },
+  {
+    "file": "images/literal.png",
+    "sha256": "169405be78378486f8044d2ddec26300a26b6a2dbedb03a630abd93cf5cc1412",
+    "dataset": "synthetic QA only",
+    "cohort": "v9",
+    "mock": false
+  },
+  {
+    "file": "images/pilot-setup.png",
+    "sha256": "b46788f66996a7b752a47d3c87e835e563dc9a6ed5c3fe77f92fb4e48d085238",
+    "dataset": "synthetic QA only",
+    "cohort": "v9",
+    "mock": false
+  },
+  {
+    "file": "images/pilot-failed-complete.png",
+    "sha256": "701fb0da25a97ce511f31cff7c644eaa8abe89bbbf9959bdc7cab34bb256465d",
+    "dataset": "synthetic QA only",
+    "cohort": "v11",
+    "mock": false
+  },
+  {
+    "file": "images/pilot-failed-result.png",
+    "sha256": "2a2bee56c0ed6dc285a42fa0841478f14fab2e71df0a605b203d1c21affdc80f",
+    "dataset": "synthetic QA only",
+    "cohort": "v11",
+    "mock": false
+  },
+  {
+    "file": "images/pilot-withdrawn.png",
+    "sha256": "c58e493ce6a455bfe5020ed0e3fd8b861733300612c1ae2815ee79ae1f487a0b",
+    "dataset": "synthetic QA only",
+    "cohort": "v11",
+    "mock": false
+  },
+  {
+    "file": "images/mock-consent.png",
+    "sha256": "8faaaf04bf0f4ee40d0532c2e6b06a730036cd82d8d84a1e0a74d0debfa0eb26",
+    "dataset": "synthetic QA only",
+    "cohort": "v9",
+    "mock": true
+  },
+  {
+    "file": "images/mock-generating.png",
+    "sha256": "d09450139acbb7001cccf06ff7a2ba34df0156720eb19bdf0f80ce41ff2f7403",
+    "dataset": "synthetic QA only",
+    "cohort": "v9",
+    "mock": true
+  },
+  {
+    "file": "images/mock-result.png",
+    "sha256": "d09450139acbb7001cccf06ff7a2ba34df0156720eb19bdf0f80ce41ff2f7403",
+    "dataset": "synthetic QA only",
+    "cohort": "v9",
+    "mock": true
+  },
+  {
+    "file": "images/mock-cancel.png",
+    "sha256": "077845151dac1e4d8bc954a7bfb0d7f049aacbfe248d483f923d356bc47c2aaf",
+    "dataset": "synthetic QA only",
+    "cohort": "v9",
+    "mock": true
+  },
+  {
+    "file": "images/confirm-text.png",
+    "sha256": "6569b80552fc6fa04cf6bef19e1040bbc3ce728f5ebdedf021f760d681fc179f",
+    "dataset": "synthetic QA only",
+    "cohort": "v9",
+    "mock": false
+  }
+]

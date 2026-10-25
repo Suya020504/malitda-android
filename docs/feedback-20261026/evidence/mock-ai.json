@@ -1,0 +1,40 @@
+{
+  "mock_completed_results": 1,
+  "mock_cancelled_requests": 1,
+  "real_paid_generation": 0,
+  "real_participants": 0,
+  "walking_selection_still_checked_after_delayed_mock_response": true,
+  "selected_states": [
+    {
+      "checked": "true",
+      "checkable": "true",
+      "enabled": "true",
+      "bounds": "[53,711][277,935]"
+    },
+    {
+      "checked": "false",
+      "checkable": "true",
+      "enabled": "true",
+      "bounds": "[303,711][527,935]"
+    },
+    {
+      "checked": "false",
+      "checkable": "true",
+      "enabled": "true",
+      "bounds": "[553,711][777,935]"
+    },
+    {
+      "checked": "false",
+      "checkable": "true",
+      "enabled": "true",
+      "bounds": "[803,711][1027,935]"
+    },
+    {
+      "checked": "false",
+      "checkable": "true",
+      "enabled": "true",
+      "bounds": "[53,961][277,1185]"
+    }
+  ],
+  "all_styles_return_existing_water_image": true
+}

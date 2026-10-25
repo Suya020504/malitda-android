@@ -1,0 +1,18 @@
+{
+  "before_photo_files": 1,
+  "after_photo_files": 1,
+  "filenames_equal": true,
+  "legacy_base_version": "0.2.0-debug code3",
+  "after": "0.3.0-debug",
+  "clear_performed": false,
+  "app_crash_buffer_empty": true,
+  "data_control_counts": {
+    "등록한 뜻 · 연습 예시 포함": 1,
+    "뜻에 연결된 평소 표현": 1,
+    "뜻 확인 반응 이력": 1,
+    "이전 형식의 등록 문장": 0,
+    "개인 교정 이력": 0,
+    "실증 시도 기록": 0,
+    "등록한 뜻이 쓰는 사진·생성 그림": 0
+  }
+}

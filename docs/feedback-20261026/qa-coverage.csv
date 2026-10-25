@@ -1,0 +1,42 @@
+﻿ID,결과,근거·범위,증거
+FLOW-JOURNEY-ENTRY,BLOCKED,실제 대상자의 10초 이해·진입 이해도 미검증.,verification.json; evidence/; source-manifest.json
+FLOW-JOURNEY-NAVIGATION,PASS,실제 등록·본인 확인·입력 대체·전달·세 탭·자료 관리 대표 경로를 확인. 전체 인수조건 전수 시험과 다름.,verification.json; evidence/; source-manifest.json
+FLOW-JOURNEY-ACTIONS,BLOCKED,핵심 대표 행동과 소스 연결을 확인했으며 모든 조합/행동의 전수 UI 검사는 아님.,verification.json; evidence/; source-manifest.json
+FLOW-STATE-PERSISTENCE,BLOCKED,저장·재확인·실제 업그레이드 확인. 모든 중단/프로세스 초안 복원 조건 전수 미검증.,verification.json; evidence/; source-manifest.json
+FLOW-STATE-COUNTS,PASS,"취소/새 시도 회귀와 실패 완료 CSV 행, 철회/캐시 0, 다른 프로필 보존 확인.",verification.json; evidence/; source-manifest.json
+FLOW-STATE-ISOLATION,PASS,현재 프로필 CSV 필터·미확인 분리·다른 프로필 원본 보존·PIN 재잠금 확인.,verification.json; evidence/; source-manifest.json
+FLOW-STATE-CORRUPTION,PASS,알려진 이전 DB의 실제 업그레이드와 unknown-schema/key fail-closed 계측. 모든 손상 주입은 아님.,verification.json; evidence/; source-manifest.json
+FLOW-STATE-STORAGE-FAILURE,BLOCKED,롤백과 실패 안내를 확인했으나 디스크 용량 부족·모든 파일 오류의 실주입은 미실행.,verification.json; evidence/; source-manifest.json
+FLOW-ERROR-RECOVERY,PASS,"음성 결과 없음·TTS 불가·카드/직접입력 대체, 삭제/자료 복구 안내 연결과 대표 UI 확인.",verification.json; evidence/; source-manifest.json
+FLOW-ROUTE-INVALID,BLOCKED,null/변경 스냅숏 복구 코드는 연결했으나 모든 강제 무효 ID 진입은 전수 미실행.,verification.json; evidence/; source-manifest.json
+FLOW-ROUTE-INVENTORY,PASS,현재 V2 실행 경로·새 U16~18/실증 종료/설정·동의/PIN을 소스 대조. legacy를 완료로 합산하지 않음.,verification.json; evidence/; source-manifest.json
+FLOW-FRAMEWORK-OVERLAY,EXCLUDED,React/브라우저 프레임워크 overlay 대상이 아닌 네이티브 Android 감사. 기존 crash 로그는 별도 이력.,verification.json; evidence/; source-manifest.json
+UI-RESP-OVERFLOW,PASS,대표 320dp/시스템200·홈/확인/전달·긴 문장/텍스트 모드 확인. 모든 화면/상태 전수 검사는 아님.,verification.json; evidence/; source-manifest.json
+UI-RESP-FIXED-UI,PASS,대표 키보드 입력·고정 행동·200% 이동 확인. 실기기별 전수 아님.,verification.json; evidence/; source-manifest.json
+UI-RESP-EDGE-STATES,BLOCKED,대표 빈 상태/길이/200%는 확인했으나 모든 최대 레코드/문자열 조합은 미검증.,verification.json; evidence/; source-manifest.json
+UI-HIERARCHY-PRIMARY-SECONDARY,BLOCKED,레이아웃은 확인했으나 실제 대상자의 시각 위계 이해는 관찰하지 않음.,verification.json; evidence/; source-manifest.json
+UI-IDENTITY-TABS,PASS,기존 홈·주아·로고·캐릭터·세 탭 보존을 실제 실행과 소스 자산에서 확인.,verification.json; evidence/; source-manifest.json
+UI-ABOVE-FOLD-CTA,PASS,"보통 크기 원형 마이크/카드와 대체 입력, 큰 글씨 스크롤 동작 확인.",verification.json; evidence/; source-manifest.json
+UI-RESP-WIDE,EXCLUDED,이번 대상은 세로 Android 앱. 웹/데스크톱 배포는 범위 밖. 태블릿 호환은 별도 미검증.,verification.json; evidence/; source-manifest.json
+A11Y-TITLE,BLOCKED,제목 의미를 추가했으나 실제 TalkBack 전환·낭독 전수 미검증.,verification.json; evidence/; source-manifest.json
+A11Y-LANDMARKS,BLOCKED,네이티브 제목/영역 의미를 적용했으나 보조기술의 영역 이동 전수 미검증.,verification.json; evidence/; source-manifest.json
+A11Y-NAMES,BLOCKED,실제 그림칩 이름을 보완했으나 모든 보조기술·읽기 순서 전수 미검증.,verification.json; evidence/; source-manifest.json
+A11Y-KEYBOARD,BLOCKED,키보드 대표 입력은 확인. 실제 Switch Access/Voice Access 전체 과업 미검증.,verification.json; evidence/; source-manifest.json
+A11Y-CONTRAST,PASS,종전 미달 보조색을 교체하고 고대비 팔레트/선택 테두리 적용. 대표 코드색 계산과 렌더 확인 범위.,verification.json; evidence/; source-manifest.json
+A11Y-CONSOLE,EXCLUDED,웹 콘솔 대상이 아님. 과거 Android crash 기록과 신규 Java 논리 재현은 별도.,verification.json; evidence/; source-manifest.json
+PROD-AUTH,PASS,로컬 지원자 PIN·실패 지연·배경 잠금·복구 조건 확인. 온라인 계정/법적 보호자 인증 아님.,verification.json; evidence/; source-manifest.json
+PROD-TRANSACTION,PASS,Room/SQLCipher·저장·수정·별칭·동시 제한·마이그레이션·삭제 관련 계측 통과.,verification.json; evidence/; source-manifest.json
+PROD-ASYNC,BLOCKED,모의 생성 취소·늦은 응답 차단은 확인. 모든 DB 지연/프로필/네트워크 조합 전수 주입은 아님.,verification.json; evidence/; source-manifest.json
+PROD-INTEGRATION,BLOCKED,Sharesheet 열기/취소·모의 서버·실 STT 합성 통합 확인. 실제 유료 서버·외부 수신·실기기 TTS 품질 미검증.,verification.json; evidence/; source-manifest.json
+PROD-DATA,PASS,"현재 동의/철회/익명 CSV/기록·임시 파일 정리, 개인 사전/전체 삭제 관련 시험 통과.",verification.json; evidence/; source-manifest.json
+PROD-ACCESSIBILITY,BLOCKED,시스템200/320dp·의미·대비 보완 확인. 실기기 전체 보조기술 검증은 남음.,verification.json; evidence/; source-manifest.json
+PROD-PERFORMANCE,BLOCKED,합성 한 조건의 에뮬레이터 처리시간만 측정. 실제 발화/휴대전화 성능·효과 일반화 불가.,verification.json; evidence/; source-manifest.json
+PROD-OPERATIONS,BLOCKED,앱/가이드/실증 기록 운영은 준비. 기관·실제 참가자·문의 대응 운영 미검증.,verification.json; evidence/; source-manifest.json
+PROD-RELEASE,PASS,ARM debug 서명/모델/ABI 및 unsigned release R8·Lint 검사. 정식 팀 서명/배포와 구분.,verification.json; evidence/; source-manifest.json
+PROD-OUTCOME,PASS,실패 완료·연습/중단·관찰 응답·조건/목표를 분리해 기록. 실제 효과는 검증하지 않음.,verification.json; evidence/; source-manifest.json
+VIS-BASELINE,PASS,기존 이미지/주아/홈·세 탭을 원안 기준으로 보존. Figma 자체 새 편집은 이번 범위 밖.,verification.json; evidence/; source-manifest.json
+VIS-FIDELITY,BLOCKED,기존 디자인을 유지한 대표 확인. 이전 59개 시안과 앱의 전수 픽셀 일치 판정은 아님.,verification.json; evidence/; source-manifest.json
+VIS-ASSETS,PASS,기존 유효 앱 자산·사진 두 경로·내장 그림 라벨·모의 응답을 검증. 실제 생성 품질 제외.,verification.json; evidence/; source-manifest.json
+VIS-SCOPE,PASS,이미지 시안·현재 앱·실제 시험·모의 생성의 범위를 가이드/명세/화면에서 구분.,verification.json; evidence/; source-manifest.json
+VIS-SIMULATION,PASS,합성 음성·예시 그림과 실제 이용자·유료 생성0을 명확히 분리.,verification.json; evidence/; source-manifest.json
+VIS-CONTEXT,PASS,학생/폼/회차·명시 승인 경계와 늦은 모의 결과 차단 대표 시험 확인.,verification.json; evidence/; source-manifest.json

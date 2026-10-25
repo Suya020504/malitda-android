@@ -1,0 +1,170 @@
+{
+  "date_kst": "2026-10-26",
+  "app": {
+    "version": "0.3.0",
+    "version_code": 9,
+    "package_debug": "kr.voicemate.malitda.debug",
+    "db_version": 5,
+    "branch": "codex/complete-feedback-20261026",
+    "base_commit": "cb1c66ef29df652f691cdd55b1bffc400417c755",
+    "source_commit": "9c56d8673cebe6585673e25fd807b9ad5180ff25",
+    "source_app_tree": "5d25c1303b21125a085043a4cc64092fb1cfe091",
+    "build_provenance": "Built locally from the source content committed at source_commit; build-time VCS metadata may show the base commit because artifacts were validated before committing.",
+    "debug_namespace_note": "Debug uses a separate .debug application ID from team release. It cannot automatically access release app private data; do not uninstall the release app to try this build."
+  },
+  "status": "LOCAL_IMPLEMENTATION_AND_CHECKS_COMPLETE_FIELD_VALIDATION_UNRUN",
+  "tests": {
+    "unit": {
+      "tests": 71,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 71
+    },
+    "instrumentation": {
+      "tests": 48,
+      "passed": 48,
+      "failures": 0,
+      "final_optimized_result": "OK (48 tests); elapsed 3.758s"
+    }
+  },
+  "lint": {
+    "debug": {
+      "Fatal": 0,
+      "Error": 0,
+      "Warning": 39,
+      "Hint": 15
+    },
+    "release": {
+      "Fatal": 0,
+      "Error": 0,
+      "Warning": 40,
+      "Hint": 15
+    }
+  },
+  "speech_probe": {
+    "synthetic": true,
+    "human_recording": false,
+    "voice": "Microsoft Heami Desktop; local synthesis",
+    "phrase": "물 마시고 싶어요",
+    "fixture_sha256": "325ee417e926da55f122333b4e549b9521753c4ab8a3c7cc5c99871a2e5954f7",
+    "audio_ms": 2010,
+    "processing_ms": 516,
+    "recognition_hints": [],
+    "candidate_connected": true,
+    "before_debug_observations_ms": [
+      21120,
+      34765
+    ],
+    "optimization": "ggml C/C++ debug kernels -O3; retained debug symbols",
+    "same_physical_phone_benchmark": false,
+    "accuracy_or_user_effect_estimate": false,
+    "input_method": "test-only WAV file, not microphone or participant speech",
+    "physical_device_measurement": false
+  },
+  "model_bundle": {
+    "files": 15,
+    "uncompressed_bytes": 324072293,
+    "build_checksums_enforced": true,
+    "fresh_native_model_ready_test": "PASS",
+    "binaries_in_git": false
+  },
+  "ui_evidence": {
+    "cohorts": {
+      "initial_v5": {
+        "representative_passed": 21,
+        "found_issues": 5
+      },
+      "v9": {
+        "representative_passed": 14
+      },
+      "v11": {
+        "focused_passed": 3
+      }
+    },
+    "sum_is_not_unique_scenario_count": true,
+    "screen_reader_full_pass": false,
+    "last_source_delta": "offline-only TTS policy, sample-trial exclusion and native debug optimization; corresponding policy/runtime tests added"
+  },
+  "privacy": {
+    "csv_fields": "participant/task/version/condition/numeric metrics only",
+    "no_message_or_name_in_csv": true,
+    "withdrawal_removes_temporary_csv": true,
+    "actual_sample_cards_excluded_from_real_pilot_metrics": true,
+    "network_tts_fallback_disabled": true,
+    "picture_files_sqlcipher_encrypted": false
+  },
+  "ai": {
+    "mock_success": 1,
+    "mock_cancelled": 1,
+    "late_result_did_not_override_new_choice": true,
+    "all_styles_return_existing_water_image": true,
+    "real_paid_provider_calls": 0,
+    "release_enabled": false,
+    "client_cancellation_is_not_provider_cost_cancellation": true
+  },
+  "release": {
+    "merged": false,
+    "deployed": false,
+    "team_signed_release": false,
+    "requires_team_signing_for_submission": true,
+    "pr_status": "not_created_yet",
+    "local_artifact_signing": "Android Debug for the installable debug APK; unsigned ARM release built for R8 validation only."
+  },
+  "unrun": [
+    "Actual participants and comprehension/refusal/communication effects",
+    "Physical phones from two manufacturers and minimum Android runtime",
+    "Full TalkBack/Switch Access/Voice Access task coverage",
+    "Actual paid image provider, production authentication, cancellation cost and retention",
+    "Exhaustive pixel comparison for all prior Figma frames",
+    "All storage/full-disk/corruption failure injections"
+  ],
+  "artifacts": [
+    {
+      "variant": "arm_debug",
+      "bytes": 259482224,
+      "sha256": "79726222ad91ed23d8e693612dcd09b192ec003a8f9389b5baa00aac122632c6",
+      "abis": [
+        "arm64-v8a",
+        "armeabi-v7a"
+      ],
+      "model_files": 15,
+      "zip_crc_ok": true,
+      "team_release_signed": false
+    },
+    {
+      "variant": "arm_unsigned_release",
+      "bytes": 182993309,
+      "sha256": "6fd96cf7b96e92e20a2d16c8078f7a2c04ac1d8e55b8a09300700bbb5b8d2a55",
+      "abis": [
+        "arm64-v8a",
+        "armeabi-v7a"
+      ],
+      "model_files": 15,
+      "zip_crc_ok": true,
+      "team_release_signed": false
+    }
+  ],
+  "source_notes": "Final source includes offline-only TTS, actual sample-card exclusion, explicit failed-task completion/cache cleanup, and optimized debug ggml C/C++ kernels. No application source changed after source_commit.",
+  "qa_coverage": {
+    "rows": 41,
+    "full_physical_or_user_acceptance_pass": false,
+    "path": "qa-coverage.csv"
+  },
+  "final_startup_smoke": {
+    "final_app_nodes_visible": true,
+    "crash_buffer_has_fatal": false,
+    "system_ui_anr_overlay_dismissed_with_wait": true,
+    "application_anr_observed": false,
+    "private_text_published": false
+  },
+  "pdf_report": {
+    "file": "말잇다_화면구조와개발검증_20261026.pdf",
+    "pages": 7,
+    "rendered_pages": 7,
+    "text_outside_page": 0,
+    "body_text_over_images": 0,
+    "replacement_chars": 0,
+    "sha256": "fb9708e5370af4a9d676015dbb0d7e43c1bea3479033a0230980928a0df8b791"
+  }
+}

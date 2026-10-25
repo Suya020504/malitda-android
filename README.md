@@ -1,84 +1,64 @@
-# 말잇다 (Malitda) — Android
+# 말잇다 · VOICE MATE
 
-2026 장애인 분야 해커톤 「장애 플러스 기술」 분야1(디지털 포용) · 팀 VOICE MATE.
-당사자의 고유한 표현을 주변 사람이 이해할 수 있게 연결하는 **온디바이스 의사소통 지원 앱**.
-지원자와 함께 등록한 개인 표현("바람")을 로컬 STT 인식 결과와 맞춰 뜻 후보("산책하고 싶어요")를 제시하고,
-당사자가 그림·문장·소리로 확인한 뜻만 상대방에게 전달한다. 확인 전에는 아무것도 밖으로 나가지 않는다.
+평소 쓰는 표현을 그 사람의 뜻과 연결하고, 본인이 확인한 뜻을 상대에게 전하는 Android 의사소통 지원 앱입니다. 한 이용자의 ‘바람’을 ‘산책하고 싶어요’와 연결할 수 있으며, 다른 사람에게 같은 뜻을 자동 적용하지 않습니다. 발음 치료·진단·자동 의도 확정을 제공하지 않습니다.
 
-## 구성 (v2 기준)
+기존 홈, 주아(Jua) 서체, 캐릭터와 **홈·내 표현·설정**의 세 탭을 유지했습니다. 현재 버전은 **0.3.0 / DB 5**입니다. 디자인 화면 수, 코드 연결, APK 시험과 실제 이용자 효과는 구분합니다.
 
-| 항목 | 내용 |
+- [사용법·일반 실증·AI 모의 시연 가이드](docs/feedback-20261026/사용법과실증가이드.md)
+- [피드백 반영·화면 흐름·검증 범위](docs/feedback-20261026/README.md)
+- [최신 검증명세](docs/feedback-20261026/verification.json)
+- [기존 Figma 디자인](https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=276-661)
+- [R4 서버 연결](docs/r4-server/README.md)
+
+## 핵심 동작
+
+| 경로 | 현재 동작 |
 |---|---|
-| 언어·UI | Kotlin 2.2 · Jetpack Compose(Material3) · 서체 Jua(v2 전 화면, Regular 단일 굵기) |
-| 저장 | Room + **SQLCipher**(키는 Android Keystore가 감싼 무작위 32바이트), DataStore. **DB v2**: 개인 의미 사전 `meanings`·`meaning_expressions` 추가, 기존 데이터를 보존하는 1→2 마이그레이션 |
-| STT(기기 내) | **whisper.cpp**(ggml-base-q5_1, JNI) · **Vosk**(vosk-model-small-ko-0.22) — 설정에서 전환, 한 번에 하나만 메모리에 올림 |
-| TTS | 시스템 TextToSpeech(오프라인 한국어 음성 우선) — 확인된 뜻을 소리로 들려주는 선택 기능 |
-| 네트워크 | **릴리스 빌드는 인터넷 권한 없음.** 외부 STT API·클라우드 전환 없음. 디버그 빌드에만 지원자용 '그림 만들기'(PC의 R4 서버 경유 이미지 생성)와 127.0.0.1 전용 인터넷 권한이 들어간다 — 아래 '그림 만들기' 참고 |
-| 화면 | **v2 42화면 체계(U00~U13)**, 디자인 전달 자료 `design/v2/` 기준. 1단계로 학생 핵심 흐름 U00~U04·U06과 예외 변형(U02-D, U03-E/M/I/V, U04-F/S) 구현 — 홈 → 말하기/카드 선택 → 뜻 확인 → 대면 전달. 등록(U05·U07)·내 표현(U08~U11)·설정(U12)·소리 확인(U13)은 다음 단계. 기존 S01~S27 구현정본은 `ui/figma/`에 유지 |
+| 함께 등록 | 지원자 PIN → 표현·뜻·상황·그림 → 미확인 보관 → 본인 반응과 확인 방법 → 사용 |
+| 말하기 | 기기 내 Whisper/Vosk → 원문 보존·후보 1~3개 → 명시 선택 → 이번 뜻 확인 → 전달 |
+| 입력 대체 | 등록 카드 또는 직접 입력 → 정확한 문장 확인·승인 → 화면·TTS·공유·복사 |
+| 개인화 | 같은 표현의 여러 상황별 뜻, 분류·검색·즐겨찾기·제한된 이력 가중치, 그림/글/소리·후보 수·속도·진동 설정 |
+| 자료 관리 | SQLCipher DB·Keystore 키, 사진은 앱 전용 공간. 건수 조회·사전/교정/실증/전체 삭제. 원음 파일 미저장. TTS도 설치된 오프라인 한국어 음성만 사용 |
+| 접근성 | 시스템 글자 확대 유지, 앱 100/150/200%, 고대비·가변 높이 버튼·기본 읽기 의미. 앱의 10초 녹음 종료 타이머 제거 |
+| 실증 | 별도 동의·익명 코드·과업·조건·연습·중단·관찰 응답. 현재 참여자의 동의한 완료·비연습 코드와 수치만 CSV 파일로 공유 |
 
-아키텍처 변경도(`design/v2` 설계도 04) 기준 유지·변경·신규:
+등록 뜻의 확인과 이번 전달 승인은 별개입니다. 뜻·그림·학생·문장·선택이 바뀌거나 배경으로 가면 승인을 다시 확인합니다. 공유 앱 선택은 실제 전송 성공을 뜻하지 않습니다. 실증의 `delivered`도 확인 후 전달 화면에 도달한 기록이며, 이해 여부는 현장 관찰 응답입니다. 응답 없음은 실패로 바꾸지 않습니다.
 
-| 구분 | 내용 |
-|---|---|
-| 유지 | Whisper/Vosk 음성 입력, `CandidateBuilder`(M1 승인 교정), Room+SQLCipher 기존 테이블 |
-| 변경 | `SessionViewModel`(v2 의미 흐름 상태 추가), 뜻 확인·전달 흐름, TTS 전달 |
-| 신규 | `MeaningResolver`, `MeaningRepository`, 개인 의미 사전 테이블(DB 1→2) |
-
-핵심 규칙(`domain/`):
-- `TextNormalizer` — M1 완전일치 판정용 정규화 3규칙(NFC·공백·문장 끝 부호).
-- `SentenceCleanup` — 기획서의 "문장 정리 규칙": 비발화 토큰 제거 + 조사·어미 1회 결합. 모든 엔진·조건에 동일 적용.
-- `MeaningResolver` — v2 의미 후보 결정: 인식 원문·N-best를 정규화해 등록된 표현과 맞춘다(완전일치 → 포함 → 맞는 게 없을 때만 한글 자모 하나 차이를 가장 낮은 순위 후보로). 등록되지 않은 뜻을 임의로 만들지 않고, 후보는 학생이 확인해야 전달된다. 후보가 없으면 "등록된 뜻 없음" 흐름으로 보낸다.
-- 인식 힌트 — 말하기마다 학생의 등록 표현(자주 쓰는 뜻 먼저, 최대 200자)을 Whisper 초기 프롬프트로 넣어 비슷하게 들린 말을 등록된 단어로 받아쓰게 한다. 기기 안에서만 쓰고 저장하지 않는다.
-- `CandidateBuilder` — 원문 + 실제 N-best(최대 3) + M1 규칙1(완전일치 승인문장)·규칙2(실제 후보 내 재정렬). 유사도로 새 문장을 만들지 않는다.
-- `Approval` — 승인 토큰 = 문장 해시. 한 글자라도 바뀌면 공유 잠김.
-- `EvalMetrics` — CER·WER·완전일치·Top-3·무응답·처리시간(설정 → 평가 도구, CSV 저장).
+개인 뜻은 50개까지 보관합니다. 등록 문장은 100자, 직접 전할 문장은 200자까지이며 기존 문장을 자동으로 자르지 않습니다. 지원자 PIN은 기기 내 화면 잠금이며 법적 보호자·서버 계정 인증이 아닙니다.
 
 ## 빌드
 
-```bash
-# 1) 모델·소스 받기(git에 없음)
-bash scripts/fetch-model.sh      # Vosk 한국어 모델 → app/src/main/assets/model-ko (253MB)
-bash scripts/fetch-whisper.sh    # whisper.cpp 1.9.4 → third_party/, ggml-base-q5_1.bin → app/src/main/assets/whisper (60MB)
+JDK 17, Android SDK 36, NDK 27.2.12479018, CMake 3.22.1을 사용합니다. `local.properties`에는 개발자의 SDK 경로를 둡니다. 모델·키·신청서·녹음·개인 사진·APK는 Git에 넣지 않습니다.
 
-# 2) 빌드 (JDK 17, Android SDK 36, NDK 27.2, CMake 3.22 필요; 프로젝트 경로는 ASCII 여야 함)
-./gradlew :app:assembleDebug
-./gradlew :app:assembleRelease -PsubmitAbis=arm   # 제출용(arm64-v8a + armeabi-v7a), keystore.properties 필요
+```powershell
+# 공식 출처 다운로드와 고정 해시 검사
+./scripts/prepare-models.ps1
+# 검증한 모델이 다른 로컬 작업 폴더에 이미 있는 경우
+./scripts/prepare-models.ps1 -ExistingAssets 'C:/path/to/app/src/main/assets'
 ```
 
-Windows: `local.properties`에 `sdk.dir=C:/Android/Sdk` 형식(슬래시)으로 적는다.
+Whisper C++ 소스는 기존 `bash scripts/fetch-whisper.sh`로 별도 준비합니다. 이미 있는 검증 소스는 `-PwhisperCppDir=C:/path/to/whisper.cpp`를 지정할 수 있습니다. 패키징 전 15개 모델 파일의 SHA-256을 검사하므로, 모델 없는 APK가 따뜻한 가상기기의 캐시에 의존하지 않습니다. 해시는 `scripts/model-sha256.properties`, 라이선스는 `app/src/main/assets/licenses/`에 있습니다.
 
-## 평가 도구
-
-디버그·릴리스 공통. 앱 전용 폴더 `files/testaudio/`에 16kHz mono PCM16 WAV와 `refs.txt`(`파일명<TAB>참조문`)를 넣고 **설정 → 전체 음원 평가 실행**. 결과는 화면과 `files/eval/eval-*.csv`.
-
-```bash
-adb push x.wav /data/local/tmp/ && adb shell "cat /data/local/tmp/x.wav | run-as kr.voicemate.malitda.debug sh -c 'cat > files/testaudio/x.wav'"
+```powershell
+./gradlew.bat :app:testDebugUnitTest :app:lintDebug
+./gradlew.bat :app:assembleDebug -PsubmitAbis=arm
+./gradlew.bat :app:assembleRelease -PsubmitAbis=arm
 ```
 
-## 그림 만들기 (디버그 빌드 · 팀원 R4 서버 경유)
+팀의 릴리스 키가 없으면 릴리스 APK는 서명되지 않습니다. 개발 검증용 debug APK와 팀이 서명한 배포 APK를 구분합니다. 다른 서명의 앱을 업데이트할 때 기존 자료를 보존하지 않은 채 삭제하지 않습니다. 정상 DB와 알려진 과거 개인 사전 분기를 이관하며, 알 수 없는 형식·키 오류는 자료를 지우지 않고 복구를 안내합니다.
 
-지원자가 '뜻을 보여줄 그림' 화면에서 비용·외부 전송에 동의한 뒤 **이 뜻으로 그림 만들기**를 누르면, PC에서 실행한 R4 서버(FastAPI)가 학생이 고른 그림체로 그림을 만든다. 만든 그림도 학생과 함께 확인(U10)해야 쓰인다.
 
-- **API 키는 PC 서버에만 있다.** 앱(APK)에는 키가 들어 있지 않다.
-- 그림체: 설정 › 그림체에서 학생별로 10종 중 고른다(R4 서버와 같은 목록). 선택은 선호일 뿐 뜻 확인이 아니다.
-- 서버로 보내는 것: 학생의 무작위 익명 ID, 그림체, '전할 뜻' 문장. 학생 이름·사진·목소리는 보내지 않는다.
-- 연결: PC에서 서버 실행 → `adb reverse tcp:8769 tcp:8769` → 디버그 앱. 서버가 꺼져 있거나 점검 모드(키 없음)면 앱이 안내하고 생성 버튼을 숨긴다.
-- 뜻 문장으로 생성하려면 R4 서버에 `docs/r4-server/meaning-generation.patch`를 적용해야 한다(팀원 원본은 고정 장면 3개만 지원). 자세한 내용은 [docs/r4-server/README.md](docs/r4-server/README.md).
-- 릴리스 빌드에는 서버 주소와 인터넷 권한이 없어 이 기능이 꺼진다. 팀 배포본에서 쓰려면 HTTPS·사용자 인증이 있는 서버가 필요하다.
+검증용 패키지(`kr.voicemate.malitda.debug`)는 팀 배포본과 별도 앱입니다. 배포본의 개인 자료를 자동으로 읽지 않으므로 기존 앱을 삭제하지 않습니다. 배포본 자료를 유지한 업데이트는 개발팀의 동일 패키지·서명 빌드로 진행합니다.
 
-## 개인정보
+## AI 그림
 
-원음성 파일 미저장, 인식 문장 로그 미기록, 공유 이력·상대방 미저장, 사용자별 분리 저장, 앱 안에서 개별 삭제·전체 초기화, 백업 제외(`data_extraction_rules`).
+디버그 R4 클라이언트는 상태·그림체·전송/비용 동의·결과·취소를 연결합니다. 키를 앱에 넣지 않습니다. 릴리스는 서버 주소와 인터넷 권한이 없어 생성 기능이 꺼집니다. 실제 운영에는 검증한 서버·인증·보관·비용 정책이 필요합니다.
 
-**실증 기록(설정 › 실증 기록, 기본 꺼짐)**: 지원자가 켰을 때만 대화 시도마다 시작 방식(말/카드), 말로 바로 맞았는지, 카드로 바꿨는지, '다른 뜻' 횟수, 전달 여부, 상대 이해 여부, 지원자 도움 여부, 전달한 뜻 문장을 기기 안 암호화 DB에 남긴다. 학생이 한 말·앱이 들은 문장·음성은 남기지 않는다. CSV로 내보내기와 학생별 삭제를 지원한다.
+```powershell
+python docs/feedback-20261026/ai-demo/start_mock_server.py
+adb reverse tcp:8769 tcp:8769
+```
 
-## 서드파티 라이선스
+위 서버는 localhost에서 **항상 같은 물 예시 그림**을 반환합니다. 앱에도 모의 연결을 표시하며 유료 공급자를 부르지 않습니다. ‘그만두기’는 결과 수신·적용을 멈추고, 이미 시작한 실제 서버 작업이나 비용의 취소를 보장하지 않습니다.
 
-- [whisper.cpp](https://github.com/ggml-org/whisper.cpp) — MIT · ggml 모델 `ggml-base-q5_1`(OpenAI Whisper, MIT)
-- [Vosk](https://alphacephei.com/vosk/) `vosk-android`, `vosk-model-small-ko-0.22` — Apache-2.0
-- [SQLCipher for Android](https://github.com/sqlcipher/sqlcipher-android) — BSD
-- [Jua](https://github.com/google/fonts/tree/main/ofl/jua) — SIL OFL 1.1 (`design/v2/handoff/03_fonts/Jua/OFL.txt`) · v2 전 화면 서체
-- [Pretendard](https://github.com/orioncactus/pretendard) — SIL OFL 1.1 (`app/PRETENDARD-LICENSE.txt`)
-- 캐릭터·로고 이미지는 팀 VOICE MATE 디자인 자산이며 별도 허락 없이 재사용할 수 없습니다.
-
-앱 소스 자체의 라이선스는 팀 결정 전까지 명시하지 않습니다(All rights reserved).
+단위·Room/SQLCipher·마이그레이션·새 설치 모델·대표 UI·확대·빌드 결과는 최신 검증명세에 증거와 함께 기록합니다. 실제 이용자의 이해·거절 가능성과 의사소통 효과, 제조사별 휴대전화·보조기술, 실제 유료 AI 서버는 별도 확인 대상입니다. 앱의 동의 체크는 기관·법정대리인 동의 절차를 대신하지 않습니다. 개인 음향모델·LoRA·sLLM 자동 의도 추론·클라우드 기관 콘솔은 현재 범위에 포함하지 않습니다.

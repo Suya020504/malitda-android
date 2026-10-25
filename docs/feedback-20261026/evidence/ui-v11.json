@@ -1,0 +1,155 @@
+{
+  "date_kst": "2026-10-26",
+  "apk_sha256": "88894a52105467e96ac97aa7c503bb5f18ea7bf48caf490e4e6bbb011e245958",
+  "version": "0.3.0-debug/code9",
+  "device": "emulator-5562/API36/read-only",
+  "cases": [
+    {
+      "id": "V11-HOME-LARGE",
+      "status": "PASS",
+      "scope": "320dp/system200 대표 홈만",
+      "observed": "장식 캐릭터가 큰 글씨 모드에서 빠져 인사 텍스트가 넓게 표시됨. 인사 bounds 높이501px에서233px로 감소. 보통 크기는 원안 유지.",
+      "bounds": "[63,285][777,518]",
+      "evidence": [
+        "home-320dp-system200-final.png",
+        "normal-home-final.png"
+      ]
+    },
+    {
+      "id": "V11-PILOT-UNDELIVERED",
+      "status": "PASS",
+      "scope": "승인 전 카드 선택 U03의 합성 과업",
+      "observed": "지원자 과업 마치기→목표 뜻 못 전함/상대 이해 못함→마침 기록. 전달·승인 없이 외부로 보내지 않았고, 실패한 완료1건이 CSV분모에 포함됨.",
+      "csv": {
+        "rows": 1,
+        "code": "P901",
+        "condition": "C",
+        "delivered": "0",
+        "judged_correct": "0",
+        "understood": "0",
+        "completed_despite_not_delivered": true,
+        "sensitive_columns_absent": true,
+        "sentence_absent": true,
+        "absolute_date_absent": true,
+        "sha256": "ee9f24fb30fb6d5bec4787f4399967b304e0002815806d25a34a311eab0f56ac",
+        "file_paths_count": 1
+      },
+      "evidence": [
+        "unapproved-task-footer-final.png",
+        "unfinished-target-completion-final.png",
+        "failed-completed-summary-final.png",
+        "failed-completed-csv-file-final.png"
+      ]
+    },
+    {
+      "id": "V11-PILOT-WITHDRAW-CACHE",
+      "status": "PASS",
+      "scope": "철회 경로. 별도 기록만 삭제 경로는 이번 추가UI시험에서 재실행 안 함.",
+      "observed": "철회 뒤 참여코드 초기화·DB시도0·CSVdisabled·임시 CSV파일0. 다른 기존 프로필의 의미/별칭/확인이력 건수 및 사진 파일1개 보존.",
+      "cache": {
+        "temporary_csv_files_after_withdrawal": 0,
+        "legacy_photo_files": 1,
+        "legacy_photo_filenames_preserved": true,
+        "external_copy_deleted": false,
+        "real_participants": 0
+      },
+      "other_profile": {
+        "other_profile_counts_preserved": true,
+        "counts_after": {
+          "등록한 뜻 · 연습 예시 포함": 1,
+          "뜻에 연결된 평소 표현": 1,
+          "뜻 확인 반응 이력": 1,
+          "이전 형식의 등록 문장": 0,
+          "개인 교정 이력": 0,
+          "실증 시도 기록": 0,
+          "등록한 뜻이 쓰는 사진·생성 그림": 0
+        },
+        "private_name_or_sentences_printed": false
+      },
+      "evidence": [
+        "withdrawn-no-records-final.png"
+      ]
+    }
+  ],
+  "captures": [
+    {
+      "file": "failed-completed-csv-file-final.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "sha256": "99b8eff08d20eb0a2b0e0ff7d74689154bd5c7151a75b378c3e5919f069a283f"
+    },
+    {
+      "file": "failed-completed-summary-final.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "sha256": "2a2bee56c0ed6dc285a42fa0841478f14fab2e71df0a605b203d1c21affdc80f"
+    },
+    {
+      "file": "home-320dp-system200-final.png",
+      "size": [
+        840,
+        2000
+      ],
+      "sha256": "2177e918702bf43d4b9716e4d9ab0cf1cf8c52e466cb5c4983ead9d547a4100c"
+    },
+    {
+      "file": "normal-home-final.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "sha256": "7d1b909e7e01d3578518010f6928a4aabc692dd8738d6791632f967522e09b6f"
+    },
+    {
+      "file": "unapproved-task-footer-final.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "sha256": "b0f1395ae2a9a1dfd5db3377be33ebdd09ef11c8da9c032fe5ba3961df9fa161"
+    },
+    {
+      "file": "unfinished-target-completion-final.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "sha256": "701fb0da25a97ce511f31cff7c644eaa8abe89bbbf9959bdc7cab34bb256465d"
+    },
+    {
+      "file": "withdrawn-no-records-final.png",
+      "size": [
+        1080,
+        2400
+      ],
+      "sha256": "c58e493ce6a455bfe5020ed0e3fd8b861733300612c1ae2815ee79ae1f487a0b"
+    }
+  ],
+  "all_png_decoded": true,
+  "crash_buffer_empty": true,
+  "system_restored": {
+    "font_scale": "1.0",
+    "wm_size": "Physical size: 1080x2400"
+  },
+  "real_participants": 0,
+  "real_paid_image_calls": 0,
+  "real_external_messages_sent": 0,
+  "previous_evidence": {
+    "legacy_upgrade": "../final/legacy-upgrade-metadata.json (source8)",
+    "representative_ui": "../qa-v9/ui-v9-results.json (source9)",
+    "mock": "../qa-v9/mock-generation-verification.json (source9)"
+  },
+  "limits": [
+    "65개 전체 시안 실행 아님",
+    "실기기제조사2종/당사자효과/TalkBack·Switch 실제사용 미검증",
+    "다른프로필의 개인문장·이름은 출력하지 않고 건수·파일메타만 확인",
+    "U16 과거교정 표시의 실제UI재생은 별도 미실행",
+    "ordinal 다음조건 추천은 추가UI촬영 전 철회했으므로 소스/단위시험 근거로만 보고",
+    "root의68단위/48계측/합성Whisper결과는 별도로그를 사용해야 하며 이 UI시험의 실이용자 결과가 아님"
+  ],
+  "public_capture_directory": "ui-v11-captures"
+}
