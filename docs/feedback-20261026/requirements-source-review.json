@@ -3153,7 +3153,7 @@
     "app/src/main/java/kr/voicemate/malitda/ui/v2/U14TrialLog.kt": "6449329801a2867891db2a45dcd665e4d5d812b0fbaf7a7674538d2f803331d3",
     "app/src/main/java/kr/voicemate/malitda/ui/v2/U15ArtStyle.kt": "274493a10ecfcc33481cc0dc90e97bccd6eb9f5ec06e233715be4bf0b3e8654a",
     "app/src/main/java/kr/voicemate/malitda/ui/v2/U16Communication.kt": "02b84771bac669e6f8c1056c47d63b077346bf24c2494bc395d43e234bd9be25",
-    "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt": "6878ef45082221b9b2211a2b6a2e00304e4f6423c379cf206a03116f3add159f",
+    "app/src/main/java/kr/voicemate/malitda/ui/v2/V2App.kt": "23fe53b7e55c32701b2eb21e83342bc92fae4d76a4ebc0d5e145b5784595dcee",
     "app/src/main/java/kr/voicemate/malitda/ui/v2/V2Style.kt": "c1b3a849fc57ec5ba89d28ffec5f2d36f7aebd9eb1f32bf2c4e03866aaf544b6",
     "app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt": "d509a621d9338c18ad448f08b93bd8be294e9804c8a5da5787317f7afb3c9a80",
     "app/src/main/res/drawable/ic_arrow.xml": "6f928370d18c6aea8e5c109755b737e516a3faf390de052c2e814f0d53b51972",
@@ -3216,7 +3216,7 @@
     "app/src/main/assets/licenses/whisper-model-MIT.txt": "b5d65a59060e68c4ff940e1eddfa6f94b2d68fdf58ed7f4dd57721c997e35e9d"
   },
   "reviewedAt": "2026-10-26T06:48:11.641606+09:00",
-  "sourceFrozenBuild": "completion-final-build / final optimized native debug and ARM release builds; see verification.json",
+  "sourceFrozenBuild": "Final source 28e468a7cc5e9ccb20232e70021a239d9f4696c7; exact artifact and test scope in verification.json",
   "requirementScopeCounts": {
     "retained": 80,
     "offline_asr_replacement": 7,

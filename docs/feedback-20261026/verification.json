@@ -7,8 +7,8 @@
     "db_version": 5,
     "branch": "codex/complete-feedback-20261026",
     "base_commit": "cb1c66ef29df652f691cdd55b1bffc400417c755",
-    "source_commit": "9c56d8673cebe6585673e25fd807b9ad5180ff25",
-    "source_app_tree": "5d25c1303b21125a085043a4cc64092fb1cfe091",
+    "source_commit": "28e468a7cc5e9ccb20232e70021a239d9f4696c7",
+    "source_app_tree": "65174cc1b00b608221c8ccb9d2dad644d65737b2",
     "build_provenance": "Built locally from the source content committed at source_commit; build-time VCS metadata may show the base commit because artifacts were validated before committing.",
     "debug_namespace_note": "Debug uses a separate .debug application ID from team release. It cannot automatically access release app private data; do not uninstall the release app to try this build."
   },
@@ -25,7 +25,8 @@
       "tests": 48,
       "passed": 48,
       "failures": 0,
-      "final_optimized_result": "OK (48 tests); elapsed 3.758s"
+      "final_optimized_result": "OK (48 tests); elapsed 3.758s",
+      "latest_source_result": "OK (48 tests); final-loading/instrumentation-final.log; elapsed 12.315s"
     }
   },
   "lint": {
@@ -127,7 +128,7 @@
     {
       "variant": "arm_debug",
       "bytes": 259482224,
-      "sha256": "79726222ad91ed23d8e693612dcd09b192ec003a8f9389b5baa00aac122632c6",
+      "sha256": "368ac078430f519badb9864dd2e43f167a1e7fe1e85f259be681186060d0e79a",
       "abis": [
         "arm64-v8a",
         "armeabi-v7a"
@@ -139,7 +140,7 @@
     {
       "variant": "arm_unsigned_release",
       "bytes": 182993309,
-      "sha256": "6fd96cf7b96e92e20a2d16c8078f7a2c04ac1d8e55b8a09300700bbb5b8d2a55",
+      "sha256": "01c198260ffd5e72d2bc9c1b396364a582130e953b2cc67e7a00309eca468507",
       "abis": [
         "arm64-v8a",
         "armeabi-v7a"
@@ -149,7 +150,7 @@
       "team_release_signed": false
     }
   ],
-  "source_notes": "Final source includes offline-only TTS, actual sample-card exclusion, explicit failed-task completion/cache cleanup, and optimized debug ggml C/C++ kernels. No application source changed after source_commit.",
+  "source_notes": "Final content includes a small UI progress-state fix when an image result is discarded after the registration prompt changes. App source is frozen at source_commit.",
   "qa_coverage": {
     "rows": 41,
     "full_physical_or_user_acceptance_pass": false,
@@ -170,5 +171,13 @@
     "body_text_over_images": 0,
     "replacement_chars": 0,
     "sha256": "26dc574bd36d5323b329d5a95c71adcbc2bcffdd74332dfca20ed0de0b4df6eb"
+  },
+  "quality_checks": {
+    "source_diff_check": "PASS",
+    "public_markdown_links": "PASS",
+    "source_patch_against_base_index": "PASS",
+    "pdf_7_page_render": "PASS",
+    "private_files_or_credentials_in_changes": "NONE_FOUND",
+    "full_real_world_acceptance": "UNRUN"
   }
 }
