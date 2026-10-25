@@ -696,13 +696,15 @@ fun MalitdaV2App(vm: SessionViewModel) {
                     r4Consent = false
                     generationJob = scope.launch {
                         val result = runCatching { vm.r4GenerateMeaningImage(ctx, requestedMeaning) }
-                        if (result.exceptionOrNull() is CancellationException) return@launch
-                        if (profileId != requestingProfile || regMeaning != requestedMeaning || !guardianUnlocked) return@launch
-                        // 그사이 그만뒀거나 등록을 끝냈다면 결과를 버린다(파일은 다음 정리 때 지워진다).
+                        // Never clear a newer request's progress. This request is finished even if
+                        // its result is discarded because the person or prompt has changed.
                         if (round != genRound) return@launch
-                        generating = false
-                        // 한 번 생성할 때마다 동의를 다시 받는다(비용이 드는 동작).
-                        r4Consent = false
+                        generating = false; generationJob = null; r4Consent = false
+                        if (result.exceptionOrNull() is CancellationException) return@launch
+                        if (profileId != requestingProfile || regMeaning != requestedMeaning || !guardianUnlocked) {
+                            toast("등록 내용이 바뀌어 이전 그림을 적용하지 않았습니다. 다시 확인한 뒤 만들 수 있습니다.")
+                            return@launch
+                        }
                         result.onSuccess { key -> regImageKey = key; toast(if (r4Status?.demoMode == true) "모의 서버의 예시 그림입니다. 실제 AI 생성 결과가 아닙니다." else "그림을 받았습니다. 학생과 함께 확인합니다.") }
                             .onFailure { e ->
                                 toast(e.message ?: "그림을 만들지 못했어요")
