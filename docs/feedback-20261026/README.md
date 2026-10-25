@@ -2,7 +2,7 @@
 
 말잇다 0.3.0은 기존 디자이너의 홈·캐릭터·주아와 세 탭을 유지하고, 개인 표현을 본인의 뜻과 연결하는 흐름을 보완합니다. 공식 중간 피드백의 핵심은 의사소통의 목적, 개인별 표현과 뜻, 당사자의 확인과 거절입니다. 진단명만으로 적합성을 정하거나 발음 치료·일반 STT 대비 효과를 입증했다고 설명하지 않습니다.
 
-[사용법과 실증 가이드](사용법과실증가이드.md) · [기능 대조](requirements.csv) · [검증명세](verification.json) · [원안 Figma](https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=276-661)
+[개발 PR](https://github.com/choihyungyu0/malitda-android/pull/2) · [사용법과 실증 가이드](사용법과실증가이드.md) · [기능 대조](requirements.csv) · [검증명세](verification.json) · [원안 Figma](https://www.figma.com/design/RFGqsEDVAjLYPTwWhqOtN0?node-id=276-661)
 
 ## 화면과 이동
 

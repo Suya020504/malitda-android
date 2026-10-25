@@ -108,8 +108,12 @@
     "deployed": false,
     "team_signed_release": false,
     "requires_team_signing_for_submission": true,
-    "pr_status": "not_created_yet",
-    "local_artifact_signing": "Android Debug for the installable debug APK; unsigned ARM release built for R8 validation only."
+    "pr_status": "OPEN",
+    "local_artifact_signing": "Android Debug for the installable debug APK; unsigned ARM release built for R8 validation only.",
+    "pr_url": "https://github.com/choihyungyu0/malitda-android/pull/2",
+    "mergeable_at_verification": "MERGEABLE",
+    "github_checks_reported": 0,
+    "github_ci_pass_claimed": false
   },
   "unrun": [
     "Actual participants and comprehension/refusal/communication effects",
@@ -165,6 +169,6 @@
     "text_outside_page": 0,
     "body_text_over_images": 0,
     "replacement_chars": 0,
-    "sha256": "fb9708e5370af4a9d676015dbb0d7e43c1bea3479033a0230980928a0df8b791"
+    "sha256": "26dc574bd36d5323b329d5a95c71adcbc2bcffdd74332dfca20ed0de0b4df6eb"
   }
 }
