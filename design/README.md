@@ -4,6 +4,8 @@
 
 [Figma 모션 개발 인계](motion-20261025/README.md)에 최신 화면·버튼 상태·전환 시간과 검증 결과를 정리했습니다. 이 자료는 Figma 반영본이며 Android 소스·APK 적용은 별도 작업입니다.
 
+[실제 앱 사용법·실증 가이드](../docs/field-pilot-20261025/README.md)에서 APK v0.2.5의 화면, 16쪽 PDF와 빈 관찰 기록표를 확인할 수 있습니다.
+
 Figma **`rRl8r1ktRCzPcKl5jyu7uR`** (말잇다 · VOICE MATE | PDF 원안 · 와이어프레임 · 목업)의 전체 디자인을 이 폴더로 가져왔습니다. 2026-09-21 개발 인계본 기준. (원본 인계 안내: [HANDOFF.md](HANDOFF.md))
 
 **전체를 한 페이지로 보기: [gallery.html](gallery.html)** (브라우저로 열기)

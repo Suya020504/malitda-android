@@ -1,0 +1,24 @@
+{
+  "scope": "Documentation and fictional example screenshots only; no Android/APK changes",
+  "apkVersion": "0.2.5",
+  "versionCode": 8,
+  "release": "https://github.com/choihyungyu0/malitda-android/releases/tag/v0.2.5",
+  "releaseSourceCommit": "cb1c66ef29df652f691cdd55b1bffc400417c755",
+  "guideDate": "2026-10-25",
+  "pdfPages": 16,
+  "screenshotCount": 17,
+  "layoutErrors": 0,
+  "observationTemplateColumns": 21,
+  "actualObservationRows": 0,
+  "sourceChanges": [
+    "Replaced a one-off visit time with general visit confirmation guidance; other 15 PDF pages have identical extracted text."
+  ],
+  "actualParticipantData": false,
+  "notValidated": [
+    "Real-device speech recognition accuracy",
+    "TTS audio quality",
+    "Actual recipient understanding or external delivery",
+    "Therapeutic effect"
+  ],
+  "pdfSHA256": "4ca4e6489b3227e207b6fa8a721d2269867be0fb737542430354a2aec43cf382"
+}
