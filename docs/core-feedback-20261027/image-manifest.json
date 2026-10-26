@@ -1,0 +1,138 @@
+[
+  {
+    "path": "images/app/00-empty-home.png",
+    "sha256": "c4553e00cc6309b3851a6b34e2200b8181a2f0a4aae095f99c9467f173df5187"
+  },
+  {
+    "path": "images/app/01-raw-candidates.png",
+    "sha256": "58dd1ccc965acaed45f8b4531178c329b9125ec7b165f03e0ffc0403d2c3e827"
+  },
+  {
+    "path": "images/app/02-easy-comparison.png",
+    "sha256": "4f32bf2d2aad66856de9f55c34e0f862539351e138553c808cc36545fe0011bb"
+  },
+  {
+    "path": "images/app/03-unsure.png",
+    "sha256": "bc315fa354707da9419a6fd262416956c5ba05c3dc72ac20dec4c2db97b29157"
+  },
+  {
+    "path": "images/app/04-approved.png",
+    "sha256": "1d16ddf73a617463ed5b05895f581475f7adf10ca083846c9e8ed7f36ceb5193"
+  },
+  {
+    "path": "images/app/05-save-choice.png",
+    "sha256": "ffaee4b7be202855bc6f63fcb6e73f6426fc3bb1b7d73557e8a08d38216fee24"
+  },
+  {
+    "path": "images/app/06-saved-correction.png",
+    "sha256": "456632de3d3fe074b3c9afd974ff6734b1a273ce455fb09490ec3470a797cba7"
+  },
+  {
+    "path": "images/app/07-share-chooser-no-send.png",
+    "sha256": "2223abefd433a349de5ca58a4c636bb71ba7f2686963a30ab4526983741ebd96"
+  },
+  {
+    "path": "images/app/08-next-candidate.png",
+    "sha256": "086a9128bb2e96a65d15f7963fd1c7f8b5999e32dd705218ec3172b023c867ec"
+  },
+  {
+    "path": "images/app/09-delete-confirmation.png",
+    "sha256": "0fbc3404eadf57901057bb1dab01193fdc8c09317664ce01a224ebd7b94870c4"
+  },
+  {
+    "path": "images/app/10-empty-history.png",
+    "sha256": "5f3b9567967b010dfca2824d0eb218674a90bb64e6c752079f5473b7d07e69d6"
+  },
+  {
+    "path": "images/app/main-current.png",
+    "sha256": "ce28063086ab493e1b19117f1c7d9b78aba64ca041b15ea16b608ad1f4fcef24"
+  },
+  {
+    "path": "images/app/main-keyboard-direct.png",
+    "sha256": "fdba02b6b8b52618686de263c48005b0a4df472f6b09ea70054b4801c4f44e7e"
+  },
+  {
+    "path": "images/app/main-unknown-easy.png",
+    "sha256": "32d692c5df85ed022e2440210807f0206d0e246a78be0d95dbfc2548f1e7b089"
+  },
+  {
+    "path": "images/figma/blank.png",
+    "sha256": "965abc18b37a4ba16deb5a65e3a7752d41f511300fe16d265961c4536f965029"
+  },
+  {
+    "path": "images/figma/candidate.png",
+    "sha256": "8dbaaed9ae2947c86e0ef8235cce4ad07e22b34a0c4156927611f1e64c15596a"
+  },
+  {
+    "path": "images/figma/compare.png",
+    "sha256": "ddfdcea4c9ee704d41f78a3fb08e09c3aba895ea1e794130f074152a838051f5"
+  },
+  {
+    "path": "images/figma/deliver.png",
+    "sha256": "77270d04a0a7160a4876b9b7412d575e83a66e3414e96cbc6f45bc5a5b42eaec"
+  },
+  {
+    "path": "images/figma/deliverySaved.png",
+    "sha256": "74ad89fa36704c2ff7d12c89947e7edbcae79a2a93fd6b648fc99e5d2ff1808d"
+  },
+  {
+    "path": "images/figma/easy.png",
+    "sha256": "eecb86bc429ee924d3cf734dfb82157cdc7670c08337fd58da8d963d456171df"
+  },
+  {
+    "path": "images/figma/edit.png",
+    "sha256": "44666a3af78dd77c135a90d8df4edbc790f23ee7faeff5c7999de26296a31d54"
+  },
+  {
+    "path": "images/figma/empty.png",
+    "sha256": "675142f666ad93b643d810a6449a3070e2f3373717e47d5035becd7853e0fda1"
+  },
+  {
+    "path": "images/figma/formalDeliver.png",
+    "sha256": "07857adf47af6a75ae0ebbe411efc8f018381b259c46a2d60324b39c76a8a802"
+  },
+  {
+    "path": "images/figma/formalUnsure.png",
+    "sha256": "0ea4dd4f26ff1d56ae88a68a4f4b736264a717bf7c2d22279e1680bf629596fe"
+  },
+  {
+    "path": "images/figma/history.png",
+    "sha256": "48da82019100e4024a1962a2cbc27a98542edf025e0537d4947197a6af9d26c7"
+  },
+  {
+    "path": "images/figma/modal-delete.png",
+    "sha256": "6464e0e6f2c8bc29ec0dc475f9b62c41f7eda227d7106b65f0e94c8a6c3b0ef4"
+  },
+  {
+    "path": "images/figma/modal-help.png",
+    "sha256": "3f13b25d2c92e733159b00c3bfdc732042731dd21530231e85b7ff621e3441e2"
+  },
+  {
+    "path": "images/figma/modal-remember.png",
+    "sha256": "a9597c9c7b9b0b219a16d4e005e4bab98c28d6bb80c9a94d679e0711a29eba0b"
+  },
+  {
+    "path": "images/figma/modal-share.png",
+    "sha256": "45ccc5ce103d090d08b35787adab98a49e8b3e320ca7bca7359dbf4af1b8de23"
+  },
+  {
+    "path": "images/figma/next.png",
+    "sha256": "e2e6edbbcbce699a603061291c676f103e8ece15ff0c213acfcd323abf4f12c8"
+  },
+  {
+    "path": "images/figma/reuse.png",
+    "sha256": "09fa7663ad47bfeda36b20def76466094e64cdf79072a7d4662b71de1191eb75"
+  },
+  {
+    "path": "images/figma/reuseDeliver.png",
+    "sha256": "618661b691c9070504becc5c1f4a3e26867d2e5176925cfcbce1f06788728f36"
+  },
+  {
+    "path": "images/figma/reuseUnsure.png",
+    "sha256": "bea5629e4b44a2bec1a4bcfa4a4adf582dcb16ae2e599ec3b8266d6af163c75f"
+  },
+  {
+    "path": "images/figma/unsure.png",
+    "sha256": "bea5629e4b44a2bec1a4bcfa4a4adf582dcb16ae2e599ec3b8266d6af163c75f"
+  }
+]

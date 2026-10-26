@@ -1,0 +1,160 @@
+{
+  "version": "0.3.3-debug/code12",
+  "source_commit": "41f52de1940c71f9c4f70cee5ec16db6d48ef336",
+  "arm_debug": {
+    "path": "dist/core-feedback-20261027/말잇다_0.3.3_기본서비스와피드백_검증용.apk",
+    "bytes": 259580560,
+    "sha256": "f7931bc77f933bd583a76ea12da4310531d8e7848c6e7f228e439f8d936a87f5",
+    "abis": [
+      "arm64-v8a",
+      "armeabi-v7a"
+    ],
+    "crc": "PASS",
+    "model_files": 15,
+    "model_hashes": "PASS",
+    "provider_key_pattern_hits": 0
+  },
+  "x86_tested": {
+    "path": ".scratch/codex/core-feedback-20261027/verified-x86.apk",
+    "bytes": 274873151,
+    "sha256": "283fdc373a5061a5858c0373072500410f70b4d509ca6b8679f29a7dadad3bd7",
+    "abis": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "x86_64"
+    ],
+    "crc": "PASS",
+    "model_files": 15,
+    "model_hashes": "PASS",
+    "provider_key_pattern_hits": 0
+  },
+  "r8_unsigned": {
+    "path": "app/build/outputs/apk/release/app-release-unsigned.apk",
+    "bytes": 183058845,
+    "sha256": "91a7e7d9853c4e1e68e884edc966c632912b9b9c9c8187c5612c3be64dcc0c48",
+    "abis": [
+      "arm64-v8a",
+      "armeabi-v7a"
+    ],
+    "crc": "PASS",
+    "model_files": 15,
+    "model_hashes": "PASS",
+    "provider_key_pattern_hits": 0
+  },
+  "unit": {
+    "tests": 110,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "instrumentation": {
+    "log": "verified-all-57.log",
+    "tests": 57,
+    "result": "PASS",
+    "runner_seconds": 33.765
+  },
+  "instrumentation_breakdown": "48 existing + 8 real-VM/repository integration + 1 actual-V2 UI scenario using synthetic recognizer and isolated DB",
+  "layout": [
+    {
+      "width_dp": 320,
+      "font_scale": 1.0,
+      "log": "ui-320-final.log",
+      "tests": 1,
+      "result": "PASS",
+      "runner_seconds": 26.668
+    },
+    {
+      "width_dp": 430,
+      "font_scale": 1.0,
+      "log": "ui-430-final.log",
+      "tests": 1,
+      "result": "PASS",
+      "runner_seconds": 14.826
+    },
+    {
+      "width_dp": 320,
+      "font_scale": 2.0,
+      "log": "ui-320-large.log",
+      "tests": 1,
+      "result": "PASS",
+      "runner_seconds": 47.142
+    }
+  ],
+  "layout_version_boundary": "Additional 320/430/200% runs preceded the final loading/profile-clear and candidate dedup logic changes. Same visual layout; full 390dp scenario rerun in final 57 tests.",
+  "lint": {
+    "Error": 0,
+    "Warning": 40,
+    "Fatal": 0
+  },
+  "build_flags": {
+    "debug": {
+      "pilot": false,
+      "provider_key_empty": true
+    },
+    "release": {
+      "pilot": false,
+      "provider_key_empty": true
+    }
+  },
+  "figma": {
+    "section": "413:13537",
+    "phone_states": 16,
+    "modal_states": 4,
+    "node_actions": 91,
+    "missing_targets": 0,
+    "own_auto_layout_overlap": 0,
+    "scope": "Core design states and fixed examples; not live STT/storage/sharing. Existing home and original file retained."
+  },
+  "red_evidence": {
+    "new_logic": "16 tests,7 failed before implementation",
+    "profile_clear": "expected null but was synthetic previous raw",
+    "distinct_meanings": "8 tests,2 failed before preserving separate meaning IDs"
+  },
+  "limits": [
+    "No actual participant, live microphone, paid image generation or external send",
+    "No real phone ASR latency/accuracy, full assistive technology or production release certification",
+    "Raw/approved correction storage is optional and explicit; not automatic training",
+    "Easy text uses 14 bounded phrase/ending rules; user comprehension unverified",
+    "Figma fixed-input states, not every legacy screen fully synchronized"
+  ],
+  "real_microphone": 0,
+  "real_participants": 0,
+  "paid_ai": 0,
+  "external_sends": 0,
+  "manual_main_activity": {
+    "profile_data_retained": 2,
+    "profile_name": "synthetic QA390",
+    "keyboard_direct_input": "PASS",
+    "unsupported_easy_text_keeps_original": "PASS",
+    "scope": "Manual MainActivity keyboard and loaded home; no real microphone, paid generation or sending"
+  },
+  "emulator_cleanup": {
+    "owned_avd": "malitda_chat_qa_20261026",
+    "font_scale": 1.0,
+    "microphone_granted": false,
+    "stopped": true,
+    "adb_devices_after_shutdown": [],
+    "final_crash_buffer_chars": 0
+  },
+  "pdf": {
+    "pages": 12,
+    "bytes": 4841914,
+    "sha256": "f79f2353d3cf40aed90d0151901d1a75e716a4878dd2cc8325664cdd2409fe18",
+    "text_overflow": false,
+    "visual_review": "PASS",
+    "review_scope": "All 12 rendered pages reviewed in contact sheet; full-size main flow, existing home, app captures, Figma states and choice windows checked. No observed clipping or overlapping report text. Not every legacy app screen synchronized.",
+    "pdf_links": 2
+  },
+  "apk_signature": {
+    "type": "Android Debug, not team distribution signature",
+    "sha256": "5231dc02cc27e58e031484e0066953362009bf4b86803a68463d11be6db0ba9f"
+  },
+  "qa_matrix": {
+    "total": 41,
+    "PASS": 19,
+    "FAIL": 0,
+    "BLOCKED": 20,
+    "EXCLUDED": 2,
+    "interpretation": "Coverage status, not feature completion percentage"
+  }
+}

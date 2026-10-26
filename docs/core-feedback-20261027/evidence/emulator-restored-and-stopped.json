@@ -1,0 +1,11 @@
+{
+  "avd": "malitda_chat_qa_20261026\r\n\r\nOK",
+  "serial": "emulator-5562",
+  "size": "Physical size: 1080x2400\r\nOverride size: 1080x2340",
+  "density": "Physical density: 420\r\nOverride density: 443",
+  "font_scale": "1.0",
+  "microphone_granted": false,
+  "crash_buffer_chars": 0,
+  "shutdown": "OK: killing emulator, bye bye\r\n\r\nOK",
+  "checked_at": "2026-10-27T04:56:43.9379617+09:00"
+}

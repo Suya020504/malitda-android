@@ -1,0 +1,9 @@
+{
+  "pages": 12,
+  "bytes": 4841914,
+  "sha256": "f79f2353d3cf40aed90d0151901d1a75e716a4878dd2cc8325664cdd2409fe18",
+  "text_overflow": false,
+  "visual_review": "PASS",
+  "review_scope": "All 12 rendered pages reviewed in contact sheet; full-size main flow, existing home, app captures, Figma states and choice windows checked. No observed clipping or overlapping report text. Not every legacy app screen synchronized.",
+  "pdf_links": 2
+}
