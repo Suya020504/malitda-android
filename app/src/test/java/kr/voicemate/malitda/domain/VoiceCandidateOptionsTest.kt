@@ -33,4 +33,17 @@ class VoiceCandidateOptionsTest {
         val m=meaning(1,"물을 주세요")
         assertEquals(m,VoiceCandidateOptions.build(1,m.text,listOf(m),emptyList(),emptyList(),3).single().meaning)
     }
+    @Test fun sameSentenceWithDifferentMeaningPicturesDoesNotCollapse() {
+        val first=meaning(1,"여기로 가고 싶어요").copy(imageKey="walk",situation="공원")
+        val second=meaning(2,"여기로 가고 싶어요").copy(imageKey="rest",situation="집")
+        val choices=VoiceCandidateOptions.build(1,"저기",listOf(first,second),emptyList(),emptyList(),3)
+        assertEquals(listOf(1L,2L),choices.mapNotNull{it.meaning?.id})
+    }
+    @Test fun textOnlyHistoryDoesNotGuessOneOfSeveralPictures() {
+        val first=meaning(1,"여기로 가고 싶어요").copy(imageKey="walk")
+        val second=meaning(2,"여기로 가고 싶어요").copy(imageKey="rest")
+        val choices=VoiceCandidateOptions.build(1,"저기",listOf(first,second),listOf(Candidate(first.text,CandidateSource.M1_EXACT)),emptyList(),3)
+        assertEquals(3,choices.size);assertTrue(choices.first().remembered);assertNull(choices.first().meaning)
+        assertEquals(listOf(1L,2L),choices.drop(1).mapNotNull{it.meaning?.id})
+    }
 }

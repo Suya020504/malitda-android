@@ -13,15 +13,19 @@ object VoiceCandidateOptions {
         val result = mutableListOf<VoiceCandidateOption>()
         val rawKey = TextNormalizer.normalize(raw)
         val seen = mutableSetOf<String>()
+        val seenMeanings = mutableSetOf<Long>()
         fun add(option: VoiceCandidateOption) {
             val key = TextNormalizer.normalize(option.text)
-            if (key.isNotBlank() && option.text.length <= 200 &&
-                (option.meaning != null || key != rawKey) && seen.add(key)) result += option
+            if (key.isBlank() || option.text.length > 200) return
+            // The same sentence may refer to different pictures/places. Keep separate meaning IDs.
+            if (option.meaning != null) {
+                if (seenMeanings.add(option.meaning.id)) { result += option; seen.add(key) }
+            } else if (key != rawKey && seen.add(key)) result += option
         }
         candidates.firstOrNull { it.source == CandidateSource.M1_EXACT }?.let { saved ->
-            add(VoiceCandidateOption(saved.text, usable.firstOrNull {
-                TextNormalizer.normalize(it.text) == TextNormalizer.normalize(saved.text)
-            }, remembered = true))
+            val exactMeanings = usable.filter { it.text == saved.text }
+            // A text-only correction cannot choose one of several meaning pictures for the person.
+            add(VoiceCandidateOption(saved.text, exactMeanings.singleOrNull(), remembered = true))
         }
         usable.forEach { add(VoiceCandidateOption(it.text, it)) }
         candidates.filter { it.source != CandidateSource.RAW }.forEach { add(VoiceCandidateOption(it.text, remembered = it.isM1)) }

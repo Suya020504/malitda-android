@@ -124,6 +124,9 @@ class CoreCommunicationUiTest {
             }
             withTimeout(10000){vm.profileId.filter{it==pid}.first()}
             waitFor("말잇다");SystemClock.sleep(300)
+            assertNotNull("Speech should be visible before dictionary registration",found("말하기"))
+            assertNotNull("Direct input should be visible before dictionary registration",found("문장 직접 입력"))
+            capture("00-empty-home")
             click("말하기");waitFor("■  말하기 끝내기");click("■  말하기 끝내기")
             waitFor("전할 뜻을 골라 주세요");capture("01-raw-candidates")
             click("직접 고치기");waitFor("전할 문장을 확인해 주세요");edit(formal)
