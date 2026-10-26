@@ -32,8 +32,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import kr.voicemate.malitda.R
+import kr.voicemate.malitda.BuildConfig
 
-/** U07 · 학생 확인(화면 19) — 지원자 흐름의 입구: 누구의 표현을 등록할지 확인. */
+/** Supporter entry: prepare a meaning, review pending meanings, or manage the current student. */
 @Composable
 fun U07Entry(
     studentName: String,
@@ -42,49 +43,62 @@ fun U07Entry(
     onStudentChip: () -> Unit,
     onBack: () -> Unit,
     onHelp: () -> Unit,
+    onArchive: () -> Unit,
+    onSettings: () -> Unit,
+    onTrialLog: (() -> Unit)? = null,
+    onData: (() -> Unit)? = null,
+    onRemoveSamples: (() -> Unit)? = null,
+    pendingCount: Int? = null,
 ) {
+    var confirmSamples by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
     V2Screen {
-        V2Header(onBack = onBack, onHelp = onHelp)
+        V2Header(onHelp = onHelp, logoStart = true)
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
-            V2Title("누구의 표현인가요?")
-            V2SubTitle("학생과 함께 뜻을 준비해요.")
+            V2Title("함께 관리")
+            V2SubTitle("보호자·교사와 표현을 함께 준비합니다.")
             Spacer(Modifier.height(16.dp))
-            V2Card {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .background(Brush.linearGradient(listOf(Color(0xFFF3F0FB), Color(0xFFF0F6F4))))
-                        .padding(vertical = 34.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(
-                        painterResource(R.drawable.v2_char_robot), contentDescription = null,
-                        modifier = Modifier.size(150.dp).clip(RoundedCornerShape(22.dp)),
-                        contentScale = ContentScale.Fit,
-                    )
-                    Spacer(Modifier.height(22.dp))
-                    Box(
-                        Modifier
-                            .background(Color(0xFFE2F4E8), RoundedCornerShape(18.dp))
-                            .clip(RoundedCornerShape(18.dp))
-                            .clickable { onStudentChip() }
-                            .padding(horizontal = 24.dp, vertical = 10.dp),
-                    ) { Text("${studentName.ifBlank { "친구" }}의 표현", style = jua(18, Color(0xFF2F8F5D))) }
+            V2Card(radius = 26) {
+                Row(Modifier.fillMaxWidth().padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        Text("현재 학생", style = jua(15, V2C.Muted))
+                        Spacer(Modifier.height(6.dp))
+                        Text(studentName.ifBlank { "친구" }, style = jua(24, V2C.Ink))
+                        Spacer(Modifier.height(6.dp))
+                        Text("이 학생의 표현을 함께 준비합니다.", style = jua(15, V2C.Muted))
+                    }
+                    Spacer(Modifier.width(12.dp))
+                    Image(painterResource(R.drawable.v2_char_robot), contentDescription = null,
+                        modifier = Modifier.size(84.dp), contentScale = ContentScale.Fit)
                 }
             }
-            Spacer(Modifier.height(16.dp))
-            V2Banner(
-                "${iGa(studentName.ifBlank { "친구" })} 전하려는 뜻을 먼저 확인해요.\n지원자가 혼자 뜻을 확정하지 않아요.",
-                green = true, icon = Icons.Rounded.Check,
-            )
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(18.dp))
+            Text("표현 준비", style = jua(20, V2C.Title), modifier = Modifier.padding(horizontal = 24.dp))
+            Spacer(Modifier.height(10.dp))
+            V2PrimaryButton("새 표현 등록", onClick = onRegister)
+            Spacer(Modifier.height(12.dp))
+            V2SecondaryButton("미확인·사용 중지 뜻" + (pendingCount?.let { " · ${it}개" } ?: ""), onClick = onArchive)
+            Text("아직 확인하지 않았거나 사용을 쉬고 있는 뜻을 다시 살핍니다.", style = jua(15, V2C.Muted), modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
+            V2SecondaryButton("학생 변경·추가", onClick = onStudentChip)
+            Spacer(Modifier.height(18.dp))
+            V2Banner("학생이 그림·글·소리로 뜻을 확인한 뒤 사용합니다. 지원자의 추측만으로 확정하지 않습니다.", green = true, icon = Icons.Rounded.Check)
+            if ((BuildConfig.PILOT_TOOLS_ENABLED && onTrialLog != null) || onData != null || onRemoveSamples != null) {
+                Text(if (BuildConfig.PILOT_TOOLS_ENABLED) "기록과 자료" else "개인 자료", style = jua(20, V2C.Title), modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 8.dp))
+                if (BuildConfig.PILOT_TOOLS_ENABLED && onTrialLog != null) V2TextButton("실증 준비·기록", onClick = onTrialLog)
+                if (onData != null) V2TextButton("개인 자료 확인·삭제", onClick = onData)
+                if (onRemoveSamples != null) V2TextButton("연습 예시 정리", onClick = { confirmSamples = true })
+            }
+            Spacer(Modifier.height(20.dp))
         }
-        V2PrimaryButton("${studentName.ifBlank { "친구" }}의 표현 등록", icon = "⊕") { onRegister() }
-        Spacer(Modifier.height(12.dp))
-        V2SecondaryButton("내 표현 보기") { onMyExpressions() }
-        V2TextButton("홈으로", onClick = onBack)
-        Spacer(Modifier.height(16.dp))
+        V2TextButton("관리 마치고 홈으로", onClick = onBack)
+        V2BottomNav(selected = "register", onHome = onBack, onLibrary = onMyExpressions, onSettings = onSettings, onRegister = {})
     }
+    if (confirmSamples) androidx.compose.material3.AlertDialog(
+        onDismissRequest = { confirmSamples = false },
+        title = { Text("연습 예시를 정리할까요?", style = jua(22, V2C.Title)) },
+        text = { Text("지울 수 있는 연습 예시만 정리합니다. 직접 등록한 개인 뜻은 지우지 않습니다.", style = jua(17, V2C.Ink)) },
+        confirmButton = { androidx.compose.material3.TextButton(onClick = { confirmSamples = false; onRemoveSamples?.invoke() }) { Text("예시 정리") } },
+        dismissButton = { androidx.compose.material3.TextButton(onClick = { confirmSamples = false }) { Text("돌아가기") } },
+    )
 }
 
 /** U07-S · 사용할 학생을 확인해요(화면 36) — 전환·추가 포함. */

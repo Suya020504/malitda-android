@@ -74,12 +74,15 @@ fun U13Sound(
 /** 소리 재생 알약: 막대-스피커-막대. 재생 중에는 맥동한다. 누르면 다시 재생. */
 @Composable
 private fun SoundIndicator(speaking: Boolean, onClick: () -> Unit) {
-    val pulse by rememberInfiniteTransition(label = "sound").animateFloat(
-        initialValue = 0.85f, targetValue = 1.15f,
-        animationSpec = infiniteRepeatable(tween(500, easing = LinearEasing), RepeatMode.Reverse),
-        label = "sound",
-    )
-    val barScale = if (speaking) pulse else 1f
+    val motion = rememberV2MotionEnabled()
+    val barScale = if (speaking && motion) {
+        val value by rememberInfiniteTransition(label = "sound").animateFloat(
+            initialValue = 0.92f, targetValue = 1.08f,
+            animationSpec = infiniteRepeatable(tween(650, easing = androidx.compose.animation.core.FastOutSlowInEasing), RepeatMode.Reverse),
+            label = "sound",
+        )
+        value
+    } else 1f
     Row(
         Modifier
             .background(

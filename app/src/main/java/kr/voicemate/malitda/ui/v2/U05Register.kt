@@ -263,11 +263,11 @@ fun U05PickImage(
             }
             Spacer(Modifier.height(12.dp))
             // 학생에게 익숙한 실제 사진을 그림으로 쓸 수 있다(예: 산책 장소 사진).
-            V2SecondaryButton("📷  사진 가져오기") { if (!generating) onPickPhoto() }
+            V2SecondaryButton("사진 가져오기", enabled = !generating, onClick = onPickPhoto)
             if (onGenerate != null) {
                 Spacer(Modifier.height(12.dp))
                 if (generating) {
-                    V2Banner("그림을 만들고 있어요. 1분 정도 걸려요.\n그동안 다른 칸을 채워도 이어서 만들어져요.", icon = Icons.Rounded.Info)
+                    V2Banner("그림을 만들고 있습니다. 완료되면 표시합니다.\n기다리는 동안 다른 칸을 채우거나, 결과 받기를 중단할 수 있습니다.", icon = Icons.Rounded.Info)
                     Spacer(Modifier.height(10.dp))
                     V2SecondaryButton("기다리는 동안 다른 칸 채우기") { onUse() }
                     onCancelGenerate?.let { cancel -> V2TextButton("그림 만들기 그만두기") { cancel() } }

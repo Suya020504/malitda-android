@@ -54,7 +54,7 @@ fun V2ConsentScreen(
             InfoSection("말잇다의 역할", "평소 쓰는 표현을 나만의 뜻과 연결합니다. 치료나 발음 평가를 제공하지 않습니다. 그림·글·소리를 확인한 뒤 이번에 전할 뜻을 직접 선택합니다. 잘 모르겠으면 전달하지 않고 멈출 수 있습니다.")
             InfoSection("휴대전화에 남는 정보", "이름 또는 별칭, 등록한 표현과 뜻, 선택한 그림, 확인 반응과 설정을 이 기기에 저장합니다. 개인 뜻 사전은 암호화된 데이터베이스에, 직접 고른 사진은 앱 전용 저장공간에 보관합니다. 이전 버전에서 저장한 교정 이력이 있으면 남아 있을 수 있으며 자료 관리에서 확인하고 초기화할 수 있습니다. 시스템 백업은 사용하지 않습니다. 설정에서 개별 기록이나 전체 자료를 지울 수 있습니다.")
             InfoSection("마이크와 음성인식", "말하기를 누를 때 마이크 권한을 요청합니다. 현재 음성인식은 기기 안의 Whisper·Vosk로 처리합니다. 원음 파일은 저장하거나 서버로 보내지 않습니다. 인식한 문장은 현재 확인 과정의 메모리에만 두며, 취소·새 시도·앱 종료 때 사라집니다. 마이크를 허용하지 않아도 카드와 직접 입력을 사용할 수 있습니다.")
-            InfoSection("실증 기록은 따로 선택", "일반 사용에는 실증 기록을 남기지 않습니다. 실증 참여를 따로 선택한 경우에만 참여자 코드와 시도 결과를 기록합니다. 실증 설정에서 기록 범위·동의·철회·삭제·내보내기를 확인합니다.")
+            if (BuildConfig.PILOT_TOOLS_ENABLED) InfoSection("실증 기록은 따로 선택", "일반 사용에는 실증 기록을 남기지 않습니다. 실증 참여를 따로 선택한 경우에만 참여자 코드와 시도 결과를 기록합니다. 실증 설정에서 기록 범위·동의·철회·삭제·내보내기를 확인합니다.")
             InfoSection("AI 그림은 만들 때마다 확인", "지원자가 AI 그림 만들기를 선택하면 등록한 뜻 문장, 익명 식별자와 그림체가 연결된 외부 서버로 전송될 수 있습니다. 전송·비용 안내를 확인하고 별도로 동의해야 생성합니다. 취소해도 이미 시작한 서버 작업이나 비용이 취소된다고 보장하지 않습니다.")
             if (onManageData != null) V2TextButton("동의하지 않고 보관 자료 관리", onClick = onManageData)
             InfoSection("사용 범위와 한계", "모든 장애인의 발화를 자동으로 해석하지 않습니다. 발화 특성이 심하거나 말소리가 불명확하면 인식이 어려울 수 있습니다. 등록하지 않은 개인 표현과 자유로운 대화의 의도를 보장하지 않습니다. 휴대전화와 보조기기는 개별 확인이 필요하며 응급 연락 수단으로 사용하지 않습니다.")
@@ -62,7 +62,7 @@ fun V2ConsentScreen(
             if (!readOnly) {
                 ConsentCheck("앱의 역할과 선택·중단 방법을 확인했습니다.", serviceAccepted) { serviceAccepted = it }
                 ConsentCheck("이 기기의 정보 저장·삭제 안내를 확인했습니다.", storageAccepted) { storageAccepted = it }
-                Text("실증 참여와 AI 외부 전송에 동의한 것은 아닙니다.", style = jua(15, V2C.Muted), modifier = Modifier.padding(24.dp))
+                Text("AI 그림의 외부 전송에는 별도 동의가 필요합니다.", style = jua(15, V2C.Muted), modifier = Modifier.padding(24.dp))
                 V2PrimaryButton("확인하고 시작", enabled = serviceAccepted && storageAccepted, onClick = onAccept)
                 V2TextButton("지금은 시작하지 않기", onClick = onDecline)
             } else if (onRevoke != null) {
@@ -71,7 +71,7 @@ fun V2ConsentScreen(
             Spacer(Modifier.height(20.dp))
         }
     }
-    if (showHelp) V2HelpDialog("앱의 역할과 자료 저장 안내를 지원자와 함께 확인합니다. 동의하지 않으면 지금 시작하지 않아도 됩니다. 실증 참여와 AI 전송은 각각 따로 선택합니다.") { showHelp = false }
+    if (showHelp) V2HelpDialog("앱의 역할과 자료 저장 안내를 지원자와 함께 확인합니다. 동의하지 않으면 지금 시작하지 않아도 됩니다. AI 전송은 그림을 만들 때 따로 확인합니다.") { showHelp = false }
     if (revokeConfirm) AlertDialog(
         onDismissRequest = { revokeConfirm = false },
         title = { Text("안내 동의를 철회할까요?", style = jua(22, V2C.Title)) },
@@ -201,9 +201,9 @@ fun V2ProfilePreferencesScreen(
             }
             V2TextButton("선택한 속도로 들어 보기", onClick = onPreviewTts)
             PreferenceToggle("진동으로 알려주기", preferences.haptics) { onPreferences(preferences.copy(haptics = it)) }
-            SectionLabel("앱 글자 크기")
-            Text("휴대전화의 글자 확대 설정도 함께 적용합니다. 앱 설정을 줄여도 시스템에서 키운 글자를 작게 만들지 않습니다.", style = jua(15, V2C.Muted), modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
-            listOf(1f to "보통", 1.2f to "120%", 1.5f to "150%", 2f to "200%").forEach { (scale, label) ->
+            SectionLabel("이 기기의 글자 크기")
+            Text("기본 크기는 100%입니다. 글자 크기와 선택 강조는 이 기기에 공통으로 적용합니다. 휴대전화의 글자 확대 설정도 함께 적용합니다. 앱 설정을 줄여도 시스템에서 키운 글자를 작게 만들지 않습니다.", style = jua(15, V2C.Muted), modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
+            listOf(1f to "기본 크기 · 100%", 1.2f to "확대 · 120%", 1.5f to "확대 · 150%", 2f to "접근성 확대 · 200%").forEach { (scale, label) ->
                 PreferenceOption(label, kotlin.math.abs(fontScale - scale) < 0.01f) { onFontScale(scale) }
             }
             PreferenceToggle("테두리와 선택 강조", visualEmphasis, onVisualEmphasis)

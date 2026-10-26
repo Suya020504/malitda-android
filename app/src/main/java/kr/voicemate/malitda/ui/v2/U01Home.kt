@@ -71,7 +71,7 @@ fun U01Home(
             V2SubTitle("개인 뜻 ${totalRegistered}/50개 · 등록·개인정보 관리는 설정에서 확인")
             Spacer(Modifier.height(16.dp))
         }
-        V2BottomNav(selected = "home", onHome = {}, onLibrary = onLibrary, onSettings = onSettings)
+        V2BottomNav(selected = "home", onHome = {}, onLibrary = onLibrary, onSettings = onSettings, onRegister = onRegister)
     }
 }
 
@@ -87,9 +87,16 @@ private fun FilledHome(
     Spacer(Modifier.height(4.dp))
     // PDF S08의 인사·캐릭터·원형 마이크 구성을 유지한다. 수치는 실제 개인 사전에서만 읽는다.
     Row(Modifier.fillMaxWidth().padding(horizontal = 24.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text("안녕하세요,\n${name.ifBlank { "친구" }}님", style = jua(29, V2C.Ink), modifier = Modifier.weight(1f))
-        if (!large) Image(painterResource(R.drawable.char_purple), null, Modifier.size(118.dp), contentScale = ContentScale.Fit)
+        Text("${name.ifBlank { "친구" }}님, 안녕하세요", style = jua(23, V2C.Ink), modifier = Modifier.weight(1f))
+        if (!large) { Spacer(Modifier.width(12.dp)); Image(painterResource(R.drawable.char_purple), null, Modifier.size(66.dp), contentScale = ContentScale.Fit) }
     }
+    Spacer(Modifier.height(8.dp))
+    Column(Modifier.fillMaxWidth().padding(horizontal = 24.dp)) {
+        Text("내 표현으로, 내 뜻을 전해요", style = jua(20, V2C.Ink, 1.25f))
+        Spacer(Modifier.height(3.dp))
+        Text("말하기·그림 선택 → 뜻 확인 → 전달", style = jua(13, V2C.Muted, 1.38f))
+    }
+    Spacer(Modifier.height(8.dp))
     val personalCount = meanings.count { !it.isSample }
     V2Card(radius = 26) {
         Row(
@@ -97,61 +104,62 @@ private fun FilledHome(
                 .fillMaxWidth()
                 .background(Brush.horizontalGradient(listOf(Color(0xFFF6EFFB), Color(0xFFEFF2FC))))
                 .clickable(role = Role.Button, onClick = onRegister)
-                .padding(horizontal = 20.dp, vertical = 18.dp),
+                .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Column(Modifier.weight(1f)) {
-                Text(if (personalCount > 0) "함께 확인한 뜻" else "처음에는 연습 카드로", style = jua(19, V2C.Ink))
-                Spacer(Modifier.height(6.dp))
-                Text(if (personalCount > 0) "${personalCount}개가 있어요" else "천천히 시작해요", style = jua(24, V2C.Title))
-                Spacer(Modifier.height(10.dp))
-                Text("내 표현 함께 준비  ›", style = jua(15, V2C.Muted))
+            Column(Modifier.weight(1f).padding(vertical = 10.dp)) {
+                Text(if (personalCount > 0) "함께 확인한 뜻" else "처음에는 연습 카드로", style = jua(16, V2C.Ink))
+                Spacer(Modifier.height(4.dp))
+                Text(if (personalCount > 0) "${personalCount}개가 있어요" else "천천히 시작해요", style = jua(21, V2C.Title))
+                Spacer(Modifier.height(4.dp))
+                Text("내 표현 함께 준비  ›", style = jua(14, V2C.Muted))
             }
             if (!large) Image(
                 painterResource(R.drawable.char_robot_mint), contentDescription = null,
-                modifier = Modifier.size(110.dp),
+                modifier = Modifier.size(86.dp),
                 contentScale = ContentScale.Fit,
             )
         }
     }
-    Spacer(Modifier.height(18.dp))
+    Spacer(Modifier.height(8.dp))
     // At large text sizes, keep the microphone label above the first fold.
     // Decorative images and a larger circle must not displace the action name.
-    Box(Modifier.fillMaxWidth().height(if (large) 250.dp else 230.dp), contentAlignment = Alignment.Center) {
+    val microphonePress = rememberV2Press()
+    Box(Modifier.fillMaxWidth().height(if (large) 228.dp else 182.dp), contentAlignment = Alignment.Center) {
         if (!large) {
             Image(painterResource(R.drawable.char_green), null,
-                Modifier.align(Alignment.BottomStart).size(85.dp), contentScale = ContentScale.Fit)
+                Modifier.align(Alignment.BottomStart).size(64.dp), contentScale = ContentScale.Fit)
             Image(painterResource(R.drawable.char_water), null,
-                Modifier.align(Alignment.BottomEnd).size(85.dp), contentScale = ContentScale.Fit)
+                Modifier.align(Alignment.BottomEnd).size(64.dp), contentScale = ContentScale.Fit)
         }
         Box(
-            Modifier.size(if (large) 228.dp else 196.dp)
+            Modifier.then(microphonePress.modifier).size(if (large) 212.dp else 170.dp)
                 .shadow(14.dp, CircleShape, clip = false, spotColor = V2C.Shadow)
                 .background(Color.White, CircleShape).padding(9.dp)
                 .background(Brush.linearGradient(if (V2C.highContrast) listOf(V2C.GradStart, V2C.GradEnd) else listOf(Color(0xFF62C9FF), Color(0xFF8960FF), Color(0xFFF276E7))), CircleShape)
-                .clip(CircleShape).clickable(role = Role.Button, onClick = onSpeak)
+                .clip(CircleShape).clickable(interactionSource = microphonePress.interaction, indication = androidx.compose.material3.ripple(), role = Role.Button, onClick = onSpeak)
                 .semantics { contentDescription = "눌러서 말하기" },
             contentAlignment = Alignment.Center,
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Image(painterResource(R.drawable.ic_mic_white), null, Modifier.size(if (large) 42.dp else 58.dp))
-                Spacer(Modifier.height(if (large) 10.dp else 14.dp))
-                Text(if (large) "말하기" else "눌러서 말하기", style = jua(23, Color.White))
+                Image(painterResource(R.drawable.ic_mic_white), null, Modifier.size(42.dp))
+                Spacer(Modifier.height(10.dp))
+                Text(if (large) "말하기" else "눌러서 말하기", style = jua(21, Color.White))
             }
         }
     }
-    Spacer(Modifier.height(24.dp))
+    Spacer(Modifier.height(8.dp))
     Text(
         "그림으로 뜻 고르기",
-        style = jua(21, V2C.Ink),
+        style = jua(20, V2C.Ink),
         modifier = Modifier.padding(horizontal = 24.dp),
     )
     Spacer(Modifier.height(12.dp))
     // 의미 카드 2열 격자
     meanings.chunked(if (large) 1 else 2).forEach { rowItems ->
         Row(
-            Modifier.fillMaxWidth().padding(horizontal = 20.dp),
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             rowItems.forEach { m -> MeaningCard(m, Modifier.weight(1f)) { onCard(m) } }
             if (!large && rowItems.size == 1) Spacer(Modifier.weight(1f))
@@ -165,20 +173,21 @@ private fun FilledHome(
 
 @Composable
 private fun MeaningCard(m: MeaningEntity, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    val press = rememberV2Press()
     Column(
-        modifier
+        modifier.then(press.modifier)
             .shadow(6.dp, RoundedCornerShape(24.dp), clip = false, spotColor = V2C.Shadow)
             .background(V2C.Surface, RoundedCornerShape(24.dp))
             .clip(RoundedCornerShape(24.dp))
-            .clickable { onClick() }
+            .clickable(interactionSource = press.interaction, indication = androidx.compose.material3.ripple(), role = Role.Button, onClick = onClick)
             .padding(10.dp)
             .semantics { contentDescription = m.text },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        MeaningPicture(m.imageKey, Modifier.fillMaxWidth().aspectRatio(1.22f).clip(RoundedCornerShape(18.dp)))
-        Spacer(Modifier.height(12.dp))
+        MeaningPicture(m.imageKey, Modifier.fillMaxWidth().aspectRatio(1.42f).clip(RoundedCornerShape(18.dp)))
+        Spacer(Modifier.height(8.dp))
         Text(
-            m.text, style = jua(18, V2C.Ink), textAlign = TextAlign.Center,
+            m.text, style = jua(17, V2C.Ink), textAlign = TextAlign.Center,
             modifier = Modifier.padding(bottom = 8.dp),
         )
         if (m.isSample) Text("연습용 예시", style = jua(13, V2C.Muted), modifier = Modifier.padding(bottom = 4.dp))

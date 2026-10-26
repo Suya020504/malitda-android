@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import kr.voicemate.malitda.BuildConfig
 import kr.voicemate.malitda.data.db.CounterEntity
 import kr.voicemate.malitda.data.db.ExpressionEntity
 import kr.voicemate.malitda.data.repo.ExpressionRepository
@@ -87,6 +88,8 @@ sealed interface SessionEvent {
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SessionViewModel(val c: AppContainer) : ViewModel() {
+    /** A stored old pilot preference cannot opt a public QA/release build into collection. */
+    val pilotToolsEnabled: Boolean = BuildConfig.DEBUG && BuildConfig.PILOT_TOOLS_ENABLED
     // Null means the first persisted snapshot has not arrived. Do not interpret
     // the initial in-memory defaults as a fresh consent decision on a cold start.
     val loadedSettings: StateFlow<Settings?> = c.settings.settings.stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -671,6 +674,7 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
     private val trialMutex = kotlinx.coroutines.sync.Mutex()
 
     fun trialStartVoice() {
+        if (!pilotToolsEnabled) { trial.discard(); syncTrial(); return }
         if (trial.draft?.origin == kr.voicemate.malitda.domain.TrialTracker.Origin.VOICE && trial.draft?.delivered == false) trial.onRetry()
         else {
             endTrial(false)
@@ -679,18 +683,20 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         syncTrial()
     }
     fun trialStartCard() {
+        if (!pilotToolsEnabled) { trial.discard(); syncTrial(); return }
         endTrial(false)
         trial.startNew(kr.voicemate.malitda.domain.TrialTracker.Origin.CARD, System.currentTimeMillis(), collectionConfig())
         syncTrial()
     }
     fun trialStartText() {
+        if (!pilotToolsEnabled) { trial.discard(); syncTrial(); return }
         if (trial.draft == null) trial.startNew(kr.voicemate.malitda.domain.TrialTracker.Origin.TEXT, System.currentTimeMillis(), collectionConfig())
         syncTrial()
     }
     private fun collectionConfig() = pilotState.value.let { (pid, config) ->
         val details = config.deviceContext.substringBefore('|') + "|" + android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL +
             "|Android " + android.os.Build.VERSION.RELEASE + " (" + android.os.Build.VERSION.SDK_INT + ")|ASR=" + settings.value.sttEngine + "|network=not_required"
-        if (settings.value.trialLogging && pid == _profileId.value) config.copy(deviceContext = details) else config.copy(consented = false)
+        if (pilotToolsEnabled && settings.value.trialLogging && pid == _profileId.value) config.copy(deviceContext = details) else config.copy(consented = false)
     }
     fun trialCardPicked() { trial.onCardPicked(); syncTrial() }
     fun trialOtherMeaning() { trial.onOtherMeaning(); syncTrial() }
@@ -708,7 +714,7 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         val log = if (completed) trial.finish(_profileId.value, System.currentTimeMillis())
                   else trial.cancel(_profileId.value, System.currentTimeMillis(), reason)
         syncTrial()
-        if (log == null || !log.consented || !settings.value.trialLogging) return
+        if (!pilotToolsEnabled || log == null || !log.consented || !settings.value.trialLogging) return
         viewModelScope.launch { trialMutex.lock(); try {
             val current = c.pilot.get(log.profileId)
             if (current.canCollect && current.participantCode == log.participantCode && current.consentedAt == consentedAt && settings.value.trialLogging) {
@@ -727,6 +733,7 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
     private fun finishTrial() { endTrial(false) }
     fun completePilotTask() { endTrial(true) }
     suspend fun configurePilot(config: kr.voicemate.malitda.domain.PilotConfig) {
+        check(pilotToolsEnabled) { "평가 도구는 별도 비공개 개발 빌드에서만 사용합니다." }
         val pid = _profileId.value
         config.targetMeaningId?.let { id ->
             val m = c.meanings.byId(id)
@@ -746,6 +753,7 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         } }
     }
     fun resumePilot() {
+        if (!pilotToolsEnabled) return
         val pid = _profileId.value
         viewModelScope.launch { trialMutex.withLock { c.pilot.update(pid, c.pilot.get(pid).copy(paused = false, consecutiveFailures = 0)) } }
     }
@@ -757,6 +765,7 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         }
     }
     fun setTrialLogging(v: Boolean) { viewModelScope.launch {
+        if (v && !pilotToolsEnabled) return@launch
         if (!v) { finishTrial(); c.settings.setTrialLogging(false) }
         else if (pilotConfig.value.canCollect) c.settings.setTrialLogging(true)
         else _events.tryEmit(SessionEvent.Toast("실증 참여 코드와 별도 동의를 먼저 준비해야 합니다."))
@@ -767,8 +776,9 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         trialMutex.withLock { c.trialLogs.deleteAll(pid); c.dataManagement.clearTrialExportCache() }
     }
     fun clearTrialLogs() { viewModelScope.launch { runCatching { deleteCurrentTrialRecords() }.onFailure { _events.tryEmit(SessionEvent.Toast("실증 기록과 임시 CSV 정리를 마치지 못했습니다. 다시 확인해야 합니다.")) } } }
-    fun trialExportScope() = kr.voicemate.malitda.domain.TrialExportScope(_profileId.value, pilotConfig.value.participantCode, pilotConfig.value.hasConsent && pilotState.value.first == _profileId.value)
+    fun trialExportScope() = kr.voicemate.malitda.domain.TrialExportScope(_profileId.value, pilotConfig.value.participantCode, pilotToolsEnabled && pilotConfig.value.hasConsent && pilotState.value.first == _profileId.value)
     suspend fun trialCsv(): String {
+        check(pilotToolsEnabled) { "평가 도구는 별도 비공개 개발 빌드에서만 사용합니다." }
         val pid = _profileId.value
         return trialMutex.withLock {
             val current = c.pilot.get(pid)

@@ -31,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Apps
+import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -64,6 +65,7 @@ import androidx.compose.ui.text.intl.LocaleList
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kr.voicemate.malitda.R
+import kr.voicemate.malitda.BuildConfig
 import kr.voicemate.malitda.ui.theme.LocalA11y
 
 /**
@@ -104,6 +106,13 @@ fun jua(size: Int, color: Color, lineMul: Float = 1.35f) = TextStyle(
 /** 화면 배경(연보라 그라데이션) + 안전영역. */
 @Composable
 fun V2Screen(background: Color? = null, content: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit) {
+    val motion = rememberV2MotionEnabled()
+    var entered by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+    androidx.compose.runtime.LaunchedEffect(Unit) { entered = true }
+    val entranceAlpha by androidx.compose.animation.core.animateFloatAsState(
+        if (entered || !motion) 1f else 0.96f,
+        androidx.compose.animation.core.tween(if (motion) 140 else 0), label = "screenEntrance",
+    )
     // Insets modifiers consume the padding they apply. A child form's imePadding
     // therefore adds only any remaining inset, rather than applying the keyboard twice.
     Box(
@@ -117,15 +126,16 @@ fun V2Screen(background: Color? = null, content: @Composable androidx.compose.fo
         // Use available window width, not a fixed phone aspect ratio. Content remains
         // a readable single pane on wider windows; the background fills the window.
         Column(
-            Modifier.align(Alignment.TopCenter).fillMaxHeight().widthIn(max = 600.dp).fillMaxWidth(),
+            Modifier.align(Alignment.TopCenter).fillMaxHeight().widthIn(max = 600.dp).fillMaxWidth()
+                .then(Modifier.graphicsLayerCompatAlpha(entranceAlpha)),
         ) {
             content()
-            LocalPilotComplete.current?.let { complete ->
+            if (BuildConfig.PILOT_TOOLS_ENABLED) LocalPilotComplete.current?.let { complete ->
                 androidx.compose.material3.TextButton(onClick = complete, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
                     Text("실증 과업 마치기 · 지원자", style = jua(17, V2C.Ink))
                 }
             }
-            LocalPilotStop.current?.let { stop ->
+            if (BuildConfig.PILOT_TOOLS_ENABLED) LocalPilotStop.current?.let { stop ->
                 androidx.compose.material3.TextButton(onClick = stop, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
                     Text("실증 그만하기", style = jua(17, V2C.Ink))
                 }
@@ -150,7 +160,7 @@ fun V2Header(onBack: (() -> Unit)? = null, onHelp: () -> Unit, logoStart: Boolea
             ) { Image(painterResource(R.drawable.ic_back), null, Modifier.size(22.dp)) }
         }
         Box(Modifier.weight(1f).padding(horizontal = 8.dp), contentAlignment = if (logoStart) Alignment.CenterStart else Alignment.Center) {
-            Image(painterResource(R.drawable.v2_logo), contentDescription = "말잇다", modifier = Modifier.height(48.dp), contentScale = ContentScale.Fit)
+            Image(painterResource(R.drawable.v2_logo), contentDescription = "말잇다", modifier = Modifier.widthIn(max = 120.dp).height(36.dp), contentScale = ContentScale.Fit)
         }
         Box(
             Modifier
@@ -176,7 +186,7 @@ fun V2Title(text: String, modifier: Modifier = Modifier) {
 @Composable
 fun V2SubTitle(text: String) {
     Text(
-        text, style = jua(17, V2C.Ink), textAlign = TextAlign.Center,
+        text, style = jua(16, V2C.Ink), textAlign = TextAlign.Center,
         modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
     )
 }
@@ -185,57 +195,60 @@ fun V2SubTitle(text: String) {
 @Composable
 fun V2PrimaryButton(text: String, modifier: Modifier = Modifier, icon: String? = null, enabled: Boolean = true, onClick: () -> Unit) {
     val feedback = rememberV2Feedback()
+    val press = rememberV2Press(enabled)
     val emphasis = LocalA11y.current.visualEmphasis
     Box(
-        modifier
+        modifier.then(press.modifier)
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 24.dp)
             .heightIn(min = 64.dp)
             .shadow(6.dp, RoundedCornerShape(32.dp), clip = false, spotColor = V2C.Shadow)
             .background(if (enabled) V2Gradient else Brush.horizontalGradient(listOf(Color(0xFFDCD8E8), Color(0xFFDCD8E8))), RoundedCornerShape(32.dp))
             .clip(RoundedCornerShape(32.dp))
             .then(if (emphasis) Modifier.border(3.dp, V2C.Ink, RoundedCornerShape(32.dp)) else Modifier)
-            .clickable(role = Role.Button, enabled = enabled) { feedback(); onClick() }
+            .clickable(interactionSource = press.interaction, indication = androidx.compose.material3.ripple(), role = Role.Button, enabled = enabled) { feedback(); onClick() }
             .padding(horizontal = 16.dp, vertical = 14.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(if (icon != null) "$icon  $text" else text, style = jua(22, Color.White))
+        Text(if (icon != null) "$icon  $text" else text, style = jua(20, if (enabled) Color.White else V2C.Muted), textAlign = TextAlign.Center)
     }
 }
 
 /** 흰 배경 보조 버튼. */
 @Composable
-fun V2SecondaryButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun V2SecondaryButton(text: String, modifier: Modifier = Modifier, enabled: Boolean = true, onClick: () -> Unit) {
     val feedback = rememberV2Feedback()
+    val press = rememberV2Press(enabled)
     val emphasis = LocalA11y.current.visualEmphasis
     Box(
-        modifier
+        modifier.then(press.modifier)
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 24.dp)
             .heightIn(min = 60.dp)
             .shadow(4.dp, RoundedCornerShape(30.dp), clip = false, spotColor = V2C.Shadow)
-            .background(V2C.Surface, RoundedCornerShape(30.dp))
+            .background(if (enabled) V2C.Surface else V2C.CardInner, RoundedCornerShape(30.dp))
             .clip(RoundedCornerShape(30.dp))
             .then(if (emphasis) Modifier.border(3.dp, V2C.Ink, RoundedCornerShape(30.dp)) else Modifier)
-            .clickable(role = Role.Button) { feedback(); onClick() }
+            .clickable(interactionSource = press.interaction, indication = androidx.compose.material3.ripple(), enabled = enabled, role = Role.Button) { feedback(); onClick() }
             .padding(horizontal = 16.dp, vertical = 12.dp),
         contentAlignment = Alignment.Center,
-    ) { Text(text, style = jua(20, V2C.Title)) }
+    ) { Text(text, style = jua(20, if (enabled) V2C.Title else V2C.Muted), textAlign = TextAlign.Center) }
 }
 
 /** 맨 아래 글자만 있는 버튼(취소 등). */
 @Composable
-fun V2TextButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun V2TextButton(text: String, modifier: Modifier = Modifier, enabled: Boolean = true, onClick: () -> Unit) {
     val feedback = rememberV2Feedback()
+    val press = rememberV2Press(enabled)
     Box(
-        modifier
+        modifier.then(press.modifier)
             .fillMaxWidth()
             .heightIn(min = 48.dp)
             .clip(RoundedCornerShape(24.dp))
-            .clickable(role = Role.Button) { feedback(); onClick() }
+            .clickable(interactionSource = press.interaction, indication = androidx.compose.material3.ripple(), enabled = enabled, role = Role.Button) { feedback(); onClick() }
             .padding(horizontal = 16.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center,
-    ) { Text(text, style = jua(18, V2C.Muted)) }
+    ) { Text(text, style = jua(18, V2C.Muted.copy(alpha = if (enabled) 1f else 0.55f)), textAlign = TextAlign.Center) }
 }
 
 /** 안내 배너(연보라/연녹색). */
@@ -244,7 +257,7 @@ fun V2Banner(text: String, icon: ImageVector? = null, green: Boolean = false, le
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 24.dp)
             .background(if (green) V2C.GreenBg else V2C.BannerBg, RoundedCornerShape(22.dp))
             .padding(horizontal = 20.dp, vertical = 18.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -266,7 +279,7 @@ fun V2Card(modifier: Modifier = Modifier, radius: Int = 32, content: @Composable
     Column(
         modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 24.dp)
             .shadow(8.dp, RoundedCornerShape(radius.dp), clip = false, spotColor = V2C.Shadow)
             .background(V2C.Surface, RoundedCornerShape(radius.dp))
             .clip(RoundedCornerShape(radius.dp)),
@@ -412,9 +425,9 @@ fun V2TextField(
     }
 }
 
-/** 하단 탭(홈·내 표현·설정). selected: "home" | "library" | "settings". */
+/** 하단 탭. selected: "home" | "library" | "register" | "settings". */
 @Composable
-fun V2BottomNav(selected: String, onHome: () -> Unit, onLibrary: () -> Unit, onSettings: () -> Unit) {
+fun V2BottomNav(selected: String, onHome: () -> Unit, onLibrary: () -> Unit, onSettings: () -> Unit, onRegister: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -427,6 +440,7 @@ fun V2BottomNav(selected: String, onHome: () -> Unit, onLibrary: () -> Unit, onS
     ) {
         NavItem(Icons.Rounded.Home, "홈", selected = selected == "home", modifier = Modifier.weight(1f), onClick = onHome)
         NavItem(Icons.Rounded.Apps, "내 표현", selected = selected == "library", modifier = Modifier.weight(1f), onClick = onLibrary)
+        NavItem(Icons.Rounded.AddCircle, "함께 관리", selected = selected == "register", modifier = Modifier.weight(1f), onClick = onRegister)
         NavItem(Icons.Rounded.Settings, "설정", selected = selected == "settings", modifier = Modifier.weight(1f), onClick = onSettings)
     }
 }
@@ -468,7 +482,7 @@ fun helpTextFor(route: String): String = when (route) {
     "U02", "U02D" -> "말이 끝나면 '말하기 끝내기'를 눌러요.\n잘 안 되면 '카드로 고르기'를 눌러요."
     "U03" -> "그림·문장·소리로 뜻을 확인합니다.\n맞는 뜻, 다른 뜻, 잘 모르겠음 중에서 선택합니다.\n확인하지 않은 뜻은 전달하지 않습니다."
     "U03H" -> "아직 뜻을 확정하지 않은 상태입니다.\n익숙한 사람과 다시 확인하거나 다른 카드를 고릅니다.\n판단이 어려우면 그만해도 됩니다."
-    "U03E", "U03M" -> "다시 말하거나, 카드에서 뜻을 골라요.\n자주 쓰는 말이면 지원자와 함께 등록해요."
+    "U03E", "U03M" -> "다시 말하거나, 카드에서 뜻을 골라요.\n자주 쓰는 말이면 지원자와 함께 관리해요."
     "U04", "U04F", "U04S", "U13" -> "이 화면을 상대에게 보여 주거나\n'소리로 들려주기'를 눌러 전해요."
     "U06" -> "그림을 보고 전하고 싶은 뜻을 골라요.\n없으면 '여기에 없어요'를 눌러요."
     "U05", "U05M" -> "학생이 평소 쓰는 말과 전할 뜻을 적어요.\n그림을 고르면 글을 읽기 어려운 학생도\n뜻을 확인할 수 있어요."
@@ -483,10 +497,11 @@ fun helpTextFor(route: String): String = when (route) {
 /** 붉은 위험 버튼(U09-D 삭제하기). */
 @Composable
 fun V2DangerButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    val press = rememberV2Press()
     Box(
-        modifier
+        modifier.then(press.modifier)
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 24.dp)
             .heightIn(min = 64.dp)
             .shadow(6.dp, RoundedCornerShape(32.dp), clip = false, spotColor = Color(0x33E2566E))
             .background(
@@ -494,10 +509,10 @@ fun V2DangerButton(text: String, modifier: Modifier = Modifier, onClick: () -> U
                 RoundedCornerShape(32.dp),
             )
             .clip(RoundedCornerShape(32.dp))
-            .clickable(role = Role.Button) { onClick() }
+            .clickable(interactionSource = press.interaction, indication = androidx.compose.material3.ripple(), role = Role.Button) { onClick() }
             .padding(horizontal = 16.dp, vertical = 14.dp),
         contentAlignment = Alignment.Center,
-    ) { Text(text, style = jua(22, Color.White)) }
+    ) { Text(text, style = jua(20, Color.White), textAlign = TextAlign.Center) }
 }
 
 @Composable
@@ -505,13 +520,14 @@ private fun NavItem(icon: ImageVector, label: String, selected: Boolean, modifie
     val tint = if (selected) V2C.Title else V2C.Muted
     val emphasis = LocalA11y.current.visualEmphasis
     val feedback = rememberV2Feedback()
+    val press = rememberV2Press()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
+        modifier = modifier.then(press.modifier)
             .heightIn(min = 64.dp)
             .clip(RoundedCornerShape(18.dp))
             .then(if (emphasis && selected) Modifier.border(3.dp, V2C.Ink, RoundedCornerShape(18.dp)) else Modifier)
-            .selectable(selected = selected, role = Role.Tab, interactionSource = rememberNoRipple(), indication = null, onClick = { feedback(); onClick() })
+            .selectable(selected = selected, role = Role.Tab, interactionSource = press.interaction, indication = androidx.compose.material3.ripple(), onClick = { feedback(); onClick() })
             .padding(horizontal = 6.dp, vertical = 6.dp)
             .semantics { contentDescription = label },
     ) {

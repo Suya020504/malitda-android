@@ -65,103 +65,55 @@ fun U12Settings(
     onDeleteAll: (() -> Unit)? = null,
     onResetRanking: (() -> Unit)? = null,
     onLock: (() -> Unit)? = null,
+    onSupporter: () -> Unit = onRegister,
+    onPrivacyGuide: (() -> Unit)? = onPrivacy,
 ) {
-    var confirmRemove by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
-    var confirmDeleteAll by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
-    var confirmReset by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
     val enlarged = LocalDensity.current.fontScale >= 1.4f
     V2Screen {
         V2Header(onHelp = onHelp, logoStart = true)
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
-            Spacer(Modifier.height(4.dp))
-            V2Card(radius = 28) {
-                Column(Modifier.fillMaxWidth()) {
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .padding(top = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Box(
-                            Modifier
-                                .weight(1f)
-                                .background(
-                                    Brush.horizontalGradient(listOf(Color(0xFFF2E9FA), Color(0xFFEDF1FB))),
-                                    RoundedCornerShape(20.dp),
-                                )
-                                .padding(horizontal = 20.dp, vertical = 26.dp),
-                        ) { Text("${studentName.ifBlank { "친구" }}의 말잇다", style = jua(26, V2C.Title)) }
-                        if (!enlarged) {
-                            Spacer(Modifier.width(12.dp))
-                            Image(
-                            painterResource(R.drawable.v2_char_robot), contentDescription = null,
-                            modifier = Modifier.size(84.dp).clip(RoundedCornerShape(16.dp)),
-                            contentScale = ContentScale.Fit,
-                            )
-                        }
-                    }
-                    Spacer(Modifier.height(12.dp))
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .padding(bottom = 16.dp)
-                            .background(Color(0xFFE2F4E8), RoundedCornerShape(18.dp))
-                            .padding(horizontal = 18.dp, vertical = 14.dp),
-                    ) {
-                        Text("그림·글·소리로 뜻 확인\n학생에게 편한 방법을 함께 고릅니다.", style = jua(15, V2C.GreenText, 1.5f))
-                    }
-                }
+            V2Title("설정")
+            V2SubTitle("${studentName.ifBlank { "친구" }}에게 편한 사용 환경을 고릅니다.")
+            if (!enlarged) {
+                Image(painterResource(R.drawable.v2_char_robot), contentDescription = null,
+                    modifier = Modifier.align(Alignment.CenterHorizontally).size(84.dp), contentScale = ContentScale.Fit)
             }
-            Spacer(Modifier.height(18.dp))
-            SettingRow(icon = Icons.Rounded.Check, label = "사용할 학생 확인") { onStudent() }
-            Spacer(Modifier.height(12.dp))
-            SettingRow(iconPainter = R.drawable.ic_consent_mic, label = "마이크 권한 안내") { onMicGuide() }
-            Spacer(Modifier.height(12.dp))
-            SettingRow(icon = Icons.Rounded.Settings, label = "소리 설정 안내") { onSoundGuide() }
-            Spacer(Modifier.height(12.dp))
-            SettingRow(icon = Icons.Rounded.AddCircle, label = "지원자와 함께 등록") { onRegister() }
-            Spacer(Modifier.height(12.dp))
+            SettingsGroupTitle("사용 환경")
+            SettingRow(iconPainter = R.drawable.ic_consent_mic, label = "마이크 권한 안내", onClick = onMicGuide)
+            Spacer(Modifier.height(10.dp))
+            SettingRow(icon = Icons.Rounded.Settings, label = "소리 설정 안내", onClick = onSoundGuide)
+            SettingsGroupTitle("내게 맞게")
             if (onPreferences != null) {
                 SettingRow(icon = Icons.Rounded.Settings, label = "확인 방법과 접근성", onClick = onPreferences)
             } else {
                 SettingRow(icon = Icons.Rounded.Info, label = if (largeText) "글자 크기: 크게" else "글자 크기: 보통") { onLargeText(!largeText) }
             }
             if (artStyleLabel != null) {
-                Spacer(Modifier.height(12.dp))
-                SettingRow(icon = Icons.Rounded.AddCircle, label = "그림체: $artStyleLabel") { onArtStyle() }
+                Spacer(Modifier.height(10.dp))
+                SettingRow(icon = Icons.Rounded.AddCircle, label = "그림체: $artStyleLabel", onClick = onArtStyle)
             }
-            Spacer(Modifier.height(12.dp))
-            SettingRow(icon = Icons.Rounded.Check, label = if (trialLogging) "실증 기록 (기록 중)" else "실증 기록") { onTrialLog() }
-            Spacer(Modifier.height(10.dp))
-            V2TextButton("처음 화면 안내") { onFirstGuide() }
-            V2TextButton(if (confirmRemove) "한 번 더 누르면 예시 뜻이 지워져요(그림을 바꾼 뜻은 남아요)" else "예시 뜻 지우기 (실증 전)") {
-                if (confirmRemove) { onRemoveSamples(); confirmRemove = false } else confirmRemove = true
+            SettingsGroupTitle("안내")
+            SettingRow(icon = Icons.Rounded.Info, label = "처음 화면 안내", onClick = onFirstGuide)
+            if (onPrivacyGuide != null) {
+                Spacer(Modifier.height(10.dp))
+                SettingRow(icon = Icons.Rounded.Info, label = "개인정보·사용 안내", onClick = onPrivacyGuide)
             }
-            if (onPrivacy != null) V2TextButton("개인정보와 사용 안내", onClick = onPrivacy)
-            if (onAppInfo != null) V2TextButton("앱 정보와 문의", onClick = onAppInfo)
-            if (onResetRanking != null) V2TextButton("현재 학생의 추천 순서 초기화", onClick = { confirmReset = true })
-            if (onDeleteAll != null) V2TextButton("이 기기의 전체 자료 삭제", onClick = { confirmDeleteAll = true })
+            if (onAppInfo != null) {
+                Spacer(Modifier.height(10.dp))
+                SettingRow(icon = Icons.Rounded.Info, label = "앱 정보와 문의", onClick = onAppInfo)
+            }
+            Text("표현 등록·미확인 뜻·학생 변경과 자료 관리는 아래 '함께 관리'에서 진행합니다.",
+                style = jua(15, V2C.Muted), modifier = Modifier.padding(24.dp))
             if (onLock != null) V2SecondaryButton("지원자 모드 잠그고 홈으로", onClick = onLock)
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(16.dp))
         }
-        V2BottomNav(selected = "settings", onHome = onHome, onLibrary = onLibrary, onSettings = {})
+        V2BottomNav(selected = "settings", onHome = onHome, onLibrary = onLibrary, onSettings = {}, onRegister = onSupporter)
     }
-    if (confirmDeleteAll) androidx.compose.material3.AlertDialog(
-        onDismissRequest = { confirmDeleteAll = false },
-        title = { Text("전체 자료를 지울까요?", style = jua(23, V2C.Title)) },
-        text = { Text("이 기기에 저장한 모든 학생·표현·뜻·사진·확인 기록·실증 기록·설정을 삭제합니다. 되돌릴 수 없습니다. 다른 앱으로 이미 공유한 자료나 서버 자료는 지워지지 않습니다.", style = jua(17, V2C.Ink)) },
-        confirmButton = { androidx.compose.material3.TextButton(onClick = { confirmDeleteAll = false; onDeleteAll?.invoke() }) { Text("전체 삭제") } },
-        dismissButton = { androidx.compose.material3.TextButton(onClick = { confirmDeleteAll = false }) { Text("돌아가기") } },
-    )
-    if (confirmReset) androidx.compose.material3.AlertDialog(
-        onDismissRequest = { confirmReset = false },
-        title = { Text("추천 순서를 초기화할까요?", style = jua(23, V2C.Title)) },
-        text = { Text("현재 학생의 사용 횟수와 교정 이력을 초기화합니다. 직접 등록한 뜻·표현·그림은 남깁니다.", style = jua(17, V2C.Ink)) },
-        confirmButton = { androidx.compose.material3.TextButton(onClick = { confirmReset = false; onResetRanking?.invoke() }) { Text("순서 초기화") } },
-        dismissButton = { androidx.compose.material3.TextButton(onClick = { confirmReset = false }) { Text("돌아가기") } },
-    )
+}
+
+@Composable
+private fun SettingsGroupTitle(title: String) {
+    Text(title, style = jua(20, V2C.Title), modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 10.dp))
 }
 
 @Composable
@@ -169,7 +121,7 @@ private fun SettingRow(label: String, icon: ImageVector? = null, iconPainter: In
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 24.dp)
             .shadow(5.dp, RoundedCornerShape(26.dp), clip = false, spotColor = V2C.Shadow)
             .background(V2C.Surface, RoundedCornerShape(26.dp))
             .clip(RoundedCornerShape(26.dp))
@@ -187,7 +139,7 @@ private fun SettingRow(label: String, icon: ImageVector? = null, iconPainter: In
             }
         }
         Spacer(Modifier.width(16.dp))
-        Text(label, style = jua(19, V2C.Title), modifier = Modifier.weight(1f))
+        Text(label, style = jua(17, V2C.Title), modifier = Modifier.weight(1f))
         if (LocalDensity.current.fontScale < 1.4f) Text("→", style = jua(20, V2C.Title), modifier = Modifier.clearAndSetSemantics { })
     }
 }
@@ -259,7 +211,7 @@ private fun StepRow(n: Int, text: String) {
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 24.dp)
             .shadow(4.dp, RoundedCornerShape(26.dp), clip = false, spotColor = V2C.Shadow)
             .background(V2C.Surface, RoundedCornerShape(26.dp))
             .padding(horizontal = 18.dp, vertical = 18.dp),
@@ -279,7 +231,7 @@ private fun GuideCard(icon: ImageVector, text: String) {
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 24.dp)
             .shadow(4.dp, RoundedCornerShape(26.dp), clip = false, spotColor = V2C.Shadow)
             .background(V2C.Surface, RoundedCornerShape(26.dp))
             .padding(horizontal = 18.dp, vertical = 18.dp),

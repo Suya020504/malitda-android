@@ -21,6 +21,8 @@ val localProps = Properties().apply {
 }
 // Public QA APKs never embed a provider key. A private developer build requires an explicit opt-in.
 val includeDirectImageKey = providers.gradleProperty("includeDirectImageKey").orNull == "true"
+// Separate private evaluation build; public debug QA and every release keep these tools off.
+val enablePrivatePilotTools = providers.gradleProperty("enablePrivatePilotTools").orNull == "true"
 val openAiKey: String = if (includeDirectImageKey) localProps.getProperty("OPENAI_API_KEY", "").trim() else ""
 val openAiImageModel: String = localProps.getProperty("OPENAI_IMAGE_MODEL", "gpt-image-2").trim()
 
@@ -33,10 +35,11 @@ android {
         minSdk = 26
         targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionCode = 10
-        versionName = "0.3.1"
+        versionCode = 11
+        versionName = "0.3.2"
         // 그림 만들기용 R4 서버 주소. 키는 서버에만 있고 앱에는 넣지 않는다. 릴리스는 비워 기능을 끈다.
         buildConfigField("String", "R4_SERVER_URL", "\"\"")
+        buildConfigField("boolean", "PILOT_TOOLS_ENABLED", "false")
         buildConfigField("String", "OPENAI_API_KEY", "\"\"")
         buildConfigField("String", "OPENAI_IMAGE_MODEL", "\"$openAiImageModel\"")
         vectorDrawables { useSupportLibrary = true }
@@ -81,6 +84,7 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
+            buildConfigField("boolean", "PILOT_TOOLS_ENABLED", enablePrivatePilotTools.toString())
             // adb reverse tcp:8769 tcp:8769 로 PC의 R4 서버에 연결한다.
             buildConfigField("String", "R4_SERVER_URL", "\"http://127.0.0.1:8769\"")
             // 키가 있으면 USB·PC 서버 없이 앱이 바로 그림을 만든다(없으면 R4 서버 방식).

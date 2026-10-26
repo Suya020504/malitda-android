@@ -75,7 +75,7 @@ fun U10Activate(
             Spacer(Modifier.height(16.dp))
         }
         V2PrimaryButton(if (saving) "저장 중…" else "확인한 뜻 사용하기", enabled = confirmation.canActivate && !saving, onClick = onUse)
-        V2TextButton("미확인으로 두기") { if (!saving) onLater() }
+        V2TextButton("미확인으로 두기", enabled = !saving, onClick = onLater)
         Spacer(Modifier.height(8.dp))
     }
 }

@@ -86,11 +86,15 @@ fun U02Listen(
 
 @Composable
 private fun ListeningCard(listening: ListenState.Listening?) {
-    val pulse by rememberInfiniteTransition(label = "pulse").animateFloat(
-        initialValue = 0.94f, targetValue = 1.06f,
-        animationSpec = infiniteRepeatable(tween(900, easing = LinearEasing), RepeatMode.Reverse),
-        label = "pulse",
-    )
+    val motion = rememberV2MotionEnabled()
+    val pulse = if (motion && listening != null) {
+        val value by rememberInfiniteTransition(label = "pulse").animateFloat(
+            initialValue = 1f, targetValue = 1.035f,
+            animationSpec = infiniteRepeatable(tween(1100, easing = androidx.compose.animation.core.FastOutSlowInEasing), RepeatMode.Reverse),
+            label = "pulse",
+        )
+        value
+    } else 1f
     V2Card {
         Column(
             Modifier
