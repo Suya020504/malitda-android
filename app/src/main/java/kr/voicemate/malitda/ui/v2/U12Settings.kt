@@ -76,7 +76,7 @@ fun U12Settings(
             V2SubTitle("${studentName.ifBlank { "친구" }}에게 편한 사용 환경을 고릅니다.")
             if (!enlarged) {
                 Image(painterResource(R.drawable.v2_char_robot), contentDescription = null,
-                    modifier = Modifier.align(Alignment.CenterHorizontally).size(84.dp), contentScale = ContentScale.Fit)
+                    modifier = Modifier.align(Alignment.CenterHorizontally).size(84.dp).clip(RoundedCornerShape(24.dp)), contentScale = ContentScale.Fit)
             }
             SettingsGroupTitle("사용 환경")
             SettingRow(iconPainter = R.drawable.ic_consent_mic, label = "마이크 권한 안내", onClick = onMicGuide)
