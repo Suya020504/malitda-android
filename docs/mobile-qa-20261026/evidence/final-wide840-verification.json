@@ -1,0 +1,39 @@
+{
+  "additional_wide_condition": true,
+  "viewport_dp_approx": 840,
+  "px": [
+    2326,
+    2658
+  ],
+  "font_scale": 1.0,
+  "scroll_container_bounds": [
+    333,
+    328,
+    1994,
+    2315
+  ],
+  "content_width_dp": 599.91,
+  "horizontal_center_px": 1163.5,
+  "viewport_center_px": 1163.0,
+  "nav_bounds": [
+    [
+      377,
+      2365,
+      894,
+      2542
+    ],
+    [
+      905,
+      2365,
+      1422,
+      2542
+    ],
+    [
+      1433,
+      2365,
+      1950,
+      2542
+    ]
+  ],
+  "max600_observed": true
+}

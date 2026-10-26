@@ -1,0 +1,25 @@
+{
+  "ui_tree_samples": [
+    {
+      "sample": 0,
+      "tool_retry": "ERROR: null root node returned by UiTestAutomationBridge.\n"
+    },
+    {
+      "sample": 1,
+      "consent_visible": false,
+      "qa390_visible": false,
+      "home_tab": false,
+      "labels_count": 0
+    },
+    {
+      "sample": 2,
+      "consent_visible": false,
+      "qa390_visible": false,
+      "home_tab": true,
+      "labels_count": 8
+    }
+  ],
+  "screen_video": "final-cold-start.mp4",
+  "not_a_timing_benchmark": true,
+  "reconsent_clicked": false
+}

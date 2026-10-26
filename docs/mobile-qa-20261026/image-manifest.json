@@ -1,0 +1,58 @@
+[
+  {
+    "file": "images/home.png",
+    "sha256": "c05658f33f45408a0ce9e7ab222142e00fa8ca1aab57f4255140ab95209df116",
+    "source_capture": "fold-final-390-font1-home.png",
+    "dataset": "synthetic QA profile only",
+    "phase": "final-fold"
+  },
+  {
+    "file": "images/home-large.png",
+    "sha256": "c8b1f4fa9960ab0a30cd1a20999b0f0f97813f4eadb32333e2879aae2f1bec3d",
+    "source_capture": "fold-final-320-font2-home.png",
+    "dataset": "synthetic QA profile only",
+    "phase": "final-fold"
+  },
+  {
+    "file": "images/library-large.png",
+    "sha256": "ac063188715825dc7e5aab91102ff5f398c07a4f4e77fd577a54ff8a576f96a5",
+    "source_capture": "final-320-font2-library.png",
+    "dataset": "synthetic QA profile only",
+    "phase": "final-readiness-phrase"
+  },
+  {
+    "file": "images/settings-large.png",
+    "sha256": "a2b1e9280672b0150300ded6520169fe2c403dbc1082055abcbc227efa792163",
+    "source_capture": "final-320-font2-settings.png",
+    "dataset": "synthetic QA profile only",
+    "phase": "final-readiness-phrase"
+  },
+  {
+    "file": "images/register-keyboard.png",
+    "sha256": "546e23d2f349d72594c4d996b8552228e67bece2a1c0f24521955eb3da8d82e3",
+    "source_capture": "final-register-save-visible-keyboard-390.png",
+    "dataset": "synthetic QA profile only",
+    "phase": "final-readiness-phrase"
+  },
+  {
+    "file": "images/confirm-and-home.png",
+    "sha256": "29e8107fc24c0f3ca90ee9d010de06d52623484fd665b00ad21938c28fcea445",
+    "source_capture": "final-confirm-and-home-action-390.png",
+    "dataset": "synthetic QA profile only",
+    "phase": "final-readiness-phrase"
+  },
+  {
+    "file": "images/share-home.png",
+    "sha256": "905572cf59e1fcdfcdea7fad9717a8e176a15b992881e306bf17196c474b5cca",
+    "source_capture": "final-share-resume-home-cta.png",
+    "dataset": "synthetic QA profile only",
+    "phase": "final-readiness-phrase"
+  },
+  {
+    "file": "images/wide-home.png",
+    "sha256": "04673f6d1db73ae31882ecbe0c74f213f436ce2934b62276a2a5901531f7a4ee",
+    "source_capture": "final-wide840-font1-home.png",
+    "dataset": "synthetic QA profile only",
+    "phase": "final-readiness-phrase"
+  }
+]

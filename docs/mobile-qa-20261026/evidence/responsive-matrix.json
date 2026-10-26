@@ -1,0 +1,155 @@
+{
+  "apk_sha256": "19c8000daa7a10ab988b474bb16fbc7aedcc58d408eaede73d34d1a92331e8e2",
+  "source_commit": "67123c9aca21ff7a29f54247466e17b7dddce22b",
+  "configurations": [
+    {
+      "dp_width": 320,
+      "px_size": [
+        886,
+        1920
+      ],
+      "density": 443,
+      "font_scale": 1.0,
+      "screens": [
+        "final-320-font1-home",
+        "final-320-font1-library",
+        "final-320-font1-settings"
+      ]
+    },
+    {
+      "dp_width": 320,
+      "px_size": [
+        886,
+        1920
+      ],
+      "density": 443,
+      "font_scale": 2.0,
+      "screens": [
+        "final-320-font2-home",
+        "final-320-font2-library",
+        "final-320-font2-settings"
+      ]
+    },
+    {
+      "dp_width": 360,
+      "px_size": [
+        997,
+        2215
+      ],
+      "density": 443,
+      "font_scale": 1.0,
+      "screens": [
+        "final-360-font1-home",
+        "final-360-font1-library",
+        "final-360-font1-settings"
+      ]
+    },
+    {
+      "dp_width": 360,
+      "px_size": [
+        997,
+        2215
+      ],
+      "density": 443,
+      "font_scale": 2.0,
+      "screens": [
+        "final-360-font2-home",
+        "final-360-font2-library",
+        "final-360-font2-settings"
+      ]
+    },
+    {
+      "dp_width": 390,
+      "px_size": [
+        1080,
+        2340
+      ],
+      "density": 443,
+      "font_scale": 1.0,
+      "screens": [
+        "final-390-font1-home",
+        "final-390-font1-library",
+        "final-390-font1-settings"
+      ]
+    },
+    {
+      "dp_width": 390,
+      "px_size": [
+        1080,
+        2340
+      ],
+      "density": 443,
+      "font_scale": 2.0,
+      "screens": [
+        "final-390-font2-home",
+        "final-390-font2-library",
+        "final-390-font2-settings"
+      ]
+    },
+    {
+      "dp_width": 430,
+      "px_size": [
+        1191,
+        2580
+      ],
+      "density": 443,
+      "font_scale": 1.0,
+      "screens": [
+        "final-430-font1-home",
+        "final-430-font1-library",
+        "final-430-font1-settings"
+      ]
+    },
+    {
+      "dp_width": 430,
+      "px_size": [
+        1191,
+        2580
+      ],
+      "density": 443,
+      "font_scale": 2.0,
+      "screens": [
+        "final-430-font2-home",
+        "final-430-font2-library",
+        "final-430-font2-settings"
+      ]
+    },
+    {
+      "dp_width": 600,
+      "px_size": [
+        1661,
+        2658
+      ],
+      "density": 443,
+      "font_scale": 1.0,
+      "screens": [
+        "final-600-font1-home",
+        "final-600-font1-library",
+        "final-600-font1-settings"
+      ]
+    },
+    {
+      "dp_width": 600,
+      "px_size": [
+        1661,
+        2658
+      ],
+      "density": 443,
+      "font_scale": 2.0,
+      "screens": [
+        "final-600-font2-home",
+        "final-600-font2-library",
+        "final-600-font2-settings"
+      ]
+    }
+  ],
+  "screen_count": 30,
+  "all_png_decoded": true,
+  "total_out_of_window_nodes": 0,
+  "limits": [
+    "UIAutomator 자체가 화면 경계의 좌표를 잘라 반환하므로 이 검사만으로 실제 텍스트 잘림이 없다고 보증하지 않는다.",
+    "스크롤 경계의 부분 노출과 글리프 간격은 PNG 시각검수를 함께 사용한다.",
+    "실제 보조기술·모든 내용 길이·실물 기기 전수 시험이 아니다."
+  ],
+  "large_home_delta": "97a2db6 / 7681245e: subsequent five large-home and one normal-home checks; other layout files unchanged"
+}

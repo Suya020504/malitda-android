@@ -1,0 +1,43 @@
+{
+  "apk_sha256": "7681245ed63ceaeaeccd1fb5b241fc23a374ba196566c49e41bd0feefa948fdc",
+  "host_builds_finished_per_parent": true,
+  "runs": [
+    {
+      "repeat": 1,
+      "pass": true,
+      "processing_ms": 548,
+      "audio_ms": 2010,
+      "command_wall_sec": 2.656,
+      "hints": "none",
+      "synthetic_only": true,
+      "human_recording": false,
+      "model_files_preexisted": true,
+      "engine_instance_recreated_by_test": true,
+      "not_same_live_engine_warm_session": true,
+      "real_mobile_latency_or_accuracy_estimate": false
+    },
+    {
+      "repeat": 2,
+      "pass": true,
+      "processing_ms": 452,
+      "audio_ms": 2010,
+      "command_wall_sec": 2.25,
+      "hints": "none",
+      "synthetic_only": true,
+      "human_recording": false,
+      "model_files_preexisted": true,
+      "engine_instance_recreated_by_test": true,
+      "not_same_live_engine_warm_session": true,
+      "real_mobile_latency_or_accuracy_estimate": false
+    }
+  ],
+  "distinct_unique_tests": 1,
+  "repeat_count": 2,
+  "functional_passes_not_latency_target_certification": true,
+  "limitations": [
+    "동일한 합성 Heami 문장 하나뿐이다. 장애 발화·실기기 품질 근거가 아니다.",
+    "기존 모델 파일·OS 캐시 상태에서 테스트가 엔진 인스턴스를 새로 만든 반복 관측이다.",
+    "model prepare와 Android Instrumentation 시작시간은 processingMs와 구분한다.",
+    "호스트의 모든 백그라운드 부하를 통제한 엄격한 성능 실험은 아니다."
+  ]
+}

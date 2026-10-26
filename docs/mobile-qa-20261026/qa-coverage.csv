@@ -1,0 +1,42 @@
+﻿ID,결과,근거·범위,증거
+FLOW-JOURNEY-ENTRY,BLOCKED,실제 대상자의 10초 이해·진입 이해도 미검증. 이번 감사의 전수 실제 실행으로 확대하지 않음.,모바일QA보고서.md; verification.json; evidence/
+FLOW-JOURNEY-NAVIGATION,PASS,"등록→뜻 확인→전달, 공유창 취소·배경 왕복→홈·재확인, 직접 홈 이동 대표 경로 실제 클릭.",모바일QA보고서.md; verification.json; evidence/
+FLOW-JOURNEY-ACTIONS,BLOCKED,핵심 대표 행동과 소스 연결을 확인했으며 모든 조합/행동의 전수 UI 검사는 아님. 이번 감사의 전수 실제 실행으로 확대하지 않음.,모바일QA보고서.md; verification.json; evidence/
+FLOW-STATE-PERSISTENCE,PASS,동의 재입력·데이터 clear 없이 기존 합성 프로필·활성 뜻·미확인 보관·PIN 유지 확인.,모바일QA보고서.md; verification.json; evidence/
+FLOW-STATE-COUNTS,PASS,활성/미확인 분리와 추가·확인 후 홈 개수 변화를 대표 합성 자료로 확인.,모바일QA보고서.md; verification.json; evidence/
+FLOW-STATE-ISOLATION,PASS,개인 뜻·승인·PIN/동의 관련 단위·48계측 회귀. 실제 다중 기관 서버 아님.,모바일QA보고서.md; verification.json; evidence/
+FLOW-STATE-CORRUPTION,PASS,48계측의 알려진 DB·키 복구 회귀 통과. 모든 디스크 손상 주입 아님.,모바일QA보고서.md; verification.json; evidence/
+FLOW-STATE-STORAGE-FAILURE,BLOCKED,롤백과 실패 안내를 확인했으나 디스크 용량 부족·모든 파일 오류의 실주입은 미실행. 이번 감사의 전수 실제 실행으로 확대하지 않음.,모바일QA보고서.md; verification.json; evidence/
+FLOW-ERROR-RECOVERY,PASS,잘 모름/미확인·재확인·공유 취소/복귀 경로 확인. 실제 공급자 오류 주입 제외.,모바일QA보고서.md; verification.json; evidence/
+FLOW-ROUTE-INVALID,BLOCKED,null/변경 스냅숏 복구 코드는 연결했으나 모든 강제 무효 ID 진입은 전수 미실행. 이번 감사의 전수 실제 실행으로 확대하지 않음.,모바일QA보고서.md; verification.json; evidence/
+FLOW-ROUTE-INVENTORY,PASS,"U04S 홈/재확인과 U10 확인 후 홈, U05 미확인 저장 후 홈의 호출부·실제 도착 확인.",모바일QA보고서.md; verification.json; evidence/
+FLOW-FRAMEWORK-OVERLAY,EXCLUDED,React/브라우저 프레임워크 overlay 대상이 아닌 네이티브 Android 감사. 기존 crash 로그는 별도 이력.,모바일QA보고서.md; verification.json; evidence/
+UI-RESP-OVERFLOW,PASS,320~600dp×100/200의 세 탭 30장·트리 관측. 마지막 large-home 5개와 normal 1개 영향 재검수.,모바일QA보고서.md; verification.json; evidence/
+UI-RESP-FIXED-UI,PASS,"최소폭 큰글씨 탭 간격, 키보드 열린 등록·저장 스크롤, 마지막 홈 말하기 라벨 전체 표시 확인.",모바일QA보고서.md; verification.json; evidence/
+UI-RESP-EDGE-STATES,BLOCKED,대표 빈 상태/길이/200%는 확인했으나 모든 최대 레코드/문자열 조합은 미검증. 이번 감사의 전수 실제 실행으로 확대하지 않음.,모바일QA보고서.md; verification.json; evidence/
+UI-HIERARCHY-PRIMARY-SECONDARY,BLOCKED,레이아웃은 확인했으나 실제 대상자의 시각 위계 이해는 관찰하지 않음. 이번 감사의 전수 실제 실행으로 확대하지 않음.,모바일QA보고서.md; verification.json; evidence/
+UI-IDENTITY-TABS,PASS,"기존 세 탭·로고·캐릭터·주아 보존, 동일 너비 탭과 24dp 벡터 아이콘 선택 상태 확인.",모바일QA보고서.md; verification.json; evidence/
+UI-ABOVE-FOLD-CTA,PASS,MOB-08 수정 후320~600dp/font2 홈 말하기 라벨99px가viewport에 전부 포함. 전체 UI 전수 판정 아님.,모바일QA보고서.md; verification.json; evidence/
+UI-RESP-WIDE,PASS,추가840×960dp/font1에서 본문599.91dp·중앙 정렬 확인. 가로모드·실물 태블릿 검증 아님.,모바일QA보고서.md; verification.json; evidence/
+A11Y-TITLE,BLOCKED,제목 의미를 추가했으나 실제 TalkBack 전환·낭독 전수 미검증. 이번 감사의 전수 실제 실행으로 확대하지 않음.,모바일QA보고서.md; verification.json; evidence/
+A11Y-LANDMARKS,BLOCKED,네이티브 제목/영역 의미를 적용했으나 보조기술의 영역 이동 전수 미검증. 이번 감사의 전수 실제 실행으로 확대하지 않음.,모바일QA보고서.md; verification.json; evidence/
+A11Y-NAMES,BLOCKED,실제 그림칩 이름을 보완했으나 모든 보조기술·읽기 순서 전수 미검증. 이번 감사의 전수 실제 실행으로 확대하지 않음.,모바일QA보고서.md; verification.json; evidence/
+A11Y-KEYBOARD,BLOCKED,키보드 대표 입력은 확인. 실제 Switch Access/Voice Access 전체 과업 미검증. 이번 감사의 전수 실제 실행으로 확대하지 않음.,모바일QA보고서.md; verification.json; evidence/
+A11Y-CONTRAST,BLOCKED,대표 렌더/고대비 구현 확인. 모든 그림·그라데이션의 픽셀 대비·상태 조합 측정 미실행.,모바일QA보고서.md; verification.json; evidence/
+A11Y-CONSOLE,EXCLUDED,웹 콘솔 대상이 아님. 과거 Android crash 기록과 신규 Java 논리 재현은 별도.,모바일QA보고서.md; verification.json; evidence/
+PROD-AUTH,PASS,기존 로컬 PIN·동의 보존/잠금·설정 사용 확인. 서버 계정이나 법적 보호자 인증 아님.,모바일QA보고서.md; verification.json; evidence/
+PROD-TRANSACTION,PASS,DB/개인 뜻/확인/삭제/키 관련48계측 및 등록·확인·홈 실사용 흐름 회귀 통과.,모바일QA보고서.md; verification.json; evidence/
+PROD-ASYNC,BLOCKED,모의 생성 취소·늦은 응답 차단은 확인. 모든 DB 지연/프로필/네트워크 조합 전수 주입은 아님. 이번 감사의 전수 실제 실행으로 확대하지 않음.,모바일QA보고서.md; verification.json; evidence/
+PROD-INTEGRATION,BLOCKED,Sharesheet 열기/취소·모의 서버·실 STT 합성 통합 확인. 실제 유료 서버·외부 수신·실기기 TTS 품질 미검증. 이번 감사의 전수 실제 실행으로 확대하지 않음.,모바일QA보고서.md; verification.json; evidence/
+PROD-DATA,PASS,기존 합성 자료 보존·활성/미확인 분리·익명 실증 관련48계측. 실제 사용자 자료 미접근.,모바일QA보고서.md; verification.json; evidence/
+PROD-ACCESSIBILITY,BLOCKED,폭/글씨/IME 대표 회귀 확인. 전체 보조기술의 실제 과업·공식준수 판정 미검증.,모바일QA보고서.md; verification.json; evidence/
+PROD-PERFORMANCE,BLOCKED,MOB-01/P1: 새AVD 첫25.651초와 준비된 파일환경617/548/452ms 편차. 실폰·마이크 지연/최초조건 미검증.,모바일QA보고서.md; verification.json; evidence/
+PROD-OPERATIONS,BLOCKED,앱/가이드/실증 기록 운영은 준비. 기관·실제 참가자·문의 대응 운영 미검증. 이번 감사의 전수 실제 실행으로 확대하지 않음.,모바일QA보고서.md; verification.json; evidence/
+PROD-RELEASE,BLOCKED,로컬 빌드·서명·패치/최신main 통합 확인. 팀 서명·실제 배포·롤백·실폰 인수는 미실행.,모바일QA보고서.md; verification.json; evidence/
+PROD-OUTCOME,BLOCKED,실패 완료·연습/중단·관찰 응답·조건/목표를 분리해 기록. 실제 효과는 검증하지 않음. 이번 감사의 전수 실제 실행으로 확대하지 않음.,모바일QA보고서.md; verification.json; evidence/
+VIS-BASELINE,PASS,연결된 Figma276:661 홈 원본을 직접 읽고 기존 브랜드·주아·원형 마이크 보존을 대표 캡처와 대조.,모바일QA보고서.md; verification.json; evidence/
+VIS-FIDELITY,BLOCKED,기존 디자인을 유지한 대표 확인. 이전 59개 시안과 앱의 전수 픽셀 일치 판정은 아님. 이번 감사의 전수 실제 실행으로 확대하지 않음.,모바일QA보고서.md; verification.json; evidence/
+VIS-ASSETS,PASS,30개 대표 PNG decode·앱 로고/그림/캐릭터 시각 확인. 실제 사진·실제 생성 품질 제외.,모바일QA보고서.md; verification.json; evidence/
+VIS-SCOPE,PASS,원안·현재 앱·모의/실제 생성·물리 기기 검증 범위와 Figma 미동기화를 보고서에 구분.,모바일QA보고서.md; verification.json; evidence/
+VIS-SIMULATION,PASS,합성 프로필·합성 음성만 사용. 실제 이용자/유료생성/외부 발송0 명시.,모바일QA보고서.md; verification.json; evidence/
+VIS-CONTEXT,PASS,"확인/미확인 저장·공유 복귀·다시 승인/홈, 재실행 뒤 기존 프로필 맥락 유지 확인.",모바일QA보고서.md; verification.json; evidence/

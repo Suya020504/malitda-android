@@ -1,0 +1,10 @@
+{
+  "exit_code": 0,
+  "wall_sec": 6.234,
+  "test_count": 48,
+  "pass": true,
+  "apk_sha256": "7681245ed63ceaeaeccd1fb5b241fc23a374ba196566c49e41bd0feefa948fdc",
+  "test_apk_sha256": "a2c9afa51b1cd9641381e9ba1d1ba6b1ec54e15df2cb191cf3ac2e0b3af26c8a",
+  "real_microphone_used": false,
+  "synthetic_fixture_only": true
+}

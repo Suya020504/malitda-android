@@ -1,0 +1,126 @@
+{
+  "apk_sha256": "7681245ed63ceaeaeccd1fb5b241fc23a374ba196566c49e41bd0feefa948fdc",
+  "source": "97a2db6a701cff694730ca4ec8083ec0ff10aeb2",
+  "rows": [
+    {
+      "dp": 320,
+      "px": [
+        886,
+        1920
+      ],
+      "font": 2.0,
+      "label": "말하기",
+      "bounds": [
+        321,
+        1402,
+        567,
+        1501
+      ],
+      "height": 99,
+      "viewport": [
+        0,
+        286,
+        886,
+        1546
+      ],
+      "inside_viewport": true
+    },
+    {
+      "dp": 360,
+      "px": [
+        997,
+        2215
+      ],
+      "font": 2.0,
+      "label": "말하기",
+      "bounds": [
+        376,
+        1419,
+        622,
+        1518
+      ],
+      "height": 99,
+      "viewport": [
+        0,
+        303,
+        997,
+        1841
+      ],
+      "inside_viewport": true
+    },
+    {
+      "dp": 390,
+      "px": [
+        1080,
+        2340
+      ],
+      "font": 2.0,
+      "label": "말하기",
+      "bounds": [
+        418,
+        1426,
+        664,
+        1525
+      ],
+      "height": 99,
+      "viewport": [
+        0,
+        310,
+        1080,
+        1966
+      ],
+      "inside_viewport": true
+    },
+    {
+      "dp": 430,
+      "px": [
+        1191,
+        2580
+      ],
+      "font": 2.0,
+      "label": "말하기",
+      "bounds": [
+        473,
+        1439,
+        719,
+        1538
+      ],
+      "height": 99,
+      "viewport": [
+        0,
+        323,
+        1191,
+        2206
+      ],
+      "inside_viewport": true
+    },
+    {
+      "dp": 600,
+      "px": [
+        1661,
+        2658
+      ],
+      "font": 2.0,
+      "label": "말하기",
+      "bounds": [
+        708,
+        1444,
+        954,
+        1543
+      ],
+      "height": 99,
+      "viewport": [
+        0,
+        328,
+        1661,
+        2284
+      ],
+      "inside_viewport": true
+    }
+  ],
+  "all_five_label_rectangles_full_height_and_inside_viewport": true,
+  "normal_390_smoke": true,
+  "other_25_matrix_evidence": "final-matrix-results.json SHA19c8, no source changes in those screens per parent delta",
+  "full_mobile_device_certification": false,
+  "baseline_restored": true
+}
