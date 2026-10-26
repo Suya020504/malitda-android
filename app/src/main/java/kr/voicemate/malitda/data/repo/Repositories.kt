@@ -83,7 +83,7 @@ class CorrectionRepository(private val dao: CorrectionDao) {
     suspend fun recordApproval(profileId: Long, raw: String, approved: String): Boolean {
         val key = TextNormalizer.normalize(raw)
         val a = approved.trim()
-        if (key.isEmpty() || a.isEmpty() || key == TextNormalizer.normalize(a)) return false
+        if (profileId <= 0 || raw.trim().length > 200 || a.length > 200 || key.isEmpty() || a.isEmpty() || key == TextNormalizer.normalize(a)) return false
         val now = System.currentTimeMillis()
         val prev = dao.findExact(profileId, key)
         dao.upsert(
@@ -99,6 +99,7 @@ class CorrectionRepository(private val dao: CorrectionDao) {
         dao.findExact(profileId, TextNormalizer.normalize(raw))?.let { dao.update(it.copy(useCount = it.useCount + 1, lastUsedAt = System.currentTimeMillis())) }
     }
     suspend fun delete(id: Long) = dao.deleteById(id)
+    suspend fun deleteForProfile(profileId: Long, id: Long): Boolean = dao.deleteForProfile(profileId, id) > 0
     suspend fun deleteAll(profileId: Long) = dao.deleteAll(profileId)
 }
 

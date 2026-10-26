@@ -54,7 +54,7 @@ fun DataControlScreen(
                 CountRow("뜻에 연결된 평소 표현", counts["aliases"])
                 CountRow("뜻 확인 반응 이력", counts["confirmations"])
                 CountRow("이전 형식의 등록 문장", counts["expressions"])
-                CountRow("개인 교정 이력", counts["corrections"])
+                CountRow("저장한 수정", counts["corrections"])
                 if (hasLegacyTrialRecords) CountRow("이전 시험 기록", counts["trials"])
                 CountRow("등록한 뜻이 쓰는 사진·생성 그림", counts["photos"])
                 Text("같은 사진을 여러 뜻이나 학생이 함께 쓰면 파일 수와 뜻 수는 다릅니다.", style = jua(15, V2C.Muted), modifier = Modifier.padding(top = 8.dp))

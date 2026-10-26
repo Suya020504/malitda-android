@@ -52,6 +52,8 @@ interface CorrectionDao {
     @Update suspend fun update(c: CorrectionEntity)
     @Delete suspend fun delete(c: CorrectionEntity)
     @Query("DELETE FROM corrections WHERE id = :id") suspend fun deleteById(id: Long)
+    @Query("DELETE FROM corrections WHERE profileId = :profileId AND id = :id")
+    suspend fun deleteForProfile(profileId: Long, id: Long): Int
     @Query("DELETE FROM corrections WHERE profileId = :profileId") suspend fun deleteAll(profileId: Long)
 }
 

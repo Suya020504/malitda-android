@@ -2,5 +2,8 @@
 <!-- 디버그 빌드 전용: 지원자 그림 만들기를 PC R4 서버에 요청하는 인터넷 권한. 릴리스 빌드에는 들어가지 않는다. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
-    <application android:networkSecurityConfig="@xml/r4_network_security" />
+    <application android:networkSecurityConfig="@xml/r4_network_security">
+        <!-- Instrumentation-only host; no launcher entry, no exported component, absent from release. -->
+        <activity android:name="kr.voicemate.malitda.ui.testing.CoreQaActivity" android:exported="false" />
+    </application>
 </manifest>

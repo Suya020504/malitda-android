@@ -105,6 +105,9 @@ fun U03Confirm(
     onUnsure: () -> Unit,
     onBack: () -> Unit,
     onHelp: () -> Unit,
+    onEasyEdit: ((String) -> Unit)? = null,
+    onListenText: (String) -> Unit = {},
+    onStopReading: () -> Unit = {},
 ) {
     V2Screen {
         V2Header(onBack = onBack, onHelp = onHelp)
@@ -127,6 +130,7 @@ fun U03Confirm(
             Spacer(Modifier.height(14.dp))
             V2SecondaryButton("소리로 확인하기") { onListen() }
             V2TextButton("문장 직접 고치기", onClick = onEdit)
+            if (onEasyEdit != null) EasyTextOffer(meaning.text, onUse = onEasyEdit, onListen = onListenText, enabled = !confirming, onStop = onStopReading)
             Spacer(Modifier.height(16.dp))
         }
         V2PrimaryButton(if (confirming) "확인 중…" else "맞아요", icon = "✓", enabled = !confirming) { onYes() }
@@ -140,7 +144,7 @@ fun U03Confirm(
 /** 판단을 유보해도 전달되지 않는다. 도움을 받아 다시 보거나 다른 카드·종료를 선택한다. */
 @Composable
 fun U03Unsure(meaning: MeaningEntity?, onListen: () -> Unit, onRecheck: () -> Unit,
-    onPick: () -> Unit, onStop: () -> Unit, onHelp: () -> Unit) {
+    onPick: () -> Unit, onStop: () -> Unit, onHelp: () -> Unit, literalText: String? = null) {
     V2Screen {
         V2Header(onBack = onRecheck, onHelp = onHelp)
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
@@ -148,6 +152,9 @@ fun U03Unsure(meaning: MeaningEntity?, onListen: () -> Unit, onRecheck: () -> Un
             V2Banner("이번 뜻 확인을 잠시 미뤘습니다.\n그림이나 소리로 다시 확인할 수 있습니다.")
             Spacer(Modifier.height(16.dp))
             meaning?.let { MeaningBigCard(it, imageAspect = 2f) }
+            literalText?.takeIf { it.isNotBlank() }?.let {
+                V2Card { Text(it,style=jua(26,V2C.Ink),modifier=Modifier.padding(20.dp)) }
+            }
             Spacer(Modifier.height(16.dp))
             V2SecondaryButton("소리 다시 듣기", onClick = onListen)
             Spacer(Modifier.height(14.dp))

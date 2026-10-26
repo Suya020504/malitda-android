@@ -150,12 +150,15 @@ fun MalitdaV2App(vm: SessionViewModel) {
         s.split(",", "\n").map { it.trim() }.filter { it.isNotBlank() }.distinct()
 
     val ui by vm.ui.collectAsStateWithLifecycle()
+    val savedCorrections by vm.corrections.collectAsStateWithLifecycle()
+    val rememberedCorrection by vm.rememberedCorrection.collectAsStateWithLifecycle()
+    var correctionBusy by remember { mutableStateOf(false) }
     val settingsSnapshot by vm.loadedSettings.collectAsStateWithLifecycle()
     val settings = settingsSnapshot ?: return
     val pilotToolsEnabled = vm.pilotToolsEnabled
     val trialLoggingEnabled = pilotToolsEnabled && settings.trialLogging
     val v2 by vm.v2.collectAsStateWithLifecycle()
-    val meanings by vm.meanings.collectAsStateWithLifecycle()
+    val meaningSnapshot by vm.meaningSnapshot.collectAsStateWithLifecycle()
     val name by vm.profileName.collectAsStateWithLifecycle()
     val speaking by vm.ttsSpeaking.collectAsStateWithLifecycle()
     val artStyle by vm.artStyle.collectAsStateWithLifecycle()
@@ -189,6 +192,11 @@ fun MalitdaV2App(vm: SessionViewModel) {
     val archived by vm.meaningsArchived.collectAsStateWithLifecycle()
     val profilesList by vm.profiles.collectAsStateWithLifecycle()
     val profileId by vm.profileId.collectAsStateWithLifecycle()
+    if (profileId <= 0L || meaningSnapshot.profileId != profileId || meaningSnapshot.items == null) {
+        SettingsLoadingScreen()
+        return
+    }
+    val meanings = meaningSnapshot.items.orEmpty()
     LaunchedEffect(meanings, profileId) { aliases = meanings.associate { it.id to vm.v2ExpressionsText(it.id) } }
 
     /** 보관함·사용 중지 뜻을 U10 재확인으로 보낼 준비. */
@@ -406,6 +414,8 @@ fun MalitdaV2App(vm: SessionViewModel) {
             "U14END" -> route = pilotEndReturn
             "U16" -> goHome()
             "U17" -> { vm.revokeLiteral(); route = literalReturn }
+            "U17H" -> route = "U17"
+            "U19" -> goLibrary()
             "U18" -> { vm.revokeLiteral(); route = "U17" }
             "U15" -> route = u15Return
             "U13" -> route = u13Return
@@ -561,6 +571,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
                 preferredMode = if (trialLoggingEnabled && pilot.canCollect && pilot.condition == "B") ConfirmationMode.TEXT else preferences.confirmationMode,
                 heard = if (v2.origin == V2Origin.VOICE) ui.raw else null,
                 onEdit = { beginLiteral(m.text, "U03") },
+                onEasyEdit = { beginLiteral(it, "U03") }, onListenText = vm::speak, onStopReading = vm::stopSpeaking,
                 studentName = name,
                 onListen = { openSound(m.text, m.imageKey, from = "U03") },
                 confirming = confirming,
@@ -723,6 +734,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
             }.take(3),
             onOpenExisting = { libId = it.id; u09Return = "U05"; route = "U09" },
             onPreview = { if (regMeaning.isNotBlank()) vm.speak(regMeaning) }, onPreviewStop = vm::stopSpeaking,
+            onReadText = vm::speak,
             conflictMessage = regConflict,
             imageGenerating = generating,
             saving = regPersisting,
@@ -849,6 +861,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onOpen = { picked -> libId = picked.id; u09Return = "U08"; route = "U09" },
             onUse = { picked -> vm.trialStartCard(); vm.v2SelectMeaning(picked, V2Origin.CARD); route = "U03" },
             onListen = { vm.speak(it.text) }, onFavorite = { vm.toggleMeaningFavorite(it.id) }, aliases = aliases,
+            savedCorrectionCount = savedCorrections.count { it.profileId == profileId }, onSavedCorrections = { route = "U19" },
             onRegister = { route = "U07" },
             onHome = { goHome() },
             onSettings = { route = "U12" },
@@ -1017,10 +1030,11 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onAccidentalSend = { vm.trialAccidentalSendObserved(); toast("실증을 즉시 중단했습니다. 전달 상황을 확인해야 합니다."); route = "U14" })
         else V2TaskEnded(onBack = { route = "U14" }, onHelp = ::help)
         "U16" -> U16SpeechCandidates(raw = ui.raw.orEmpty(),
-            meanings = if (trialLoggingEnabled && pilot.canCollect && pilot.condition == "A") emptyList()
-                       else v2.matchIds.mapNotNull { id -> meanings.firstOrNull { it.id == id } },
-            alternatives = if (trialLoggingEnabled && pilot.canCollect && pilot.condition == "A") emptyList() else (ui.candidates.map { it.text } + ui.alternatives).distinct(),
-            candidateCount = preferences.candidateCount, context = v2.context,
+            choices = if (trialLoggingEnabled && pilot.canCollect && pilot.condition == "A") emptyList()
+                else kr.voicemate.malitda.domain.VoiceCandidateOptions.build(profileId, ui.raw.orEmpty(),
+                    v2.matchIds.mapNotNull { id -> meanings.firstOrNull { it.id == id } }, ui.candidates,
+                    ui.alternatives, preferences.candidateCount),
+            context = v2.context,
             onContext = vm::setSituationContext,
             onRerank = { scope.launch { vm.v2ResolveFromStt() } },
             onMeaning = { vm.v2SelectMeaning(it, V2Origin.VOICE); route = "U03" },
@@ -1028,10 +1042,15 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onCards = { route = "U06" }, onRespeak = ::startMic, onBack = ::goHome, onHelp = ::help)
         "U17" -> U17LiteralEdit(ui.draft, ui.raw, vm::updateDraft,
             onListen = { vm.speak(ui.draft) }, onConfirm = { if (vm.approveLiteral()) route = "U18" },
-            onCards = { vm.revokeLiteral(); route = "U06" }, onBack = { vm.revokeLiteral(); if (literalReturn == "U01") goHome() else route = literalReturn }, onHelp = ::help)
+            onCards = { vm.revokeLiteral(); route = "U06" }, onBack = { vm.revokeLiteral(); if (literalReturn == "U01") goHome() else route = literalReturn }, onHelp = ::help,
+            onListenText = vm::speak, onUnsure = { vm.revokeLiteral(); route = "U17H" }, onStopReading = vm::stopSpeaking)
+        "U17H" -> U03Unsure(meaning = null, literalText = ui.draft,
+            onListen = { vm.speak(ui.draft) }, onRecheck = { route = "U17" },
+            onPick = { vm.revokeLiteral(); route = "U06" }, onStop = ::goHome, onHelp = ::help)
         "U18" -> if (!vm.canDeliverLiteral()) {
             U17LiteralEdit(ui.draft, ui.raw, vm::updateDraft, { vm.speak(ui.draft) },
-                { if (vm.approveLiteral()) route = "U18" }, { route = "U06" }, ::goHome, ::help)
+                { if (vm.approveLiteral()) route = "U18" }, { route = "U06" }, ::goHome, ::help,
+                onListenText = vm::speak, onUnsure = { vm.revokeLiteral(); route = "U17H" }, onStopReading = vm::stopSpeaking)
         } else U18LiteralDeliver(ui.draft,
             onListen = { vm.approvedLiteralText()?.let(vm::speak) }, onStopSound = vm::stopSpeaking,
             onShare = { vm.approvedLiteralText()?.let { approved -> runCatching { CommunicationIntents.shareText(ctx, approved) }
@@ -1040,7 +1059,30 @@ fun MalitdaV2App(vm: SessionViewModel) {
                 .onSuccess { toast("복사했습니다. 다른 앱에 붙여 넣을 수 있습니다.") }.onFailure { toast("복사하지 못했습니다.") } } },
             onSave = { val text = ui.draft; vm.revokeLiteral(); resetRegForm(); regMeaning = text; route = "U05" },
             onEdit = { vm.revokeLiteral(); route = "U17" }, onDone = { vm.completePilotTask(); goHome() }, onHelp = ::help,
+            learning = vm.correctionLearningOffer(), remembered = rememberedCorrection != null && rememberedCorrection == vm.correctionLearningOffer(),
+            remembering = correctionBusy,
+            onRemember = { request -> if (!correctionBusy) { correctionBusy = true; scope.launch {
+                try {
+                    runCatching { vm.rememberCorrection(request) }
+                        .onSuccess { if (it) toast("다음에 같은 말을 들으면 수정 후보로 보여 줍니다.") }
+                        .onFailure { toast(it.message ?: "수정을 저장하지 못했습니다. 확인한 문장은 그대로 사용할 수 있습니다.") }
+                } finally { correctionBusy = false }
+            } } },
+            onHistory = { goLibrary(); route = "U19" },
             onFeedback = if (trialLoggingEnabled && trialDraft != null) ({ feedbackReturn = "U18"; route = "U14FEEDBACK" }) else null)
+
+        "U19" -> U19SavedCorrections(profileId, savedCorrections, correctionBusy,
+            onUse = { item -> scope.launch {
+                if (vm.useSavedCorrection(item)) { literalReturn = "U19"; route = "U17" }
+                else toast("수정 기록이나 사용자가 바뀌었습니다. 다시 골라야 합니다.")
+            } },
+            onDelete = { item -> if (!correctionBusy) { correctionBusy = true; scope.launch {
+                try {
+                    runCatching { vm.deleteSavedCorrection(item.profileId, item.id) }
+                        .onSuccess { toast(if (it) "수정 기록을 지웠습니다." else "이미 지워진 기록입니다.") }
+                        .onFailure { toast(it.message ?: "삭제를 마치지 못했습니다.") }
+                } finally { correctionBusy = false }
+            } } }, onBack = ::goLibrary, onHome = ::goHome, onHelp = ::help)
 
         "U06" -> {
             // 음성 인식 후보 순위를 앞세우고, 지금 보던 뜻은 뺀다.

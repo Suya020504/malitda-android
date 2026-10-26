@@ -51,6 +51,7 @@ fun U05Register(
     onCategory: (String) -> Unit = {},
     onPreview: () -> Unit = {},
     onPreviewStop: () -> Unit = {},
+    onReadText: (String) -> Unit = {},
     similarMeanings: List<kr.voicemate.malitda.data.db.MeaningEntity> = emptyList(),
     onOpenExisting: (kr.voicemate.malitda.data.db.MeaningEntity) -> Unit = {},
     onExpression: (String) -> Unit,
@@ -113,6 +114,7 @@ fun U05Register(
                     Text("전달 문장은 입력한 원문을 유지합니다.", style = jua(14, V2C.Muted))
                     V2TextButton("저장 전 소리로 확인", onClick = onPreview)
                     V2TextButton("소리 멈추기", onClick = onPreviewStop)
+                    EasyTextOffer(meaning, onUse = onMeaning, onListen = onReadText, enabled = !saving && !imageGenerating, onStop = onPreviewStop)
                     Spacer(Modifier.height(18.dp))
                     // 의미 그림 선택 줄
                     Row(

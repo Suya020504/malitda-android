@@ -22,15 +22,19 @@ import kr.voicemate.malitda.stt.WhisperSttEngine
 import kr.voicemate.malitda.tts.TtsManager
 
 /** 수동 DI 컨테이너. 앱 프로세스당 하나. */
-class AppContainer(private val app: Application) {
+class AppContainer(private val app: Application,
+    private val databaseOverride: AppDatabase? = null,
+    private val settingsOverride: SettingsStore? = null,
+    private val sttOverride: SttEngine? = null,
+) {
     val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     val filesDir: java.io.File get() = app.filesDir
     val cacheDir: java.io.File get() = app.cacheDir
     val pilot by lazy { kr.voicemate.malitda.data.pilot.PilotStore(app) }
     val dataManagement by lazy { kr.voicemate.malitda.data.repo.DataManagementRepository(db, filesDir, cacheDir) }
-    val settings: SettingsStore by lazy { SettingsStore(app) }
+    val settings: SettingsStore by lazy { settingsOverride ?: SettingsStore(app) }
     val feedback by lazy { kr.voicemate.malitda.data.feedback.FeedbackSignal(app) }
-    val db: AppDatabase by lazy { AppDatabase.build(app, DbKeyManager(app).getOrCreateKey()) }
+    val db: AppDatabase by lazy { databaseOverride ?: AppDatabase.build(app, DbKeyManager(app).getOrCreateKey()) }
     val profiles: ProfileRepository by lazy { ProfileRepository(db.profileDao(), settings) }
     val expressions: ExpressionRepository by lazy { ExpressionRepository(db.expressionDao()) }
     val corrections: CorrectionRepository by lazy { CorrectionRepository(db.correctionDao()) }
@@ -45,7 +49,7 @@ class AppContainer(private val app: Application) {
         val initial = runBlocking { settings.current().sttEngine }
         SttRouter(linkedMapOf(SttRouter.WHISPER to whisper, SttRouter.VOSK to vosk), initial, appScope)
     }
-    val stt: SttEngine get() = sttRouter
+    val stt: SttEngine get() = sttOverride ?: sttRouter
 
     val tts: TtsManager by lazy { TtsManager(app) }
     val metrics: Metrics by lazy { Metrics(app) }

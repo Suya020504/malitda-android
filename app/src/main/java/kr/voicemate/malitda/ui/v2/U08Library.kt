@@ -46,6 +46,7 @@ fun U08Library(
     onHome: () -> Unit, onSettings: () -> Unit, onHelp: () -> Unit,
     onUse: (MeaningEntity) -> Unit = onOpen, onListen: (MeaningEntity) -> Unit = {},
     onFavorite: (MeaningEntity) -> Unit = {}, aliases: Map<Long, String> = emptyMap(),
+    savedCorrectionCount: Int = 0, onSavedCorrections: (() -> Unit)? = null,
 ) {
     var section by rememberSaveable(profileId) { mutableStateOf(LibraryBrowseSection.ALL) }
     var query by rememberSaveable(profileId) { mutableStateOf("") }
@@ -61,6 +62,7 @@ fun U08Library(
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
             V2Title("내 표현")
             V2SubTitle("${studentName.ifBlank { "친구" }}의 뜻을 고릅니다.")
+            if (onSavedCorrections != null) V2TextButton("저장한 수정 · ${savedCorrectionCount}개", onClick = onSavedCorrections)
             Spacer(Modifier.height(12.dp))
             Row(Modifier.fillMaxWidth().padding(horizontal = 24.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOf(LibraryBrowseSection.ALL to "전체 뜻", LibraryBrowseSection.FAVORITES to "즐겨찾기",

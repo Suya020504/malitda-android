@@ -41,6 +41,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -87,7 +88,7 @@ sealed interface SessionEvent {
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class SessionViewModel(val c: AppContainer) : ViewModel() {
+class SessionViewModel(val c: AppContainer, prepareSpeechOnInit: Boolean = true) : ViewModel() {
     /** A stored old pilot preference cannot opt a public QA/release build into collection. */
     val pilotToolsEnabled: Boolean = BuildConfig.DEBUG && BuildConfig.PILOT_TOOLS_ENABLED
     // Null means the first persisted snapshot has not arrived. Do not interpret
@@ -124,9 +125,15 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
             _profileId.value = c.profiles.ensureCurrent()
             // v2 기본 의미 4종(최초 1회). 이후 모두 지우면 U01-E(등록 없는 홈) 경로가 그대로 남는다.
             if (!c.settings.current().v2Seeded) { c.meanings.seedDefaults(_profileId.value); c.settings.setV2Seeded(true) }
-            c.settings.settings.collect { s -> if (s.currentProfileId != 0L && s.currentProfileId != _profileId.value) _profileId.value = s.currentProfileId }
+            c.settings.settings.collect { s ->
+                if (s.currentProfileId != 0L && s.currentProfileId != _profileId.value) {
+                    // Clear the previous person's transient content before publishing the new owner.
+                    dataEpoch++; resetSession()
+                    _profileId.value = s.currentProfileId
+                }
+            }
         }
-        viewModelScope.launch { c.stt.prepare(); syncModelMetrics() }
+        if (prepareSpeechOnInit) viewModelScope.launch { c.stt.prepare(); syncModelMetrics() }
     }
 
     private fun syncModelMetrics() {
@@ -219,6 +226,8 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
     private var listenGeneration = 0L
     private var literalRevision = 0L
     private var literalApproval: kr.voicemate.malitda.domain.LiteralApproval? = null
+    private val _rememberedCorrection = MutableStateFlow<kr.voicemate.malitda.domain.CorrectionLearningSnapshot?>(null)
+    val rememberedCorrection = _rememberedCorrection.asStateFlow()
 
     /** 인식기에 이 학생의 등록 표현(자주 쓰는 뜻 먼저)을 힌트로 준다. 듣기 시작할 때마다 새로 읽어 방금 연결한 표현도 들어간다. */
     private suspend fun refreshSttHints() {
@@ -271,7 +280,7 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         _ui.update { it.copy(listen = ListenState.Idle) }
     }
 
-    private suspend fun onSttFinal(result: SttResult, generation: Long = listenGeneration) {
+    internal suspend fun onSttFinal(result: SttResult, generation: Long = listenGeneration) {
         if (generation != listenGeneration) return
         pulse(if (result.raw.isBlank()) kr.voicemate.malitda.data.feedback.FeedbackKind.ERROR else kr.voicemate.malitda.data.feedback.FeedbackKind.SUCCESS)
         c.metrics.onRecognition(result.processingMs, result.audioMs)
@@ -316,6 +325,7 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
     // ---------- 확인·수정(S11) ----------
     fun updateDraft(text: String) {
         literalRevision++; literalApproval = null
+        _rememberedCorrection.value = null
         trial.onEdited(); syncTrial()
         _ui.update { it.copy(draft = text, approvalToken = null) }
     }
@@ -323,6 +333,7 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
     fun beginLiteral(text: String = "") {
         cancelListening(); c.tts.stop(); v2ClearApproval()
         literalRevision++; literalApproval = null
+        _rememberedCorrection.value = null
         _ui.update { it.copy(source = SentenceSource.DIRECT, draft = text, approvalToken = null) }
     }
     fun approveLiteral(): Boolean {
@@ -338,7 +349,50 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         val text = _ui.value.draft
         return text.takeIf { literalApproval?.permits(_profileId.value, it, literalRevision) == true }
     }
-    fun revokeLiteral() { literalApproval = null; literalRevision++ }
+    fun revokeLiteral() { literalApproval = null; literalRevision++; _rememberedCorrection.value = null }
+
+    /** Approval alone never persists a private utterance. The separate save dialog supplies this snapshot. */
+    fun correctionLearningOffer(): kr.voicemate.malitda.domain.CorrectionLearningSnapshot? {
+        val s = _ui.value; val settings = loadedSettings.value
+        return kr.voicemate.malitda.domain.CorrectionLearning.prepare(literalApproval, _profileId.value,
+            s.raw, s.draft, literalRevision,
+            settings?.consentAccepted == true && settings.consentVersion == kr.voicemate.malitda.data.settings.SettingsStore.CURRENT_CONSENT_VERSION)
+    }
+
+    suspend fun rememberCorrection(request: kr.voicemate.malitda.domain.CorrectionLearningSnapshot): Boolean {
+        val epoch = dataEpoch
+        return mutationMutex.withLock {
+            val current = c.settings.current()
+            check(epoch == dataEpoch && current.currentProfileId == request.profileId &&
+                kr.voicemate.malitda.domain.CorrectionLearning.isCurrent(request, literalApproval,
+                    _profileId.value, _ui.value.raw, _ui.value.draft, literalRevision,
+                    current.consentAccepted && current.consentVersion == kr.voicemate.malitda.data.settings.SettingsStore.CURRENT_CONSENT_VERSION)) {
+                "확인한 문장이나 사용자가 바뀌었습니다. 다시 확인해야 합니다."
+            }
+            val saved = c.corrections.recordApproval(request.profileId, request.raw, request.approved)
+            if (saved && correctionLearningOffer() == request) _rememberedCorrection.value = request
+            saved
+        }
+    }
+
+    suspend fun deleteSavedCorrection(profileId: Long, id: Long): Boolean = mutationMutex.withLock {
+        val current = c.settings.current()
+        check(profileId == _profileId.value && profileId == current.currentProfileId && current.consentAccepted) {
+            "사용자가 바뀌었습니다. 다시 확인해야 합니다."
+        }
+        c.corrections.deleteForProfile(profileId, id)
+    }
+
+    suspend fun useSavedCorrection(shown: kr.voicemate.malitda.data.db.CorrectionEntity): Boolean {
+        val pid = _profileId.value; val epoch = dataEpoch
+        if (pid != shown.profileId) return false
+        val fresh = c.corrections.exactFor(pid, shown.sourceRaw) ?: return false
+        val current = c.settings.current()
+        if (epoch != dataEpoch || pid != _profileId.value || current.currentProfileId != pid ||
+            !current.consentAccepted || fresh.id != shown.id || fresh.approvedText != shown.approvedText) return false
+        resetSession(); beginLiteral(fresh.approvedText)
+        return true
+    }
     fun pauseForBackground() { cancelListening(); stopSpeaking(); v2ClearApproval(); revokeLiteral(); endTrial(completed = false, reason = kr.voicemate.malitda.domain.PilotStopReason.BACKGROUND) }
 
 
@@ -458,10 +512,15 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
         val context: String = "",
     )
 
-    /** 전달 흐름에 쓰는 뜻(확인 완료·활성). 홈 카드와 U06 목록의 원천. */
-    val meanings: StateFlow<List<kr.voicemate.malitda.data.db.MeaningEntity>> =
-        _profileId.flatMapLatest { c.meanings.observeUsable(it) }
-            .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    data class MeaningSnapshot(val profileId: Long, val items: List<kr.voicemate.malitda.data.db.MeaningEntity>?)
+
+    /** null means loading, not an empty personal dictionary. The owner travels with the data. */
+    val meaningSnapshot = _profileId.flatMapLatest { id ->
+        c.meanings.observeUsable(id).map { MeaningSnapshot(id, it) }
+            .onStart { emit(MeaningSnapshot(id, null)) }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, MeaningSnapshot(0L, null))
+    val meanings: StateFlow<List<kr.voicemate.malitda.data.db.MeaningEntity>> = meaningSnapshot
+        .map { it.items.orEmpty() }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val _v2 = MutableStateFlow(V2State())
     val v2: StateFlow<V2State> = _v2.asStateFlow()

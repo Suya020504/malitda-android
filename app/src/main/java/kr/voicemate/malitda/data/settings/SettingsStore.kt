@@ -42,8 +42,8 @@ data class Settings(
     val guardianLockedUntil: Long = 0L,
 )
 
-class SettingsStore(context: Context) {
-    private val ds = context.applicationContext.dataStore
+class SettingsStore(context: Context, dataStoreOverride: DataStore<Preferences>? = null) {
+    private val ds = dataStoreOverride ?: context.applicationContext.dataStore
     private val guardianMutex = Mutex()
 
     companion object { const val CURRENT_CONSENT_VERSION = 2 }

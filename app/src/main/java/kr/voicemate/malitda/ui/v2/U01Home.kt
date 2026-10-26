@@ -60,15 +60,17 @@ fun U01Home(
     V2Screen(background = Color(0xFFFDFAF6)) {
         V2Header(onHelp = onHelp, logoStart = true)
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
-            if (meanings.isEmpty()) EmptyHome(onRegister, onGuide) else FilledHome(name, meanings, onSpeak, onCard, onRegister)
-            if (meanings.isEmpty()) V2SecondaryButton("말하기", onClick = onSpeak)
-            V2SecondaryButton("문장 직접 입력", onClick = onDirectInput)
+            if (meanings.isEmpty()) EmptyHome(onRegister, onGuide, onSpeak, onDirectInput)
+            else {
+                FilledHome(name, meanings, onSpeak, onCard, onRegister)
+                V2SecondaryButton("문장 직접 입력", onClick = onDirectInput)
+            }
             if (voiceStatus != null) V2SubTitle(voiceStatus)
             if (onRetryVoice != null) V2TextButton("음성인식 다시 준비", onClick = onRetryVoice)
             lastModified?.let { time ->
                 V2SubTitle("최근 수정 " + java.text.SimpleDateFormat("M월 d일 HH:mm", java.util.Locale.KOREA).format(java.util.Date(time)))
             }
-            V2SubTitle("개인 뜻 ${totalRegistered}/50개 · 등록·개인정보 관리는 설정에서 확인")
+            V2SubTitle("개인 뜻 ${totalRegistered}/50개 · 표현 등록과 자료 관리는 함께 관리에서 확인")
             Spacer(Modifier.height(16.dp))
         }
         V2BottomNav(selected = "home", onHome = {}, onLibrary = onLibrary, onSettings = onSettings, onRegister = onRegister)
@@ -196,10 +198,15 @@ private fun MeaningCard(m: MeaningEntity, modifier: Modifier = Modifier, onClick
 
 /** U01-E · 아직 확인한 뜻이 없는 홈. */
 @Composable
-private fun EmptyHome(onRegister: () -> Unit, onGuide: () -> Unit) {
+private fun EmptyHome(onRegister: () -> Unit, onGuide: () -> Unit, onSpeak: () -> Unit, onDirectInput: () -> Unit) {
     Spacer(Modifier.height(4.dp))
-    V2Title("전하고 싶은 뜻을\n함께 준비해요")
-    Spacer(Modifier.height(8.dp))
+    V2Title("내 뜻을 전해요")
+    V2SubTitle("말하거나 직접 입력해 시작합니다.")
+    Spacer(Modifier.height(16.dp))
+    V2PrimaryButton("말하기", onClick = onSpeak)
+    Spacer(Modifier.height(12.dp))
+    V2SecondaryButton("문장 직접 입력", onClick = onDirectInput)
+    Spacer(Modifier.height(24.dp))
     V2Card {
         Box(
             Modifier
@@ -215,23 +222,23 @@ private fun EmptyHome(onRegister: () -> Unit, onGuide: () -> Unit) {
                 contentAlignment = Alignment.Center,
             ) { Icon(Icons.Rounded.AddCircle, null, tint = V2C.BannerIcon, modifier = Modifier.size(26.dp)) }
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Spacer(Modifier.height(28.dp))
+                Spacer(Modifier.height(12.dp))
                 Image(
                     painterResource(R.drawable.v2_char_robot), contentDescription = null,
                     modifier = Modifier
-                        .size(180.dp)
+                        .size(110.dp)
                         .background(V2C.CardInner, RoundedCornerShape(28.dp))
                         .padding(14.dp),
                     contentScale = ContentScale.Fit,
                 )
-                Spacer(Modifier.height(28.dp))
+                Spacer(Modifier.height(12.dp))
             }
         }
     }
     Spacer(Modifier.height(16.dp))
-    V2Banner("아직 함께 확인한 뜻이 없어요.\n자주 쓰는 표현부터 등록해 주세요.", leading = { CardGlyph() })
+    V2Banner("자주 쓰는 표현은 지원자와 함께 등록할 수 있습니다.", leading = { CardGlyph() })
     Spacer(Modifier.height(18.dp))
-    V2PrimaryButton("뜻 함께 등록하기", icon = "⊕") { onRegister() }
+    V2SecondaryButton("표현 함께 등록하기") { onRegister() }
     Spacer(Modifier.height(12.dp))
     V2SecondaryButton("처음 화면 안내") { onGuide() }
     Spacer(Modifier.height(16.dp))
