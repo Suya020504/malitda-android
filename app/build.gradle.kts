@@ -13,6 +13,17 @@ val keystoreProps = Properties().apply {
     if (f.exists()) f.inputStream().use { load(it) }
 }
 
+// 지원자용(디버그) 빌드에서 앱이 그림 AI를 직접 부르는 키. local.properties(깃 제외)에만 두고 릴리스에는 넣지 않는다.
+// 이 키가 든 APK는 누구나 풀어볼 수 있으므로 공개 링크로 배포하지 않고, 사용 한도를 건 전용 키를 쓴다.
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+// Public QA APKs never embed a provider key. A private developer build requires an explicit opt-in.
+val includeDirectImageKey = providers.gradleProperty("includeDirectImageKey").orNull == "true"
+val openAiKey: String = if (includeDirectImageKey) localProps.getProperty("OPENAI_API_KEY", "").trim() else ""
+val openAiImageModel: String = localProps.getProperty("OPENAI_IMAGE_MODEL", "gpt-image-2").trim()
+
 android {
     namespace = "kr.voicemate.malitda"
     compileSdk = 36
@@ -22,10 +33,12 @@ android {
         minSdk = 26
         targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionCode = 9
-        versionName = "0.3.0"
+        versionCode = 10
+        versionName = "0.3.1"
         // 그림 만들기용 R4 서버 주소. 키는 서버에만 있고 앱에는 넣지 않는다. 릴리스는 비워 기능을 끈다.
         buildConfigField("String", "R4_SERVER_URL", "\"\"")
+        buildConfigField("String", "OPENAI_API_KEY", "\"\"")
+        buildConfigField("String", "OPENAI_IMAGE_MODEL", "\"$openAiImageModel\"")
         vectorDrawables { useSupportLibrary = true }
         // 제출용 빌드: -PsubmitAbis=arm 이면 x86_64(에뮬레이터용)를 뺀다
         val arm = listOf("arm64-v8a", "armeabi-v7a")
@@ -70,6 +83,8 @@ android {
             versionNameSuffix = "-debug"
             // adb reverse tcp:8769 tcp:8769 로 PC의 R4 서버에 연결한다.
             buildConfigField("String", "R4_SERVER_URL", "\"http://127.0.0.1:8769\"")
+            // 키가 있으면 USB·PC 서버 없이 앱이 바로 그림을 만든다(없으면 R4 서버 방식).
+            buildConfigField("String", "OPENAI_API_KEY", "\"$openAiKey\"")
         }
     }
 

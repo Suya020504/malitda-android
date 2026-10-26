@@ -125,7 +125,6 @@ fun U04Deliver(
             if (speaking) V2SecondaryButton("소리 멈추기", onClick = onStopSound)
             V2TextButton("문장 복사", onClick = onCopy)
             if (onFeedback != null) V2TextButton("실증 응답 기록 · 지원자", onClick = onFeedback)
-            V2TextButton("마치고 홈으로", onClick = onDone)
             Spacer(Modifier.height(16.dp))
         }
         if (!soundless) {
@@ -136,6 +135,7 @@ fun U04Deliver(
         Spacer(Modifier.height(12.dp))
         V2SecondaryButton("다시 고르기") { onRepick() }
         V2TextButton("다른 앱으로 보내기") { onShare() }
+        V2TextButton("마치고 홈으로", onClick = onDone)
         Spacer(Modifier.height(8.dp))
     }
 }
@@ -183,13 +183,13 @@ fun U04NoSound(
 fun U04Share(
     meaning: MeaningEntity,
     onReturn: () -> Unit,
-    onCancel: () -> Unit,
+    onHome: () -> Unit,
     onHelp: () -> Unit,
 ) {
     V2Screen {
         V2Header(onBack = onReturn, onHelp = onHelp)
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
-            V2Title("다른 앱으로 보내기")
+            V2Title("공유 뒤 이어가기")
             Spacer(Modifier.height(10.dp))
             V2Card {
                 Column(
@@ -211,12 +211,12 @@ fun U04Share(
                 }
             }
             Spacer(Modifier.height(14.dp))
-            V2Banner("공유할 앱은 휴대전화에서 선택해요.\n선택을 취소해도 뜻은 그대로예요.", icon = Icons.Rounded.Info)
+            V2Banner("공유창을 열어도 실제 전송 완료는 확인할 수 없습니다. 다시 전달하려면 뜻을 확인합니다.", icon = Icons.Rounded.Info)
             Spacer(Modifier.height(16.dp))
         }
-        V2PrimaryButton("공유창에서 돌아오기") { onReturn() }
+        V2PrimaryButton("홈으로") { onHome() }
         Spacer(Modifier.height(12.dp))
-        V2SecondaryButton("취소") { onCancel() }
+        V2SecondaryButton("뜻 다시 확인하기") { onReturn() }
         Spacer(Modifier.height(16.dp))
     }
 }

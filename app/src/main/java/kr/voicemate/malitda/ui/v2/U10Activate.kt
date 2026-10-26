@@ -27,7 +27,7 @@ fun U10Activate(
     studentName: String, expression: String, meaningText: String, imageKey: String?,
     confirmation: StudentMeaningConfirmation, saving: Boolean,
     onResponse: (StudentMeaningResponse) -> Unit, onMethod: (StudentConfirmationMethod) -> Unit,
-    onListen: () -> Unit, onUse: () -> Unit, onLater: () -> Unit,
+    onListen: () -> Unit, onUse: () -> Unit, onUseAndHome: () -> Unit, onLater: () -> Unit,
     onBack: () -> Unit, onHelp: () -> Unit,
 ) {
     V2Screen {
@@ -47,7 +47,7 @@ fun U10Activate(
             Spacer(Modifier.height(12.dp))
             V2SecondaryButton("소리로 확인하기", onClick = onListen)
             Spacer(Modifier.height(18.dp))
-            Text("학생은 어떤 뜻이라고 했나요?", style = jua(19, V2C.Ink), modifier = Modifier.padding(horizontal = 24.dp))
+            Text("학생은 어떤 반응을 보였나요?", style = jua(19, V2C.Ink), modifier = Modifier.padding(horizontal = 24.dp))
             Spacer(Modifier.height(8.dp))
             ConfirmationChoices(
                 listOf(StudentMeaningResponse.MATCHED to "맞는 뜻", StudentMeaningResponse.DIFFERENT to "다른 뜻",
@@ -56,7 +56,7 @@ fun U10Activate(
             )
             if (confirmation.response == StudentMeaningResponse.MATCHED) {
                 Spacer(Modifier.height(16.dp))
-                Text("학생이 답한 방법", style = jua(19, V2C.Ink), modifier = Modifier.padding(horizontal = 24.dp))
+                Text("학생이 뜻을 고른 방법", style = jua(19, V2C.Ink), modifier = Modifier.padding(horizontal = 24.dp))
                 Spacer(Modifier.height(8.dp))
                 ConfirmationChoices(
                     listOf(StudentConfirmationMethod.SPEECH to "말로 답함", StudentConfirmationMethod.POINTING to "가리켜 고름",
@@ -68,6 +68,10 @@ fun U10Activate(
             V2Banner(if (confirmation.response != null && confirmation.response != StudentMeaningResponse.MATCHED)
                 "지금은 확정하지 않습니다.\n미확인으로 두고 나중에 다시 확인합니다."
                 else "학생의 선택을 먼저 확인합니다.\n지원자의 추측만으로 확정하지 않습니다.")
+            if (confirmation.canActivate && !saving) {
+                Spacer(Modifier.height(12.dp))
+                V2SecondaryButton("확인하고 홈으로", onClick = onUseAndHome)
+            }
             Spacer(Modifier.height(16.dp))
         }
         V2PrimaryButton(if (saving) "저장 중…" else "확인한 뜻 사용하기", enabled = confirmation.canActivate && !saving, onClick = onUse)

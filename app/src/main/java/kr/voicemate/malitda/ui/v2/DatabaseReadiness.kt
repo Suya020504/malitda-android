@@ -18,6 +18,29 @@ import kotlinx.coroutines.withContext
 import kr.voicemate.malitda.di.AppContainer
 import kr.voicemate.malitda.ui.theme.MalitdaTheme
 
+/** Keep consent and accessibility defaults off screen until storage has loaded. */
+@Composable
+fun SettingsLoadingScreen() {
+    V2Screen {
+        Column(
+            Modifier.weight(1f).fillMaxWidth().padding(24.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+        ) {
+            androidx.compose.foundation.Image(
+                androidx.compose.ui.res.painterResource(kr.voicemate.malitda.R.drawable.v2_logo),
+                contentDescription = "말잇다",
+                modifier = Modifier.width(180.dp).height(52.dp),
+                contentScale = androidx.compose.ui.layout.ContentScale.Fit,
+            )
+            Spacer(Modifier.height(24.dp))
+            androidx.compose.material3.CircularProgressIndicator(Modifier.size(32.dp))
+            Spacer(Modifier.height(20.dp))
+            Text("저장한 설정을 불러옵니다", style = jua(18, V2C.Ink))
+        }
+    }
+}
+
 /** Open/migrate first so a failed legacy schema cannot crash several eager ViewModel flows. */
 @Composable
 fun DatabaseReadiness(container: AppContainer, content: @Composable () -> Unit) {

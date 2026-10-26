@@ -37,6 +37,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -86,7 +87,10 @@ sealed interface SessionEvent {
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SessionViewModel(val c: AppContainer) : ViewModel() {
-    val settings: StateFlow<Settings> = c.settings.settings.stateIn(viewModelScope, SharingStarted.Eagerly, Settings())
+    // Null means the first persisted snapshot has not arrived. Do not interpret
+    // the initial in-memory defaults as a fresh consent decision on a cold start.
+    val loadedSettings: StateFlow<Settings?> = c.settings.settings.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val settings: StateFlow<Settings> = loadedSettings.filterNotNull().stateIn(viewModelScope, SharingStarted.Eagerly, Settings())
     private val _profileId = MutableStateFlow(0L)
     val profileId: StateFlow<Long> = _profileId.asStateFlow()
     val profileName: StateFlow<String> = _profileId.flatMapLatest { id -> c.profiles.observe(id).map { it?.name ?: "" } }
@@ -586,11 +590,19 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
 
     fun setArtStyle(styleId: String) { viewModelScope.launch { c.settings.setArtStyle(_profileId.value, styleId) } }
 
-    /** 지금 학생 그림체로 뜻 그림을 만들어 앱 안에 저장하고 그림 키를 돌려준다. */
+    /**
+     * 지금 학생 그림체로 뜻 그림을 만들어 앱 안에 저장하고 그림 키를 돌려준다.
+     * 키가 든 지원자용 빌드는 앱이 직접 만들고(USB·PC 서버 불필요), 아니면 PC의 R4 서버를 거친다.
+     */
     suspend fun r4GenerateMeaningImage(context: android.content.Context, meaning: String): String {
         val pid = _profileId.value
         val anon = c.settings.r4AnonId(pid)
-        val bytes = kr.voicemate.malitda.data.ai.R4Client.generate(anon, artStyle.value, meaning)
+        val requestedStyle = artStyle.value
+        val bytes = if (kr.voicemate.malitda.data.ai.DirectImageClient.isAvailable) {
+            kr.voicemate.malitda.data.ai.DirectImageClient.generate(context, requestedStyle, meaning)
+        } else {
+            kr.voicemate.malitda.data.ai.R4Client.generate(anon, requestedStyle, meaning)
+        }
         kotlinx.coroutines.currentCoroutineContext().ensureActive()
         check(pid == _profileId.value) { "학생이 바뀌어 그림을 적용하지 않습니다." }
         return kr.voicemate.malitda.data.repo.MeaningImageStore.importBytes(context, bytes)

@@ -22,7 +22,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             kr.voicemate.malitda.ui.v2.DatabaseReadiness((application as MalitdaApp).container) {
             sessionStarted = true
-            val settings by vm.settings.collectAsStateWithLifecycle()
+            val settingsSnapshot by vm.loadedSettings.collectAsStateWithLifecycle()
+            if (settingsSnapshot == null) {
+                MalitdaTheme { kr.voicemate.malitda.ui.v2.SettingsLoadingScreen() }
+                return@DatabaseReadiness
+            }
+            val settings = requireNotNull(settingsSnapshot)
             val preferences by vm.profilePreferences.collectAsStateWithLifecycle()
             MalitdaTheme(
                 fontScale = settings.fontScale,

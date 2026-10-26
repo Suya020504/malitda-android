@@ -82,6 +82,7 @@ fun U07Entry(
         V2PrimaryButton("${studentName.ifBlank { "친구" }}의 표현 등록", icon = "⊕") { onRegister() }
         Spacer(Modifier.height(12.dp))
         V2SecondaryButton("내 표현 보기") { onMyExpressions() }
+        V2TextButton("홈으로", onClick = onBack)
         Spacer(Modifier.height(16.dp))
     }
 }

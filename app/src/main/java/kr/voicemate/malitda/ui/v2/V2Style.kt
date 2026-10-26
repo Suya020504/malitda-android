@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -25,6 +28,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Apps
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,6 +59,8 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.intl.LocaleList
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kr.voicemate.malitda.R
@@ -88,27 +97,38 @@ val V2Gradient get() = Brush.horizontalGradient(listOf(V2C.GradStart, V2C.GradEn
 fun jua(size: Int, color: Color, lineMul: Float = 1.35f) = TextStyle(
     fontFamily = JuaV2, fontWeight = FontWeight.Normal,
     fontSize = size.sp, lineHeight = (size * lineMul).sp, color = color,
+    lineBreak = LineBreak.Paragraph.copy(wordBreak = LineBreak.WordBreak.Phrase),
+    localeList = LocaleList("ko-KR"),
 )
 
 /** 화면 배경(연보라 그라데이션) + 안전영역. */
 @Composable
 fun V2Screen(background: Color? = null, content: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit) {
-    Column(
+    // Insets modifiers consume the padding they apply. A child form's imePadding
+    // therefore adds only any remaining inset, rather than applying the keyboard twice.
+    Box(
         Modifier
             .fillMaxSize()
             .background(Brush.verticalGradient(if (background == null) listOf(V2C.BgTop, V2C.BgBottom) else listOf(background, background)))
             .statusBarsPadding()
-            .navigationBarsPadding(),
+            .navigationBarsPadding()
+            .imePadding(),
     ) {
-        content()
-        LocalPilotComplete.current?.let { complete ->
-            androidx.compose.material3.TextButton(onClick = complete, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
-                Text("실증 과업 마치기 · 지원자", style = jua(17, V2C.Ink))
+        // Use available window width, not a fixed phone aspect ratio. Content remains
+        // a readable single pane on wider windows; the background fills the window.
+        Column(
+            Modifier.align(Alignment.TopCenter).fillMaxHeight().widthIn(max = 600.dp).fillMaxWidth(),
+        ) {
+            content()
+            LocalPilotComplete.current?.let { complete ->
+                androidx.compose.material3.TextButton(onClick = complete, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+                    Text("실증 과업 마치기 · 지원자", style = jua(17, V2C.Ink))
+                }
             }
-        }
-        LocalPilotStop.current?.let { stop ->
-            androidx.compose.material3.TextButton(onClick = stop, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
-                Text("실증 그만하기", style = jua(17, V2C.Ink))
+            LocalPilotStop.current?.let { stop ->
+                androidx.compose.material3.TextButton(onClick = stop, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+                    Text("실증 그만하기", style = jua(17, V2C.Ink))
+                }
             }
         }
     }
@@ -402,12 +422,12 @@ fun V2BottomNav(selected: String, onHome: () -> Unit, onLibrary: () -> Unit, onS
             .shadow(6.dp, RoundedCornerShape(28.dp), clip = false, spotColor = V2C.Shadow)
             .background(V2C.Surface, RoundedCornerShape(28.dp))
             .padding(vertical = 10.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.Top,
     ) {
-        NavItem("⌂", "홈", selected = selected == "home", onClick = onHome)
-        NavItem("♡", "내 표현", selected = selected == "library", onClick = onLibrary)
-        NavItem("⚙", "설정", selected = selected == "settings", onClick = onSettings)
+        NavItem(Icons.Rounded.Home, "홈", selected = selected == "home", modifier = Modifier.weight(1f), onClick = onHome)
+        NavItem(Icons.Rounded.Apps, "내 표현", selected = selected == "library", modifier = Modifier.weight(1f), onClick = onLibrary)
+        NavItem(Icons.Rounded.Settings, "설정", selected = selected == "settings", modifier = Modifier.weight(1f), onClick = onSettings)
     }
 }
 
@@ -481,17 +501,18 @@ fun V2DangerButton(text: String, modifier: Modifier = Modifier, onClick: () -> U
 }
 
 @Composable
-private fun NavItem(glyph: String, label: String, selected: Boolean, onClick: () -> Unit) {
+private fun NavItem(icon: ImageVector, label: String, selected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
     val tint = if (selected) V2C.Title else V2C.Muted
     val emphasis = LocalA11y.current.visualEmphasis
     val feedback = rememberV2Feedback()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = modifier
+            .heightIn(min = 64.dp)
             .clip(RoundedCornerShape(18.dp))
             .then(if (emphasis && selected) Modifier.border(3.dp, V2C.Ink, RoundedCornerShape(18.dp)) else Modifier)
             .selectable(selected = selected, role = Role.Tab, interactionSource = rememberNoRipple(), indication = null, onClick = { feedback(); onClick() })
-            .padding(horizontal = 18.dp, vertical = 4.dp)
+            .padding(horizontal = 6.dp, vertical = 6.dp)
             .semantics { contentDescription = label },
     ) {
         Box(
@@ -499,8 +520,9 @@ private fun NavItem(glyph: String, label: String, selected: Boolean, onClick: ()
                 .size(width = 56.dp, height = 34.dp)
                 .background(if (selected) V2C.BannerBg else Color.Transparent, RoundedCornerShape(17.dp)),
             contentAlignment = Alignment.Center,
-        ) { Text(glyph, style = jua(20, tint)) }
-        Text(label, style = jua(13, tint))
+        ) { Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(24.dp)) }
+        Spacer(Modifier.height(4.dp))
+        Text(label, style = jua(13, tint), textAlign = TextAlign.Center, softWrap = true, modifier = Modifier.fillMaxWidth())
     }
 }
 
