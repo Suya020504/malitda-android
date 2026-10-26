@@ -115,13 +115,17 @@ private fun FilledHome(
         }
     }
     Spacer(Modifier.height(18.dp))
-    Box(Modifier.fillMaxWidth().height(if (large) 320.dp else 230.dp), contentAlignment = Alignment.Center) {
-        Image(painterResource(R.drawable.char_green), null,
-            Modifier.align(Alignment.BottomStart).size(85.dp), contentScale = ContentScale.Fit)
-        Image(painterResource(R.drawable.char_water), null,
-            Modifier.align(Alignment.BottomEnd).size(85.dp), contentScale = ContentScale.Fit)
+    // At large text sizes, keep the microphone label above the first fold.
+    // Decorative images and a larger circle must not displace the action name.
+    Box(Modifier.fillMaxWidth().height(if (large) 250.dp else 230.dp), contentAlignment = Alignment.Center) {
+        if (!large) {
+            Image(painterResource(R.drawable.char_green), null,
+                Modifier.align(Alignment.BottomStart).size(85.dp), contentScale = ContentScale.Fit)
+            Image(painterResource(R.drawable.char_water), null,
+                Modifier.align(Alignment.BottomEnd).size(85.dp), contentScale = ContentScale.Fit)
+        }
         Box(
-            Modifier.size(if (large) 286.dp else 196.dp)
+            Modifier.size(if (large) 228.dp else 196.dp)
                 .shadow(14.dp, CircleShape, clip = false, spotColor = V2C.Shadow)
                 .background(Color.White, CircleShape).padding(9.dp)
                 .background(Brush.linearGradient(if (V2C.highContrast) listOf(V2C.GradStart, V2C.GradEnd) else listOf(Color(0xFF62C9FF), Color(0xFF8960FF), Color(0xFFF276E7))), CircleShape)
@@ -130,9 +134,9 @@ private fun FilledHome(
             contentAlignment = Alignment.Center,
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Image(painterResource(R.drawable.ic_mic_white), null, Modifier.size(58.dp))
-                Spacer(Modifier.height(14.dp))
-                Text("눌러서 말하기", style = jua(23, Color.White))
+                Image(painterResource(R.drawable.ic_mic_white), null, Modifier.size(if (large) 42.dp else 58.dp))
+                Spacer(Modifier.height(if (large) 10.dp else 14.dp))
+                Text(if (large) "말하기" else "눌러서 말하기", style = jua(23, Color.White))
             }
         }
     }
