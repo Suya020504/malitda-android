@@ -160,6 +160,7 @@ fun U05PickImage(
     onCancelGenerate: (() -> Unit)? = null,
     // R4 서버 상태 안내(꺼짐·점검 모드). null이면 생성 가능.
     serverNote: String? = null,
+    lastError: String? = null,
     styleLabel: String = "",
     onChangeStyle: () -> Unit = {},
     consent: Boolean = false,
@@ -259,6 +260,11 @@ fun U05PickImage(
                         V2Banner(serverNote, icon = Icons.Rounded.Info)
                         V2TextButton("연결 다시 확인") { onRecheckServer() }
                     } else {
+                        // 직전 생성이 실패한 이유는 토스트가 사라져도 남겨 둔다(지원자가 무엇을 고칠지 알 수 있게).
+                        if (lastError != null) {
+                            V2Banner("지난번 그림 만들기 실패: $lastError", icon = Icons.Rounded.Info)
+                            Spacer(Modifier.height(8.dp))
+                        }
                         // 외부 전송·비용 동의(팀원 R4 규칙: 동의와 생성 버튼을 분리)
                         Row(
                             Modifier
@@ -277,7 +283,7 @@ fun U05PickImage(
                             ) { if (consent) Text("✓", style = jua(16, Color.White)) }
                             Spacer(Modifier.width(12.dp))
                             Text(
-                                "'전할 뜻' 문장이 PC 서버를 거쳐 그림 AI로 전송되고, 비용이 들어요. 학생 이름·사진·목소리는 보내지 않아요.",
+                                "'전할 뜻' 문장이 인터넷으로 그림 AI에 전송되고, 비용이 들어요. 학생 이름·사진·목소리는 보내지 않아요.",
                                 style = jua(14, V2C.Ink, 1.5f),
                             )
                         }

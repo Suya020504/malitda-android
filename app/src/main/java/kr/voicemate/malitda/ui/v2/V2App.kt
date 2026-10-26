@@ -94,6 +94,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
     // R4 서버(팀원 그림 생성 서버) 상태·동의·그림체 미리보기
     var r4Status by remember { mutableStateOf<R4.Status?>(null) }
     var r4CheckRound by remember { mutableStateOf(0) }
+    var genError by remember { mutableStateOf<String?>(null) }
     var r4Consent by remember { mutableStateOf(false) }
     var stylePreviews by remember { mutableStateOf<Map<String, ByteArray>>(emptyMap()) }
     var u15Return by rememberSaveable { mutableStateOf("U12") }
@@ -481,8 +482,10 @@ fun MalitdaV2App(vm: SessionViewModel) {
         )
 
         "U05M" -> {
+          // 키가 든 지원자용 빌드는 앱이 직접 만든다 — PC 서버 확인이 필요 없다.
+          val direct = kr.voicemate.malitda.data.ai.DirectImageClient.isAvailable
           // 화면에 들어올 때 PC 서버 상태를 확인한다(꺼짐·점검 모드면 생성 대신 안내).
-          LaunchedEffect(r4CheckRound) { if (R4.isEnabled) r4Status = R4.status() }
+          LaunchedEffect(r4CheckRound) { if (!direct && R4.isEnabled) r4Status = R4.status() }
           U05PickImage(
             meaningText = regMeaning,
             selectedKey = regImageKey,
@@ -491,17 +494,22 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onUse = { route = "U05" },
             onCancel = { route = "U05" },
             onHelp = ::help,
-            serverNote = r4Note(r4Status),
+            serverNote = if (direct) {
+                kr.voicemate.malitda.data.ai.DirectImageClient.remainingToday(ctx)
+                    .takeIf { it == 0 }?.let { "오늘 만들 수 있는 그림을 다 썼어요. 내일 다시 해 주세요." }
+            } else r4Note(r4Status),
             styleLabel = kr.voicemate.malitda.domain.ArtStyles.label(artStyle),
             onChangeStyle = { u15Return = "U05M"; route = "U15" },
             consent = r4Consent,
             onConsent = { r4Consent = it },
             onRecheckServer = { r4CheckRound++ },
-            onGenerate = if (!R4.isEnabled) null else ({
+            lastError = genError,
+            onGenerate = if (!direct && !R4.isEnabled) null else ({
                 if (regMeaning.isBlank()) {
                     toast("먼저 '전할 뜻'을 입력해 주세요")
                 } else if (!generating) {
                     generating = true
+                    genError = null
                     val round = ++genRound
                     scope.launch {
                         val result = runCatching { vm.r4GenerateMeaningImage(ctx, regMeaning) }
@@ -510,8 +518,13 @@ fun MalitdaV2App(vm: SessionViewModel) {
                         generating = false
                         // 한 번 생성할 때마다 동의를 다시 받는다(비용이 드는 동작).
                         r4Consent = false
-                        result.onSuccess { key -> regImageKey = key; toast("그림을 만들었어요. 학생과 함께 확인해 주세요.") }
+                        result.onSuccess { key ->
+                            regImageKey = key
+                            val left = if (direct) " (오늘 ${kr.voicemate.malitda.data.ai.DirectImageClient.remainingToday(ctx)}장 더 만들 수 있어요)" else ""
+                            toast("그림을 만들었어요. 학생과 함께 확인해 주세요.$left")
+                        }
                             .onFailure { e ->
+                                genError = e.message ?: "그림을 만들지 못했어요"
                                 toast(e.message ?: "그림을 만들지 못했어요")
                                 r4CheckRound++
                             }
@@ -534,7 +547,8 @@ fun MalitdaV2App(vm: SessionViewModel) {
                 studentName = name,
                 selected = artStyle,
                 previews = stylePreviews,
-                serverNote = if (!R4.isEnabled) "이 배포본에는 그림 만들기가 들어 있지 않아요." else if (r4Status?.reachable == false) "PC 서버에 연결되지 않아 미리보기 그림이 보이지 않아요. 그래도 고를 수 있어요." else null,
+                serverNote = if (kr.voicemate.malitda.data.ai.DirectImageClient.isAvailable) null
+                    else if (!R4.isEnabled) "이 배포본에는 그림 만들기가 들어 있지 않아요." else if (r4Status?.reachable == false) "PC 서버에 연결되지 않아 미리보기 그림이 보이지 않아요. 그래도 고를 수 있어요." else null,
                 onSelect = { vm.setArtStyle(it) },
                 onBack = { route = u15Return },
                 onHelp = ::help,

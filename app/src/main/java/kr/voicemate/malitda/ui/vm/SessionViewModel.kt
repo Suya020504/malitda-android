@@ -505,11 +505,17 @@ class SessionViewModel(val c: AppContainer) : ViewModel() {
 
     fun setArtStyle(styleId: String) { viewModelScope.launch { c.settings.setArtStyle(_profileId.value, styleId) } }
 
-    /** 지금 학생 그림체로 뜻 그림을 만들어 앱 안에 저장하고 그림 키를 돌려준다. */
+    /**
+     * 지금 학생 그림체로 뜻 그림을 만들어 앱 안에 저장하고 그림 키를 돌려준다.
+     * 키가 든 지원자용 빌드는 앱이 직접 만들고(USB·PC 서버 불필요), 아니면 PC의 R4 서버를 거친다.
+     */
     suspend fun r4GenerateMeaningImage(context: android.content.Context, meaning: String): String {
-        val pid = _profileId.value
-        val anon = c.settings.r4AnonId(pid)
-        val bytes = kr.voicemate.malitda.data.ai.R4Client.generate(anon, artStyle.value, meaning)
+        val bytes = if (kr.voicemate.malitda.data.ai.DirectImageClient.isAvailable) {
+            kr.voicemate.malitda.data.ai.DirectImageClient.generate(context, artStyle.value, meaning)
+        } else {
+            val anon = c.settings.r4AnonId(_profileId.value)
+            kr.voicemate.malitda.data.ai.R4Client.generate(anon, artStyle.value, meaning)
+        }
         return kr.voicemate.malitda.data.repo.MeaningImageStore.importBytes(context, bytes)
     }
 
