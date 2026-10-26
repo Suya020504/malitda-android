@@ -1,0 +1,191 @@
+[
+  {
+    "file": "final-320-font100-home.png",
+    "dimensions": [
+      886,
+      1920
+    ],
+    "sha256": "873c0b217c4d7f145b55dc9d7ea505e442432f5a1b0c1dc1f7451852704c75e8",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-320-font100-library-all.png",
+    "dimensions": [
+      886,
+      1920
+    ],
+    "sha256": "89d59fb1a58b0da11590afbfbf815cdef32316a45d861428b6152a554031f042",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-320-font100-library-favorite.png",
+    "dimensions": [
+      886,
+      1920
+    ],
+    "sha256": "a58cbcc193f7ef3a32593b6045419b1d97d1b62f895b826ce1d95cb3bce4a0db",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-320-font100-library-context.png",
+    "dimensions": [
+      886,
+      1920
+    ],
+    "sha256": "fd242362c65b52979b28b03cb23b0a9e4b83ed9586a255be8956db515d0c6400",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-320-font100-management-gate.png",
+    "dimensions": [
+      886,
+      1920
+    ],
+    "sha256": "793848cdc8cab340c2878069c93bd41ef88946226b8778717956101929edc8d4",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-320-font100-management.png",
+    "dimensions": [
+      886,
+      1920
+    ],
+    "sha256": "7de7f7654870093ef0ae62f4680d27d73bb1a503fed804d519e9148fb83c4135",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-320-font100-settings.png",
+    "dimensions": [
+      886,
+      1920
+    ],
+    "sha256": "3a703a5d2301fb98c2e3673336eaf700f41ee94b59a7dd70ed41b7e92770dc36",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-390-font100-home.png",
+    "dimensions": [
+      1080,
+      2340
+    ],
+    "sha256": "cd55840591de50e93d2bbcc9307963d458a4aa30cf86ca937e3161000bfdbed0",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-390-font100-library-all.png",
+    "dimensions": [
+      1080,
+      2340
+    ],
+    "sha256": "efc7d0b95ef1aa356fb00417de0d1775f573ad3c759998cb0e025fcc979f7eb7",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-390-font100-library-favorite.png",
+    "dimensions": [
+      1080,
+      2340
+    ],
+    "sha256": "e9bf51672f2430982c8a9a396410c1c7a0a6d5b06a26566ce3f1fc0427db5da0",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-390-font100-library-context.png",
+    "dimensions": [
+      1080,
+      2340
+    ],
+    "sha256": "a66bc7ee5e0a881dd4b220c79f91775d102e11e365dcd4ec998dbf8824d9e6fb",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-390-font100-management-gate.png",
+    "dimensions": [
+      1080,
+      2340
+    ],
+    "sha256": "c65c20fe296b4dfc1b37d266c86059224c187e95784ddf839a401e7c940be7fa",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-390-font100-management.png",
+    "dimensions": [
+      1080,
+      2340
+    ],
+    "sha256": "9c77ac665681fc9e392684dc35546cf262ad2e9d9882cacda2339676fb89a0d0",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-390-font100-settings.png",
+    "dimensions": [
+      1080,
+      2340
+    ],
+    "sha256": "e8e70ff56c23ce28b964c29876d3386e5e6b078ad06f41c50fab09d6c9d5b839",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-430-font100-home.png",
+    "dimensions": [
+      1191,
+      2580
+    ],
+    "sha256": "78a6903143f686c9e9777fa9baeca66abdcc8e9f2b991589f7e8669cb2ffee52",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-430-font100-library-all.png",
+    "dimensions": [
+      1191,
+      2580
+    ],
+    "sha256": "b2c29d08aa4fdbf790c885aa99ecd429326e86211a96f61ac5e72a6615ba7d2f",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-430-font100-library-favorite.png",
+    "dimensions": [
+      1191,
+      2580
+    ],
+    "sha256": "5793d9a1408f1b46524d7e99c9176ae7e4cb516fed740778ee1d8dc3645e52dd",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-430-font100-library-context.png",
+    "dimensions": [
+      1191,
+      2580
+    ],
+    "sha256": "2c2a94580233ae29b08b3e0760876851eb408abfc1218855a4814836786b8da4",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-430-font100-management-gate.png",
+    "dimensions": [
+      1191,
+      2580
+    ],
+    "sha256": "0526dd6ae8c8522b45f33f9a86886f28e03c1f8a9cd3ac724f58064a028fd025",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-430-font100-management.png",
+    "dimensions": [
+      1191,
+      2580
+    ],
+    "sha256": "5efbd6b170b33e5b1660415362b7d04e4696437eff6de79a247e05962b8b0530",
+    "text_bounds_outside_image": []
+  },
+  {
+    "file": "final-430-font100-settings.png",
+    "dimensions": [
+      1191,
+      2580
+    ],
+    "sha256": "beed4a9b6e98251cf7df51d5e6c54e9cc2e1a7832218ebacd3cd8a01201aac54",
+    "text_bounds_outside_image": []
+  }
+]

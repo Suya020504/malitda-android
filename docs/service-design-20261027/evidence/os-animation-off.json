@@ -1,0 +1,10 @@
+{
+  "pass": true,
+  "settings": {
+    "animator_duration_scale": "0",
+    "window_animation_scale": "0",
+    "transition_animation_scale": "0"
+  },
+  "navigation_works": true,
+  "claim_limit": "OS 애니메이션 끔 상태의 정지 화면과 전환 동작 확인. 사용자 체감 자연스러움 또는 프레임 전수 인증 아님."
+}

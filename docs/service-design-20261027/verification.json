@@ -1,0 +1,210 @@
+{
+  "version": "0.3.2-debug/code11",
+  "source_commit": "167f86f287a3f377b09c7b39275a0cbfb5a818af",
+  "arm_debug": {
+    "file": "dist/service-design-20261027/말잇다_0.3.2_서비스화면_검증용.apk",
+    "bytes": 259531376,
+    "sha256": "96acc650a813a1e186bb0c2dbce714e934046761f161f9f41525dd89e92fd5d4",
+    "zip_crc": "PASS",
+    "abis": [
+      "arm64-v8a",
+      "armeabi-v7a"
+    ],
+    "packaged_model_files": 15,
+    "model_sha256": "PASS",
+    "provider_key_pattern_hits_in_dex": 0
+  },
+  "x86_final": {
+    "file": ".scratch/codex/tabs-20261026/latest-x86-corners.apk",
+    "bytes": 274823967,
+    "sha256": "5a505ec39fe3fa5b79d164a2e99737a732277b6b9a14dd46121fd896a00f9903",
+    "zip_crc": "PASS",
+    "abis": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "x86_64"
+    ],
+    "packaged_model_files": 15,
+    "model_sha256": "PASS",
+    "provider_key_pattern_hits_in_dex": 0
+  },
+  "unsigned_r8_release": {
+    "file": "app/build/outputs/apk/release/app-release-unsigned.apk",
+    "bytes": 183042465,
+    "sha256": "f977abc3dd2824598c8987676c13e693aad6c83990874be76921a007d466a0cb",
+    "zip_crc": "PASS",
+    "abis": [
+      "arm64-v8a",
+      "armeabi-v7a"
+    ],
+    "packaged_model_files": 15,
+    "model_sha256": "PASS",
+    "provider_key_pattern_hits_in_dex": 0
+  },
+  "unit_tests": {
+    "tests": 86,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "Error": 0,
+    "Warning": 40,
+    "Fatal": 0
+  },
+  "build_flags": {
+    "debug": {
+      "pilot_tools_enabled": false,
+      "provider_key_empty": true
+    },
+    "release": {
+      "pilot_tools_enabled": false,
+      "provider_key_empty": true
+    }
+  },
+  "figma": {
+    "section": "395:13295",
+    "phone_frames": 14,
+    "overlays": 5,
+    "button_instances": 21,
+    "variants": 6,
+    "node_actions": 101,
+    "missing_targets": 0,
+    "own_autolayout_sibling_overlap": 0,
+    "remaining_trial_ui_texts": 0,
+    "original_home_and_logo_preserved": true
+  },
+  "android_instrumentation": {
+    "pass": true,
+    "exit_code": 0,
+    "wall_sec": 8.313,
+    "tests": 48,
+    "apk_sha256": "5a505ec39fe3fa5b79d164a2e99737a732277b6b9a14dd46121fd896a00f9903",
+    "test_apk_sha256": "bdc19031b3ce7335f24fa168554d434f0580f22f5df2519f18944dd9d9f9bacb",
+    "synthetic_fixture_only": true,
+    "live_mic": false,
+    "paid_ai": false
+  },
+  "real_microphone": 0,
+  "paid_image_calls": 0,
+  "external_sends": 0,
+  "real_participants": 0,
+  "limits": [
+    "debug certificate; no team release signing",
+    "physical ARM runtime and participants not tested",
+    "Figma core14 only; not all existing detailed screens synchronized"
+  ],
+  "final_ui": {
+    "layout": "320/390/430dp x 7 states, font100, 21 captures",
+    "layout_build_sha256": "f73d8f6a0359a12907c9b5794886fa1791cc4df697f7a60dce3851c936cae6b0",
+    "last_delta_build_sha256": "5a505ec39fe3fa5b79d164a2e99737a732277b6b9a14dd46121fd896a00f9903",
+    "last_delta_scope": "two copy changes; settings image rounded corners; home/PIN/data/reduced motion/instrumentation smoke",
+    "full_legacy_trial_true_condition_injection": "UNRUN",
+    "actual_participants": 0,
+    "report": "evidence/FINAL-POLISH-032.json",
+    "coverage": {
+      "stable_ids": 41,
+      "file": "qa-coverage-final-polish032.csv",
+      "counts": {
+        "BLOCKED": 20,
+        "PASS": 19,
+        "EXCLUDED": 2
+      },
+      "rerun_rows": 17,
+      "prior_evidence_only_rows": 21
+    }
+  },
+  "motion": {
+    "screen_recording_seconds": 18,
+    "representative_frames_reviewed": 4,
+    "system_animations_off_navigation": "PASS",
+    "frames_per_second_benchmark": "UNRUN",
+    "tts_and_recording_motion": "source inspection; real microphone/paid AI not run"
+  },
+  "image_manifest": [
+    {
+      "file": "images/figma/home.png",
+      "sha256": "cceffafcde276218c4d69ead7ae3833a2bedcc98b73754074bcd043f123da851"
+    },
+    {
+      "file": "images/figma/library-all.png",
+      "sha256": "9956dce3c552abf613b90bc844440c79be018be3f0f6a692cf0d1c4a3d29369b"
+    },
+    {
+      "file": "images/figma/library-favorites.png",
+      "sha256": "9dd87ce760c4bf6dbbc97bd386fadffba050d2a9c6e2c39aac482acdb63e043f"
+    },
+    {
+      "file": "images/figma/library-lunch.png",
+      "sha256": "c881cc951fdfd0d250865f4c1de783e1a36bd82c0b7c3719825b1ac963a3dcfa"
+    },
+    {
+      "file": "images/figma/library-rest.png",
+      "sha256": "593bb112b8823092069981550b6a6c50954cee6eddfb056931d8e471bfcdd3b8"
+    },
+    {
+      "file": "images/figma/library-situations.png",
+      "sha256": "c40aaf1982674da4e3117af6eb69f34565abd4397ac21956cd5606cf7f01fc67"
+    },
+    {
+      "file": "images/figma/management.png",
+      "sha256": "a7039570bc231346bbb7360909bd7651fe18b69c53d40c2fc12eca44e9dd5a95"
+    },
+    {
+      "file": "images/figma/onboard-1.png",
+      "sha256": "9488c30fa3de1a0047187e6292326cc1fbfd042f4b2095dbfb654fc6493125ba"
+    },
+    {
+      "file": "images/figma/onboard-2.png",
+      "sha256": "e1b6a5e6a688f6f8cbe11821999c1b36baf0fa122bf088b751bab413991fca6b"
+    },
+    {
+      "file": "images/figma/onboard-3.png",
+      "sha256": "64462a67172a393c1008ef5181bab0a8b3194c0a6735ead4d11dd456cadc6fb0"
+    },
+    {
+      "file": "images/figma/pin-first.png",
+      "sha256": "2eb702fa034ecaaf6ce094101ef5a65622921a96c33a79d4fe840a2c3bb0b595"
+    },
+    {
+      "file": "images/figma/pin-manage.png",
+      "sha256": "3e290e2307f589f559c97ea755110ba6650654e49b3f6b0911bf92cbb30bfe66"
+    },
+    {
+      "file": "images/figma/pin-settings.png",
+      "sha256": "b0bcc7068a7bbf85cf514f4ccad6ac21ab85a94c3a14eddc8973ecf038496f59"
+    },
+    {
+      "file": "images/figma/settings.png",
+      "sha256": "d671e50c51a24d588889b37926f54bffdda3bc639dae4ec2aedc0cab2816b9b4"
+    },
+    {
+      "file": "images/native/home.png",
+      "sha256": "6f86fa3e4a2b3a706f61220fd59aea97e88c3edc5dece59b40255614d9b065df"
+    },
+    {
+      "file": "images/native/management.png",
+      "sha256": "9c77ac665681fc9e392684dc35546cf262ad2e9d9882cacda2339676fb89a0d0"
+    },
+    {
+      "file": "images/native/motion-01-before.png",
+      "sha256": "05b9c497ef178c64fb9de622863ba2108639d58c52e6bc28c9512909f616ed00"
+    },
+    {
+      "file": "images/native/motion-02-hold.png",
+      "sha256": "cfa4c714c69f14adb57688fa8400c014d90694338cccc36cb816769e7a57386f"
+    },
+    {
+      "file": "images/native/motion-03-release.png",
+      "sha256": "cfa4c714c69f14adb57688fa8400c014d90694338cccc36cb816769e7a57386f"
+    },
+    {
+      "file": "images/native/motion-04-after-transition.png",
+      "sha256": "8cf6df390d058ff14e41d4c0f88bf4fa866fdb0898260aa19b88571e55cb1fec"
+    },
+    {
+      "file": "images/native/settings.png",
+      "sha256": "f5cb1f6d054338de9839ee7a3ce39a4fb867ffdef33eaff89fdbae69741a2e60"
+    }
+  ]
+}

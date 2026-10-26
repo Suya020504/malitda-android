@@ -1,0 +1,553 @@
+{
+  "date_kst": "2026-10-27",
+  "scope": "디자인 마감 대표 UI·모션·실증 진입 제외·최종 48개 계측 회귀",
+  "phase_versions": {
+    "layout_21_and_management_scroll": {
+      "apk_sha256": "f73d8f6a0359a12907c9b5794886fa1791cc4df697f7a60dce3851c936cae6b0",
+      "source_parent_reported": "d49b3b5",
+      "scope": "private pilot false·버튼/진입/TTS 모션 코드 반영 상태. 320/390/430의 주대표 21장과 관리 전체 스크롤 4구간."
+    },
+    "latest_delta_motion_and_48": {
+      "apk_sha256": "5a505ec39fe3fa5b79d164a2e99737a732277b6b9a14dd46121fd896a00f9903",
+      "source_parent_reported": "167f86f",
+      "scope": "이전 대비 안내/삭제 확인 문구 2곳과 설정 로봇 모서리 clip 후속. 최신 홈/PIN/카드/자료/모션/48개 계측."
+    }
+  },
+  "layout": {
+    "apk_sha256": "f73d8f6a0359a12907c9b5794886fa1791cc4df697f7a60dce3851c936cae6b0",
+    "cases": [
+      {
+        "width_dp": 320,
+        "font_scale": 1.0,
+        "wm_px": [
+          886,
+          1920
+        ],
+        "density": 443,
+        "screens": [
+          "final-320-font100-home",
+          "final-320-font100-library-all",
+          "final-320-font100-library-favorite",
+          "final-320-font100-library-context",
+          "final-320-font100-management-gate",
+          "final-320-font100-management",
+          "final-320-font100-settings"
+        ]
+      },
+      {
+        "width_dp": 390,
+        "font_scale": 1.0,
+        "wm_px": [
+          1080,
+          2340
+        ],
+        "density": 443,
+        "screens": [
+          "final-390-font100-home",
+          "final-390-font100-library-all",
+          "final-390-font100-library-favorite",
+          "final-390-font100-library-context",
+          "final-390-font100-management-gate",
+          "final-390-font100-management",
+          "final-390-font100-settings"
+        ]
+      },
+      {
+        "width_dp": 430,
+        "font_scale": 1.0,
+        "wm_px": [
+          1191,
+          2580
+        ],
+        "density": 443,
+        "screens": [
+          "final-430-font100-home",
+          "final-430-font100-library-all",
+          "final-430-font100-library-favorite",
+          "final-430-font100-library-context",
+          "final-430-font100-management-gate",
+          "final-430-font100-management",
+          "final-430-font100-settings"
+        ]
+      }
+    ],
+    "screens": 21,
+    "restored_390_font100": true
+  },
+  "capture_integrity": [
+    {
+      "file": "final-320-font100-home.png",
+      "dimensions": [
+        886,
+        1920
+      ],
+      "sha256": "873c0b217c4d7f145b55dc9d7ea505e442432f5a1b0c1dc1f7451852704c75e8",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-320-font100-library-all.png",
+      "dimensions": [
+        886,
+        1920
+      ],
+      "sha256": "89d59fb1a58b0da11590afbfbf815cdef32316a45d861428b6152a554031f042",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-320-font100-library-favorite.png",
+      "dimensions": [
+        886,
+        1920
+      ],
+      "sha256": "a58cbcc193f7ef3a32593b6045419b1d97d1b62f895b826ce1d95cb3bce4a0db",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-320-font100-library-context.png",
+      "dimensions": [
+        886,
+        1920
+      ],
+      "sha256": "fd242362c65b52979b28b03cb23b0a9e4b83ed9586a255be8956db515d0c6400",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-320-font100-management-gate.png",
+      "dimensions": [
+        886,
+        1920
+      ],
+      "sha256": "793848cdc8cab340c2878069c93bd41ef88946226b8778717956101929edc8d4",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-320-font100-management.png",
+      "dimensions": [
+        886,
+        1920
+      ],
+      "sha256": "7de7f7654870093ef0ae62f4680d27d73bb1a503fed804d519e9148fb83c4135",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-320-font100-settings.png",
+      "dimensions": [
+        886,
+        1920
+      ],
+      "sha256": "3a703a5d2301fb98c2e3673336eaf700f41ee94b59a7dd70ed41b7e92770dc36",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-390-font100-home.png",
+      "dimensions": [
+        1080,
+        2340
+      ],
+      "sha256": "cd55840591de50e93d2bbcc9307963d458a4aa30cf86ca937e3161000bfdbed0",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-390-font100-library-all.png",
+      "dimensions": [
+        1080,
+        2340
+      ],
+      "sha256": "efc7d0b95ef1aa356fb00417de0d1775f573ad3c759998cb0e025fcc979f7eb7",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-390-font100-library-favorite.png",
+      "dimensions": [
+        1080,
+        2340
+      ],
+      "sha256": "e9bf51672f2430982c8a9a396410c1c7a0a6d5b06a26566ce3f1fc0427db5da0",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-390-font100-library-context.png",
+      "dimensions": [
+        1080,
+        2340
+      ],
+      "sha256": "a66bc7ee5e0a881dd4b220c79f91775d102e11e365dcd4ec998dbf8824d9e6fb",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-390-font100-management-gate.png",
+      "dimensions": [
+        1080,
+        2340
+      ],
+      "sha256": "c65c20fe296b4dfc1b37d266c86059224c187e95784ddf839a401e7c940be7fa",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-390-font100-management.png",
+      "dimensions": [
+        1080,
+        2340
+      ],
+      "sha256": "9c77ac665681fc9e392684dc35546cf262ad2e9d9882cacda2339676fb89a0d0",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-390-font100-settings.png",
+      "dimensions": [
+        1080,
+        2340
+      ],
+      "sha256": "e8e70ff56c23ce28b964c29876d3386e5e6b078ad06f41c50fab09d6c9d5b839",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-430-font100-home.png",
+      "dimensions": [
+        1191,
+        2580
+      ],
+      "sha256": "78a6903143f686c9e9777fa9baeca66abdcc8e9f2b991589f7e8669cb2ffee52",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-430-font100-library-all.png",
+      "dimensions": [
+        1191,
+        2580
+      ],
+      "sha256": "b2c29d08aa4fdbf790c885aa99ecd429326e86211a96f61ac5e72a6615ba7d2f",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-430-font100-library-favorite.png",
+      "dimensions": [
+        1191,
+        2580
+      ],
+      "sha256": "5793d9a1408f1b46524d7e99c9176ae7e4cb516fed740778ee1d8dc3645e52dd",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-430-font100-library-context.png",
+      "dimensions": [
+        1191,
+        2580
+      ],
+      "sha256": "2c2a94580233ae29b08b3e0760876851eb408abfc1218855a4814836786b8da4",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-430-font100-management-gate.png",
+      "dimensions": [
+        1191,
+        2580
+      ],
+      "sha256": "0526dd6ae8c8522b45f33f9a86886f28e03c1f8a9cd3ac724f58064a028fd025",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-430-font100-management.png",
+      "dimensions": [
+        1191,
+        2580
+      ],
+      "sha256": "5efbd6b170b33e5b1660415362b7d04e4696437eff6de79a247e05962b8b0530",
+      "text_bounds_outside_image": []
+    },
+    {
+      "file": "final-430-font100-settings.png",
+      "dimensions": [
+        1191,
+        2580
+      ],
+      "sha256": "beed4a9b6e98251cf7df51d5e6c54e9cc2e1a7832218ebacd3cd8a01201aac54",
+      "text_bounds_outside_image": []
+    }
+  ],
+  "visual_review": "세 폭 21장 모음과 주요 원본을 실제 열어 확인. 이 범위에서 로고/탭/주요 버튼 라벨의 겹침·잘림 미발견. 긴 목록·본문은 스크롤로 이어짐. 모든 화면/글리프/보조기술 전수 판정 아님.",
+  "management_pilot_removed": {
+    "pass": true,
+    "scroll_captures": 4,
+    "forbidden_terms": [
+      "실증",
+      "A/B/C",
+      "CSV",
+      "실험"
+    ],
+    "observed_texts": [
+      "도움",
+      "함께 관리",
+      "보호자·교사와 표현을 함께 준비합니다.",
+      "현재 학생",
+      "QA390",
+      "이 학생의 표현을 함께 준비합니다.",
+      "표현 준비",
+      "새 표현 등록",
+      "미확인·사용 중지 뜻 · 1개",
+      "아직 확인하지 않았거나 사용을 쉬고 있는 뜻을 다시 살핍니다.",
+      "학생 변경·추가",
+      "학생이 그림·글·소리로 뜻을 확인한 뒤 사용합니다. 지원자의 추측만으로 확정하지 않습니다.",
+      "관리 마치고 홈으로",
+      "홈",
+      "내 표현",
+      "설정",
+      "개인 자료",
+      "개인 자료 확인·삭제"
+    ]
+  },
+  "latest_copy_and_data": {
+    "supporter_copy_updated": true,
+    "delete_dialog_copy_updated": true,
+    "destructive_confirm_clicked": false,
+    "settings_robot_corner_capture": "latest-corners-settings-390-font100.png",
+    "before": {
+      "trial_section_visible": false,
+      "zero_count_inference": "DataControlScreen의 counts[trials]>0 조건상, 0건이거나 음수인 경우만 이 영역이 숨겨짐. 정상 건수는 음수가 아니므로 UI와 소스 계약상 0건으로 관측. DB행 직접 조회 아님.",
+      "texts": [
+        "도움",
+        "이 기기의 자료 관리",
+        "개인정보 처리·동의 안내",
+        "QA390의 자료와 지울 범위를 확인합니다.",
+        "현재 학생의 기록",
+        "한 뜻에 평소 표현이 여러 개 연결될 수 있습니다.",
+        "등록한 뜻 · 연습 예시 포함",
+        "3개",
+        "뜻에 연결된 평소 표현",
+        "뜻 확인 반응 이력",
+        "2개",
+        "이전 형식의 등록 문장",
+        "0개",
+        "개인 교정 이력",
+        "등록한 뜻이 쓰는 사진·생성 그림",
+        "같은 사진을 여러 뜻이나 학생이 함께 쓰면 파일 수와 뜻 수는 다릅니다.",
+        "어디에 보관하나",
+        "개인 뜻·표현·확인 이력과 보관 기록은 이 기기의 암호화된 데이터베이스에 저장합니다. 설정과 동의는 앱 전용 설정 저장공간에 둡니다.",
+        "직접 고른 사진과 AI 그림은 앱 전용 사진 저장공간에 보관합니다. 다른 앱의 원본 사진은 바꾸지 않습니다. 사진 파일은 데이터베이스 암호화와 별개의 저장 방식이며, 앱을 지우면 함께 사라집니다.",
+        "일반 말하기의 원음 녹음파일: 0개 · 저장하지 않음",
+        "음성인식 문장은 현재 확인 과정의 메모리에서만 사용합니다. 개발·시험을 위해 별도로 넣은 음원과 평가 파일이 있다면 기기 전체 자료 삭제에 포함합니다.",
+        "현재 학생의 뜻 모두 삭제",
+        "등록한 뜻·연습 예시·연결 표현·확인 반응·이전 등록 문장·교정 이력을 삭제합니다. 학생·설정과 다른 보관 기록은 남깁니다. 다른 학생이 사용하는 사진은 보존합니다.",
+        "현재 학생의 뜻 삭제",
+        "추천·교정만 초기화",
+        "현재 학생의 사용 횟수와 교정 이력을 초기화합니다. 등록한 뜻·평소 표현·그림·확인 반응과 다른 보관 기록은 남깁니다.",
+        "현재 학생의 추천·교정 초기화",
+        "이 기기의 전체 자료 삭제",
+        "모든 학생·뜻·문장·사진·확인 이력·보관 기록·설정·PIN을 삭제하고 시작 안내로 돌아갑니다. 다른 앱에 공유한 문장·파일과 외부 서버 자료는 삭제되지 않습니다. 인식에 쓰는 앱 내장 모델은 남깁니다.",
+        "기기 전체 자료 삭제",
+        "이전 화면으로"
+      ]
+    },
+    "after": {
+      "trial_section_visible": false,
+      "zero_count_inference": "DataControlScreen의 counts[trials]>0 조건상, 0건이거나 음수인 경우만 이 영역이 숨겨짐. 정상 건수는 음수가 아니므로 UI와 소스 계약상 0건으로 관측. DB행 직접 조회 아님.",
+      "texts": [
+        "도움",
+        "이 기기의 자료 관리",
+        "개인정보 처리·동의 안내",
+        "QA390의 자료와 지울 범위를 확인합니다.",
+        "현재 학생의 기록",
+        "한 뜻에 평소 표현이 여러 개 연결될 수 있습니다.",
+        "등록한 뜻 · 연습 예시 포함",
+        "3개",
+        "뜻에 연결된 평소 표현",
+        "뜻 확인 반응 이력",
+        "2개",
+        "이전 형식의 등록 문장",
+        "0개",
+        "개인 교정 이력",
+        "등록한 뜻이 쓰는 사진·생성 그림",
+        "같은 사진을 여러 뜻이나 학생이 함께 쓰면 파일 수와 뜻 수는 다릅니다.",
+        "어디에 보관하나",
+        "개인 뜻·표현·확인 이력과 보관 기록은 이 기기의 암호화된 데이터베이스에 저장합니다. 설정과 동의는 앱 전용 설정 저장공간에 둡니다.",
+        "직접 고른 사진과 AI 그림은 앱 전용 사진 저장공간에 보관합니다. 다른 앱의 원본 사진은 바꾸지 않습니다. 사진 파일은 데이터베이스 암호화와 별개의 저장 방식이며, 앱을 지우면 함께 사라집니다.",
+        "일반 말하기의 원음 녹음파일: 0개 · 저장하지 않음",
+        "음성인식 문장은 현재 확인 과정의 메모리에서만 사용합니다. 개발·시험을 위해 별도로 넣은 음원과 평가 파일이 있다면 기기 전체 자료 삭제에 포함합니다.",
+        "현재 학생의 뜻 모두 삭제",
+        "등록한 뜻·연습 예시·연결 표현·확인 반응·이전 등록 문장·교정 이력을 삭제합니다. 학생·설정과 다른 보관 기록은 남깁니다. 다른 학생이 사용하는 사진은 보존합니다.",
+        "현재 학생의 뜻 삭제",
+        "추천·교정만 초기화",
+        "현재 학생의 사용 횟수와 교정 이력을 초기화합니다. 등록한 뜻·평소 표현·그림·확인 반응과 다른 보관 기록은 남깁니다.",
+        "현재 학생의 추천·교정 초기화",
+        "이 기기의 전체 자료 삭제",
+        "모든 학생·뜻·문장·사진·확인 이력·보관 기록·설정·PIN을 삭제하고 시작 안내로 돌아갑니다. 다른 앱에 공유한 문장·파일과 외부 서버 자료는 삭제되지 않습니다. 인식에 쓰는 앱 내장 모델은 남깁니다.",
+        "기기 전체 자료 삭제",
+        "이전 화면으로"
+      ]
+    },
+    "normal_confirm_and_home": true,
+    "trial_count_increment_observed": 0,
+    "condition_a_fixture_forced": false,
+    "condition_a_limit": "기존 A조건·trialLogging=true를 직접 주입하지 않음. 일반 카드 2개와 뜻 확인 경로 유지 확인; 숨겨진 조건의 실주입은 미실행.",
+    "qa_selector_correction": "자료 관리 제목 오기를 바로잡아 현재 열린 화면부터 재개; 앱 오류 아님."
+  },
+  "trial_collection_observation": {
+    "before_ui_count": 0,
+    "after_ui_count": 0,
+    "increment": 0,
+    "method": "양수인 경우에만 표시하는 이전 시험 기록 관리 영역이 자료 화면 전후 4구간 전체에서 보이지 않음. 조건부 렌더 소스 계약과 대조한 관측이며 DB행 직접 조회 아님.",
+    "legacy_enabled_or_condition_a_injection": false,
+    "limit": "legacy trialLogging=true와 A/B/C 조건을 강제로 주입하지 않음. 일반 개인 카드 2개와 확인 경로가 유지됨은 확인."
+  },
+  "motion": {
+    "video": "motion-font100.mp4",
+    "duration_seconds": 18,
+    "width_dp": 390,
+    "font_scale": 1.0,
+    "events": {
+      "seconds": 18,
+      "font_scale": 1.0,
+      "width_dp": 390,
+      "events": [
+        {
+          "sec": 1.844,
+          "action": "XML-derived library tab 650ms hold/release",
+          "bounds": [
+            294,
+            2047,
+            534,
+            2224
+          ]
+        },
+        {
+          "sec": 7.813,
+          "action": "favorite subtab"
+        },
+        {
+          "sec": 10.828,
+          "action": "home tab"
+        }
+      ],
+      "live_mic": false,
+      "paid_ai": false
+    },
+    "frames": [
+      {
+        "file": "motion-01-before.png",
+        "seconds": 0.3
+      },
+      {
+        "file": "motion-02-hold.png",
+        "seconds": 1.3
+      },
+      {
+        "file": "motion-03-release.png",
+        "seconds": 2.5
+      },
+      {
+        "file": "motion-04-after-transition.png",
+        "seconds": 3.5
+      }
+    ],
+    "observed": "정상/눌림 반응과 탭 이동 후 목적 화면 도착을 영상·대표 프레임으로 확인. 큰 화면 흔들림/문자 재배치가 대표 프레임에서 보이지 않음.",
+    "not_claimed": "100ms/140ms/650ms 실제 달성·정량 FPS·전체 프레임 누락 없음·사용자의 체감 자연스러움은 측정하지 않음. TTS 발화 중 650ms 시각 효과는 이번 별도 실측 미실행."
+  },
+  "os_animation_off": {
+    "pass": true,
+    "settings": {
+      "animator_duration_scale": "0",
+      "window_animation_scale": "0",
+      "transition_animation_scale": "0"
+    },
+    "navigation_works": true,
+    "claim_limit": "OS 애니메이션 끔 상태의 정지 화면과 전환 동작 확인. 사용자 체감 자연스러움 또는 프레임 전수 인증 아님."
+  },
+  "instrumentation": {
+    "pass": true,
+    "exit_code": 0,
+    "wall_sec": 8.313,
+    "tests": 48,
+    "apk_sha256": "5a505ec39fe3fa5b79d164a2e99737a732277b6b9a14dd46121fd896a00f9903",
+    "test_apk_sha256": "bdc19031b3ce7335f24fa168554d434f0580f22f5df2519f18944dd9d9f9bacb",
+    "synthetic_fixture_only": true,
+    "live_mic": false,
+    "paid_ai": false
+  },
+  "post_48": {
+    "active": 2,
+    "pending": 1,
+    "prior_consent_preserved": true,
+    "pin_reopened_successfully": true,
+    "captures": [
+      "latest-post-48-home-data",
+      "latest-post-48-pin-gate",
+      "latest-post-48-manager-pending"
+    ]
+  },
+  "coverage": {
+    "stable_ids": 41,
+    "file": "qa-coverage-final-polish032.csv",
+    "counts": {
+      "BLOCKED": 20,
+      "PASS": 19,
+      "EXCLUDED": 2
+    },
+    "rerun_rows": 17,
+    "prior_evidence_only_rows": 21
+  },
+  "environment_issues": [
+    {
+      "finding": "합성 AVD 재부팅 후 Android System UI 응답없음 대화상자; Android systemui/phone ANR 이벤트",
+      "evidence": [
+        "captures/final-systemui-anr-probe.png",
+        "system-anr-events.txt"
+      ],
+      "resolution": "Wait 후 정상 복귀. 해당 구간은 앱 성공/모션 근거에서 제외. 앱 ANR로 단정하지 않음."
+    },
+    {
+      "finding": "전환 직후 UIAutomator null root 및 자료 관리 제목 선택자 오기",
+      "resolution": "캡처 재시도/정확한 실제 제목으로 QA 도구만 수정. 앱 소스 수정 없음.",
+      "evidence": [
+        "tree-retry-events.log",
+        "text-delta-error.log"
+      ]
+    }
+  ],
+  "unchanged_limits": [
+    "0.3.2 온보딩1 마지막 설명은 390/100에서도 본문 스크롤 필요(이전 QA032 관측). 최종에 해당 화면 전체 재실행 없음.",
+    "이전 QA032 320/200% 홈 마이크는 fold 아래. 최신은 100% 3폭 검수이며 200% 전수 개선 판정 없음.",
+    "실제 휴대전화·실제 장애인/학생·TalkBack·Switch Access 전수 미검증.",
+    "실제 발화 정확도·유료 AI 결과·외부 수신/발송·정량 FPS와 체감 자연스러움 미검증.",
+    "수동 그림 선택 후 늦은 AI 응답 폐기와 저장 중 버튼 비활성은 이번 네트워크/저장 지연 실주입 미실행."
+  ],
+  "action_counts": {
+    "data_clear": 0,
+    "live_microphone": 0,
+    "paid_ai": 0,
+    "real_external_sends": 0,
+    "real_participants": 0,
+    "downloads": 0,
+    "app_source_changes_by_qa_agent": 0
+  },
+  "public_captures": [
+    "latest-final-home-390-font100",
+    "final-390-font100-library-all",
+    "final-390-font100-library-favorite",
+    "final-390-font100-library-context",
+    "final-390-font100-management",
+    "latest-corners-settings-390-font100",
+    "latest-privacy-copy-supporter",
+    "latest-delete-confirm-copy-only",
+    "motion-01-before",
+    "motion-02-hold",
+    "motion-03-release",
+    "motion-04-after-transition"
+  ],
+  "owned_dir": "C:\\Users\\HAPPY\\Documents\\codex-work\\malitda-feedback-update-20261025\\.scratch\\codex\\tabs-20261026\\qa\\final-polish032",
+  "original_data": "합성 QA AVD만 read-only 부팅. 다른 사용자 AVD·개인 사진·원본 문장 접근 없음.",
+  "shutdown_receipt": "shutdown-receipt.json (마지막 복원 및 종료 후 저장)",
+  "shutdown": {
+    "avd": "malitda_chat_qa_20261026",
+    "readOnly": true,
+    "dataClear": 0,
+    "fontScale": "1.0",
+    "size": "Physical size: 1080x2400 Override size: 1080x2340",
+    "density": "Physical density: 420 Override density: 443",
+    "animatorScale": "1",
+    "windowScale": "1.0",
+    "transitionScale": "1.0",
+    "stoppedAt": "2026-10-27T00:47:32.9798901+09:00"
+  },
+  "app_crash_buffer": "No app crash entries in latest-final-crash-buffer.txt",
+  "microphone_permission_state": "\n    versionCode=11 minSdk=26 targetSdk=36\n    versionName=0.3.2-debug\n      android.permission.RECORD_AUDIO\n        android.permission.RECORD_AUDIO: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]\n\n"
+}

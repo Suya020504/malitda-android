@@ -1,0 +1,61 @@
+{
+  "apk_sha256": "f73d8f6a0359a12907c9b5794886fa1791cc4df697f7a60dce3851c936cae6b0",
+  "cases": [
+    {
+      "width_dp": 320,
+      "font_scale": 1.0,
+      "wm_px": [
+        886,
+        1920
+      ],
+      "density": 443,
+      "screens": [
+        "final-320-font100-home",
+        "final-320-font100-library-all",
+        "final-320-font100-library-favorite",
+        "final-320-font100-library-context",
+        "final-320-font100-management-gate",
+        "final-320-font100-management",
+        "final-320-font100-settings"
+      ]
+    },
+    {
+      "width_dp": 390,
+      "font_scale": 1.0,
+      "wm_px": [
+        1080,
+        2340
+      ],
+      "density": 443,
+      "screens": [
+        "final-390-font100-home",
+        "final-390-font100-library-all",
+        "final-390-font100-library-favorite",
+        "final-390-font100-library-context",
+        "final-390-font100-management-gate",
+        "final-390-font100-management",
+        "final-390-font100-settings"
+      ]
+    },
+    {
+      "width_dp": 430,
+      "font_scale": 1.0,
+      "wm_px": [
+        1191,
+        2580
+      ],
+      "density": 443,
+      "screens": [
+        "final-430-font100-home",
+        "final-430-font100-library-all",
+        "final-430-font100-library-favorite",
+        "final-430-font100-library-context",
+        "final-430-font100-management-gate",
+        "final-430-font100-management",
+        "final-430-font100-settings"
+      ]
+    }
+  ],
+  "screens": 21,
+  "restored_390_font100": true
+}

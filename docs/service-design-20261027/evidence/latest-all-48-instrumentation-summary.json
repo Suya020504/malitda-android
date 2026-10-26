@@ -1,0 +1,11 @@
+{
+  "pass": true,
+  "exit_code": 0,
+  "wall_sec": 8.313,
+  "tests": 48,
+  "apk_sha256": "5a505ec39fe3fa5b79d164a2e99737a732277b6b9a14dd46121fd896a00f9903",
+  "test_apk_sha256": "bdc19031b3ce7335f24fa168554d434f0580f22f5df2519f18944dd9d9f9bacb",
+  "synthetic_fixture_only": true,
+  "live_mic": false,
+  "paid_ai": false
+}

@@ -1,0 +1,27 @@
+{
+  "seconds": 18,
+  "font_scale": 1.0,
+  "width_dp": 390,
+  "events": [
+    {
+      "sec": 1.844,
+      "action": "XML-derived library tab 650ms hold/release",
+      "bounds": [
+        294,
+        2047,
+        534,
+        2224
+      ]
+    },
+    {
+      "sec": 7.813,
+      "action": "favorite subtab"
+    },
+    {
+      "sec": 10.828,
+      "action": "home tab"
+    }
+  ],
+  "live_mic": false,
+  "paid_ai": false
+}

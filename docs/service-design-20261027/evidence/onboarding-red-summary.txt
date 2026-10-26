@@ -1,0 +1,35 @@
+w: file:///C:/Users/HAPPY/Documents/codex-work/malitda-feedback-update-20261025/app/src/main/java/kr/voicemate/malitda/ui/screens/CorrectionScreens.kt:73:52 'val Icons.Rounded.ArrowForward: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowForward.
+w: file:///C:/Users/HAPPY/Documents/codex-work/malitda-feedback-update-20261025/app/src/main/java/kr/voicemate/malitda/ui/screens/ErrorScreens.kt:41:80 'val Icons.Rounded.List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.List.
+w: file:///C:/Users/HAPPY/Documents/codex-work/malitda-feedback-update-20261025/app/src/main/java/kr/voicemate/malitda/ui/screens/ErrorScreens.kt:95:81 'val Icons.Rounded.List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.List.
+w: file:///C:/Users/HAPPY/Documents/codex-work/malitda-feedback-update-20261025/app/src/main/java/kr/voicemate/malitda/ui/screens/HomeScreen.kt:181:45 'val Icons.Rounded.List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.List.
+w: file:///C:/Users/HAPPY/Documents/codex-work/malitda-feedback-update-20261025/app/src/main/java/kr/voicemate/malitda/ui/screens/SettingsRewardScreens.kt:128:38 'val Icons.Rounded.List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.List.
+w: file:///C:/Users/HAPPY/Documents/codex-work/malitda-feedback-update-20261025/app/src/main/java/kr/voicemate/malitda/ui/v2/U08Library.kt:112:44 'val Icons.Rounded.VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.VolumeUp.
+w: file:///C:/Users/HAPPY/Documents/codex-work/malitda-feedback-update-20261025/app/src/main/java/kr/voicemate/malitda/ui/vm/SessionViewModel.kt:734:41 Condition is always 'true'.
+
+> Task :app:compileDebugJavaWithJavac
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:kspDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes
+
+> Task :app:testDebugUnitTest FAILED
+
+OnboardingPolicyTest > explanationIsReadableBeforeConsent FAILED
+    java.lang.AssertionError at OnboardingPolicyTest.kt:8
+
+5 tests completed, 1 failed
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:testDebugUnitTest'.
+> There were failing tests. See the report at: file:///C:/Users/HAPPY/Documents/codex-work/malitda-feedback-update-20261025/app/build/reports/tests/testDebugUnitTest/index.html
+
+* Try:
+> Run with --scan to get full insights.
+
+BUILD FAILED in 23s
+28 actionable tasks: 9 executed, 19 up-to-date
