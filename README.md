@@ -68,6 +68,8 @@ python docs/feedback-20261026/ai-demo/start_mock_server.py
 adb reverse tcp:8769 tcp:8769
 ```
 
+**지원자용 직접 생성(PC 서버·USB 없이):** 개발자가 `local.properties`에 `OPENAI_API_KEY`를 두고 `./gradlew :app:assembleDebug -PincludeDirectImageKey=true`로 빌드한 디버그 APK만 앱이 OpenAI 이미지 API를 직접 부릅니다(`DirectImageClient`, 기기당 하루 20장). 이 APK에는 키가 들어 있으므로 공개 링크로 배포하지 않고, 사용 한도를 건 전용 키를 씁니다. 옵션 없이 빌드한 debug·release에는 키가 없습니다.
+
 위 서버는 localhost에서 **항상 같은 물 예시 그림**을 반환합니다. 앱에도 모의 연결을 표시하며 유료 공급자를 부르지 않습니다. ‘그만두기’는 결과 수신·적용을 멈추고, 이미 시작한 실제 서버 작업이나 비용의 취소를 보장하지 않습니다.
 
 단위·Room/SQLCipher·마이그레이션·새 설치 모델·대표 UI·확대·빌드 결과는 최신 검증명세에 증거와 함께 기록합니다. 실제 이용자의 이해·거절 가능성과 의사소통 효과, 제조사별 휴대전화·보조기술, 실제 유료 AI 서버는 별도 확인 대상입니다. 앱의 동의 체크는 기관·법정대리인 동의 절차를 대신하지 않습니다. 개인 음향모델·LoRA·sLLM 자동 의도 추론·클라우드 기관 콘솔은 현재 범위에 포함하지 않습니다.

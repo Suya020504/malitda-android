@@ -220,7 +220,6 @@ class SessionViewModel(val c: AppContainer, prepareSpeechOnInit: Boolean = true)
     }
 
     // ---------- 말하기(S09) ----------
-    // '말하기 끝내기'를 잊거나 누르기 어려운 학생을 위해 일정 시간이 지나면 저절로 끝낸다.
     private val mutationMutex = kotlinx.coroutines.sync.Mutex()
     private var dataEpoch = 0L
     private var listenGeneration = 0L
@@ -265,16 +264,26 @@ class SessionViewModel(val c: AppContainer, prepareSpeechOnInit: Boolean = true)
             _events.tryEmit(SessionEvent.GoSttError("음성인식 엔진이 준비되지 않았어요"))
             return
         }
-        // The person decides when to finish. No app timer cuts off a slower utterance.
+        // 끝내는 시점은 본인이 정한다. 다만 '말하기 끝내기'를 잊거나 누르기 어려운 경우를 위해
+        // 느린 발화도 끊지 않을 만큼 긴 안전 시간(MAX_LISTEN_MS)이 지나면 저절로 끝낸다.
+        autoStopJob?.cancel()
+        autoStopJob = viewModelScope.launch {
+            kotlinx.coroutines.delay(MAX_LISTEN_MS)
+            if (generation == listenGeneration) stopListening()
+        }
     }
 
+    private var autoStopJob: kotlinx.coroutines.Job? = null
+
     fun stopListening() {
+        autoStopJob?.cancel(); autoStopJob = null
         if (_ui.value.listen !is ListenState.Listening) return
         _ui.update { it.copy(listen = ListenState.Processing) }
         c.stt.stop()
     }
 
     fun cancelListening() {
+        autoStopJob?.cancel(); autoStopJob = null
         listenGeneration++
         c.stt.cancel()
         _ui.update { it.copy(listen = ListenState.Idle) }
@@ -900,6 +909,8 @@ class SessionViewModel(val c: AppContainer, prepareSpeechOnInit: Boolean = true)
     override fun onCleared() { c.stt.cancel(); c.tts.stop() }
 
     companion object {
+        /** 말하기 안전 시간. 짧은 의미 표현은 천천히 말해도 이 안에 끝나고, 길게 녹음될수록 인식이 느려진다. */
+        const val MAX_LISTEN_MS = 20_000L
 
         fun factory(c: AppContainer) = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")

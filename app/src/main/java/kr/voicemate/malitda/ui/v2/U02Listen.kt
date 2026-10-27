@@ -136,7 +136,7 @@ private fun ListeningCard(listening: ListenState.Listening?) {
             Spacer(Modifier.height(12.dp))
             Dots()
             Spacer(Modifier.height(10.dp))
-            Text("말을 마치면 말하기 끝내기를 누릅니다.", style = jua(14, V2C.Muted))
+            Text("말을 마치면 말하기 끝내기를 누릅니다.\n20초가 지나면 저절로 끝나요.", style = jua(14, V2C.Muted), textAlign = TextAlign.Center)
         }
     }
 }
