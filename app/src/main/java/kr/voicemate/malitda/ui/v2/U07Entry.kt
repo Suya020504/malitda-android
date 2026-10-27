@@ -42,6 +42,7 @@ fun U07Entry(
     onStudentChip: () -> Unit,
     onBack: () -> Unit,
     onHelp: () -> Unit,
+    onHome: (() -> Unit)? = null,
 ) {
     V2Screen {
         V2Header(onBack = onBack, onHelp = onHelp)
@@ -82,6 +83,7 @@ fun U07Entry(
         V2PrimaryButton("${studentName.ifBlank { "친구" }}의 표현 등록", icon = "⊕") { onRegister() }
         Spacer(Modifier.height(12.dp))
         V2SecondaryButton("내 표현 보기") { onMyExpressions() }
+        onHome?.let { home -> V2TextButton("⌂ 처음으로") { home() } }
         Spacer(Modifier.height(16.dp))
     }
 }

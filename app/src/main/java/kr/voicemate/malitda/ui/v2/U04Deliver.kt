@@ -53,6 +53,8 @@ fun U04Deliver(
     trialHelped: Boolean = false,
     onTrialUnderstood: (Boolean?) -> Unit = {},
     onTrialHelped: (Boolean) -> Unit = {},
+    // 전달을 마치고 바로 홈으로(2026-10-26 실기기 피드백).
+    onHome: (() -> Unit)? = null,
 ) {
     V2Screen {
         V2Header(onBack = onBack, onHelp = onHelp)
@@ -126,7 +128,15 @@ fun U04Deliver(
         }
         Spacer(Modifier.height(12.dp))
         V2SecondaryButton("다시 고르기") { onRepick() }
-        V2TextButton("다른 앱으로 보내기") { onShare() }
+        if (onHome != null) {
+            // 한 줄에 나란히 둬 화면 높이를 늘리지 않는다(실증 기록 칸이 버튼에 가리지 않게).
+            Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp)) {
+                V2TextButton("다른 앱으로 보내기", Modifier.weight(1f)) { onShare() }
+                V2TextButton("⌂ 처음으로", Modifier.weight(1f)) { onHome() }
+            }
+        } else {
+            V2TextButton("다른 앱으로 보내기") { onShare() }
+        }
         Spacer(Modifier.height(8.dp))
     }
 }
@@ -176,6 +186,7 @@ fun U04Share(
     onReturn: () -> Unit,
     onCancel: () -> Unit,
     onHelp: () -> Unit,
+    onHome: (() -> Unit)? = null,
 ) {
     V2Screen {
         V2Header(onBack = onReturn, onHelp = onHelp)
@@ -208,6 +219,7 @@ fun U04Share(
         V2PrimaryButton("공유창에서 돌아오기") { onReturn() }
         Spacer(Modifier.height(12.dp))
         V2SecondaryButton("취소") { onCancel() }
+        onHome?.let { home -> V2TextButton("⌂ 처음으로") { home() } }
         Spacer(Modifier.height(16.dp))
     }
 }

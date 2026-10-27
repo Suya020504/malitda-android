@@ -44,7 +44,10 @@ android {
             cmake {
                 val whisperDir = (project.findProperty("whisperCppDir") as String?) ?: rootProject.file("third_party/whisper.cpp").absolutePath
                 arguments += listOf("-DWHISPER_CPP_DIR=${whisperDir.replace('\\', '/')}", "-DANDROID_STL=c++_static")
-                cppFlags += listOf("-O2")
+                // 디버그 빌드도 인식 엔진은 최적화한다. ggml 핵심 연산은 C 파일이라 cFlags가 없으면 -O0으로 빌드돼
+                // 지원자용(디버그) APK에서 말하기 인식이 수십 초씩 걸렸다(2026-10-26 실기기 피드백).
+                cppFlags += listOf("-O2", "-DNDEBUG")
+                cFlags += listOf("-O2", "-DNDEBUG")
             }
         }
     }

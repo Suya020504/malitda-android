@@ -378,6 +378,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
                 trialHelped = trialDraft?.supporterHelped ?: false,
                 onTrialUnderstood = { vm.trialSetUnderstood(it) },
                 onTrialHelped = { vm.trialSetHelped(it) },
+                onHome = { goHome() },
             )
         }
 
@@ -398,6 +399,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
                 // 안내문("선택을 취소해도 뜻은 그대로예요")대로 전달 화면으로 돌아간다.
                 onCancel = { route = "U04" },
                 onHelp = ::help,
+                onHome = { goHome() },
             )
         } ?: V2Screen {}
 
@@ -409,6 +411,7 @@ fun MalitdaV2App(vm: SessionViewModel) {
             onStudentChip = { u07sReturn = "U07"; route = "U07S" },
             onBack = { route = "U01" },
             onHelp = ::help,
+            onHome = { goHome() },
         )
 
         "U07S" -> U07NewSession(
