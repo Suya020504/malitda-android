@@ -2,7 +2,7 @@
   "schema_version": 1,
   "document_status": "final_C_requested_scope_closed",
   "completion_status": "ready_for_team_signing",
-  "updated_at": "2026-10-27T18:01:44.000Z",
+  "updated_at": "2026-10-28T04:17:45+09:00",
   "timezone": "Asia/Seoul",
   "application": {
     "version_name": "0.3.4",
@@ -134,7 +134,7 @@
       "test_apk_sha256": "8bd95a9c057ce9710b7eb579bd0aebbfd6bcca2f73412cdd95e43514c455b17a",
       "environment": "owned_AVD",
       "synthetic_only": true,
-      "stt": "fake_STT",
+      "stt": "mixed: fake engines for lifecycle/UI cases; one real bundled Whisper native transcription with local synthetic WAV is included in the same67",
       "microphone_permission": "pregranted",
       "data_cleared": false,
       "uninstalled_existing_app": false,
@@ -143,7 +143,46 @@
         "final_core_receipt",
         "final_core_log"
       ],
-      "performance_improvement_claim": false
+      "performance_improvement_claim": false,
+      "native_synthetic_whisper_included": {
+        "count": 1,
+        "included_in_passed_67": true,
+        "additional_test_executed_now": false,
+        "test": "SyntheticSpeechIntegrationTest.syntheticWaterSpeechRecognizesAndConnectsToRegisteredPrivateMeaning",
+        "test_source": "app/src/androidTest/java/kr/voicemate/malitda/stt/SyntheticSpeechIntegrationTest.kt",
+        "fixture": "app/src/androidTest/assets/synthetic-water.wav",
+        "fixture_sha256": "325ee417e926da55f122333b4e549b9521753c4ab8a3c7cc5c99871a2e5954f7",
+        "synthetic": true,
+        "human_recording": false,
+        "cloud_service_used": false,
+        "recognition_hints": [],
+        "model": "whisper/ggml-base-q5_1.bin",
+        "real_path": "WhisperSttEngine.recognizeWav -> WhisperNative.transcribe -> MeaningResolver",
+        "input_text": "물 마시고 싶어요",
+        "observed_raw": "물 마시고 싶어요",
+        "expected_registered_meaning_offered": true,
+        "assertions": [
+          "native engine ready",
+          "nonblank raw transcript",
+          "fixed pre-registered meaning candidate present"
+        ],
+        "exact_match_assertion": false,
+        "exact_match_observed_in_retained_log": true,
+        "scope_excludes": [
+          "Vosk PCM transcription",
+          "microphone-to-transcript full E2E",
+          "human/disability speech accuracy",
+          "physical ARM latency",
+          "DB store/approval/delivery",
+          "field effectiveness"
+        ],
+        "performance_improvement_claim": false,
+        "evidence_files": [
+          "full-instrumentation.log:753-767",
+          "instrumentation-logcat.log:1315"
+        ],
+        "evidence_context": "retained final C surface-C-20261028 evidence; appDAE8 and test8BD9 unchanged"
+      }
     },
     "debug_multi_abi": {
       "status": "pass",
